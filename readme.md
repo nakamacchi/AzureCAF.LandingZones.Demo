@@ -28,4 +28,3 @@
 | デモビデオ解説資料 | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFsEFNlzuWWX33ZeMbHAmCICLEiCQGOKRUGseM___zBc376Orq7Ohi8WkCCPLUSSIGN8IzIIJFy) |
 | 共通基盤設計ガイド（作成途中バージョン） | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFmmPLUSSIGNB7a1iYsI6AZxvTP0___Qq41JtPLUSSIGNSmSMJkBmjV3S5X7euwMAyDyYri1yLiqUJPLUSSIGNr4T) |
 | 共通基盤設計 ガバナンス設計 Excel シート | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxQXPLUSSIGN___dalE8F4n68O7GPED3PLUSSIGNEd1DnAGagmPOLSkuUD7Qpm5ms0xyKUHsAMqcJquJoBtxjPLUSSIGNs5kN15NOhEcTyIgWW) |
-
