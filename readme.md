@@ -1,5 +1,26 @@
 # Azure CAF Landing Zones 設計・構築ハンズオン
 
+## 本資料について
+
+本資料は、Azure 共通基盤（ランディングゾーン）の設計・構築ハンズオン資料です。
+
+- マイクロソフトの公式ガイドラインである Azure CAF と、そのリファレンス実装である ESLZ (Enterprise-scale landing zones, ALZ / Azure landing zones) をベースにしつつ、日本特有の事情を加味して、赤間が作成したものです。日本のお客様に馴染みやすい形で整理しています。
+- このデモ一つで、以下の内容がすべて含まれています。
+  - Hub-Spoke VNET 環境（ゼロトラストベースの閉域構成）
+　- 動作可能な IaaS Web-DB アプリと PaaS Web-DB アプリを実際に載せる
+　- SoD (権限分掌) に基づくカスタム RBAC ロールと実機操作
+　- 仮想マシンの完全なセキュア化（MDE, GC, AMA, DA, ASA, CTA 全部入り）
+　- Azure Policy, MDfC スコアを 100%（！）にする
+　- 運用監視（集約アラートと個別アラート）
+- 本ハンズオン資料をベースにしてご検討いただければ、セキュアかつガバナンスの効いた Azure 共通基盤の構築がかなりラクになる ＆ 速やかにご検討いただけると思います。
+  - すでに共通基盤をお持ちのお客様も、セキュリティやガバナンスの強化にご活用ください。
+
+## Azure 共通基盤の設計・構築の概要を知りたい場合
+
+- 一連のスクリプトを、説明を織り交ぜながら解説するデモビデオを以下に用意してありますので、こちらを見るのがオススメです。
+- デモビデオはトータルで約 8 時間あります。構築スクリプトを流している待機時間はカットしている一方で、Azure をほとんど知らないユーザにも理解してもらえるように基本的な事項の説明も織り交ぜています。
+- どうしても自力で動かしてみたい方は、末尾をご確認ください。
+
 ## 作業デモビデオ
 
 | ビデオ | ビデオ時間 | 作業時間目安 | リンク |
@@ -23,8 +44,53 @@
 
 ## 関連資料
 
+- Azure CAF ってそもそも何？みたいな方は、超訳 Azure CAF のビデオをご確認ください。（約2.5、実践的な観点から Azure CAF を読み解く資料です。）
+- Azure 共通基盤の設計方法をより深く学びたい方は、Azure 共通基盤設計ガイドを見てください。
+- その他、Azure の個々の技術トピックを知りたい方は、jp-techdocs をご確認ください。
+
 | 資料名 | リンク |
 | :-- | :-- |
-| デモビデオ解説資料 | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFsEFNlzuWWX33ZeMbHAmCICLEiCQGOKRUGseM___zBc376Orq7Ohi8WkCCPLUSSIGN8IzIIJFy) |
-| 共通基盤設計ガイド（作成途中バージョン） | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFmmPLUSSIGNB7a1iYsI6AZxvTP0___Qq41JtPLUSSIGNSmSMJkBmjV3S5X7euwMAyDyYri1yLiqUJPLUSSIGNr4T) |
-| 共通基盤設計 ガバナンス設計 Excel シート | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxQXPLUSSIGN___dalE8F4n68O7GPED3PLUSSIGNEd1DnAGagmPOLSkuUD7Qpm5ms0xyKUHsAMqcJquJoBtxjPLUSSIGNs5kN15NOhEcTyIgWW) |
+| 本デモビデオで利用している解説資料 | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFsEFNlzuWWX33ZeMbHAmCICLEiCQGOKRUGseM___zBc376Orq7Ohi8WkCCPLUSSIGN8IzIIJFy) |
+| Azure 共通基盤設計ガイド（※ 作成途中です） | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFmmPLUSSIGNB7a1iYsI6AZxvTP0___Qq41JtPLUSSIGNSmSMJkBmjV3S5X7euwMAyDyYri1yLiqUJPLUSSIGNr4T) |
+| Azure 共通基盤設計 ガバナンス設計 Excel シート | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxQXPLUSSIGN___dalE8F4n68O7GPED3PLUSSIGNEd1DnAGagmPOLSkuUD7Qpm5ms0xyKUHsAMqcJquJoBtxjPLUSSIGNs5kN15NOhEcTyIgWW) |
+| 超訳 Azure CAF | [ppt](https://download.microsoft.com/download/2/a/b/2ab69a5d-7c69-4a24-a692-50823e3255d6/Translations_AzureCAF_v0.11.pptx) [前半](https://www.youtube.com/watch?v=eHLpPk6P8hw&t=10s) [後半](https://www.youtube.com/watch?v=RwAtcn75_7A&t=0s) |
+| Azure jp-techdocs | [リンク](https://github.com/Azure/jp-techdocs) |
+
+## どうしても自力でやってみたい場合
+
+### 実機演習のために必要な環境
+
+自力で動かしてみたい場合、実習に必要な機材は以下の 3 つです。（1作業者につき①～③が1セット必要です。）
+① 新規作成したテスト用の Azure AD テナント
+② テスト環境を作成する Azure サブスクリプション 4 つ
+③ テスト環境の作成スクリプトを順次実行するための端末
+
+それぞれ以下に補足します。
+
+### ① 新規作成したテスト用の Azure AD テナント
+
+今回の演習では、テストユーザを作成して権限割り当てを行うなど、Azure 環境全体の管理も行います。このため、すでにお使いの Azrure AD 環境内での演習作業は極めて危険です。必ず新規に Azure AD テナントを作成し、そこで演習を行うようにしてください。
+
+### ② テスト環境を作成する Azure サブスクリプション 4 つ
+
+今回の演習では大規模な Azure 環境を模倣するため、管理サブスクリプション、ハブサブスクリプション、業務システム用サブスクリプション2つ、合計4つのサブスクリプションを利用します。これらのサブスクリプションは、現在お使いの EA 契約から作成されたサブスクリプションで構いませんが、必ず①のAADへの付け替えを行ってください。
+
+なお、EA 契約からサブスクリプションを作成した場合、サブスクリプションは作成者のホームAADテナントに自動的に紐づきます。このため、テスト用にサブスクリプションを新規に作成するのであれば、①のAADアカウントをEA契約のアカウント管理者として登録し、そのアカウントでサブスクリプションを新規作成すると簡単です。
+
+### ③ テスト環境の作成スクリプトを順次実行するための端末
+
+実機演習には、一連の bash スクリプトを動かすための操作端末（演習端末）が必要です。この端末は、Windows 端末に WSL2 をセットアップし、ツール（az cli）をインストールして準備いただく必要があります。
+また、この Windows 端末からは、ブラウザを介して Azure Portal にアクセスして①②を利用しますが、イントラネット端末や社内ネットワークでは①②を自由に操作できない可能性があります。このため、独立した端末をご準備いただくなどの工夫が必要になる場合があります。
+
+### 費用について
+
+今回のテスト環境には比較的高額なリソースをいくつかデプロイします。（Azure Firewall, AppGateway など）　立てっぱなしにした場合、月額で数十万円かかるリソースです。こうした高額リソースを一時的に停止するスクリプトもご用意しておりますが、短期集中的に学習いただき、終了後はすみやかに環境削除することをおすすめします。
+
+### 作業者と環境セットについて
+
+前述の通り、①～③は 1 作業者につき  1 セットが必要です。本資料をワークショップなどで利用する場合、人数分の環境セットをご用意いただくのは、コストなどの観点で非現実的な場合もあります。このような場合には、2～3 人ごとにチームを組んでいただき、1 チームあたり 1 セットとして、ペアプログラミング形式で実習していただくことをおすすめします。トラブルシュートもしやすくなりますし、理解も深まりやすいと思います。
+（コストの理由から 1 つの環境をみなさんでご覧いただく、という形にしているケースもありました。）
+
+## マイクロソフト社員の方へ
+
+MS 社員が社内環境を使って作業する際の注意事項メモを別途まとめてあります。必要な場合は赤間（nakama）までご連絡ください。
