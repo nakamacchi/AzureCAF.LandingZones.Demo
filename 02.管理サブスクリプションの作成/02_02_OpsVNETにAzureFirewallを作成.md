@@ -1,7 +1,11 @@
 # Ops VNET に Azure Firewall を作成
 
+引き続き、Ops VNET 内に Azure Firewall を作成します。
+
+- Azure Firewall を作成する
+- 仮想マシン（作業用 VM）を配置するサブネットにユーザ定義ルートを貼り付け、既定のルートが Azure Firewall に向けられるようにする
+
 ```bash
- 
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
