@@ -1,7 +1,14 @@
 # Hub VNET と Azure Firewall の作成
 
+ハブ＆スポーク型の仮想ネットワークを構成するため、まずハブサブスクリプションに Hub VNET を作成します。
+
+![picture 2](./images/1c5d20374bbd211e30d79f59e245c02e0cf11b0a9760ecdc27d4e7cd48b66167.png)  
+
+- 今回のサンプルではオンプレミスとの接続は行いません。（GatewaySubnet を作成していますが、ERGW や VPNGW などは作成しません。）
+- この Azure Firewall では DNS proxy 機能を有効化します。これは Spoke VNET からプライベート DNS ゾーンを解決するためですが、詳細は「04_03_PrivateDNSZonesの作成」にて解説します。
+- 上図には出てきていませんが ＆ 本サンプルでは使いませんが、下記サンプルでは DefaultSubnet というサブネットも作成しています。ハブ VNET 内には様々な共有機能を作成する場合があり、そのようなケースではこのサブネットを利用してください。
+
 ```bash
- 
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
