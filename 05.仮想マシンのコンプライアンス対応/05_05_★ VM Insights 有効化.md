@@ -1,7 +1,20 @@
 # ★ VM Insights 有効化
 
+仮想マシンの通信やパフォーマンスを解析するためのツールである VM Insights を有効化します。
+
+- 必要なエージェントである AMA と DA をインストールします。
+- [以前のステップ](/04.%E7%AE%A1%E7%90%86%E5%9F%BA%E7%9B%A4%E3%81%AE%E6%A7%8B%E6%88%90%E8%A8%AD%E5%AE%9A/04_01_VMInsights%E7%94%A8%E3%81%AE%E4%BA%8B%E5%89%8D%E6%BA%96%E5%82%99.md)で作成した DCR を当該マシンに割り当てます。
+
+スクリプト実行後、いくつかの処理を Azure ポータルなどから手作業で行う必要があります。
+
+- DCE (Data Collection Endpoint)の割り当て
+  - カスタムログなどを転送する場合に備えて、DCE の利用割り当てを行う必要があります。
+  - API は存在しており、ポータルからの設定でも API を叩いているようなのですが、うまく設定が反映されず。。。というわけで申し訳ありませんが、ここだけ暫定的に手作業での割り当てをお願いします。m(_ _)m　（作業方法はビデオを確認してください。）
+- Linux OS のカーネル変更
+  - VM Insights の通信モニタリング機能は、残念ながら Linux の最新カーネルでは動作しないという問題があります。利用条件は[こちら](https://learn.microsoft.com/ja-jp/azure/azure-monitor/vm/vminsights-enable-overview)。
+  - Ubuntu 20 などではカーネルをダウングレードすることにより機能の有効化が可能です。（ダウングレードを推奨するものでもないので、やってみたい場合には本スクリプトの後半に書かれている方法で有効化してみてください。）
+
 ```bash
- 
 # AMA インストールと DCR の割り当てによる VM Insights の有効化
  
 for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do

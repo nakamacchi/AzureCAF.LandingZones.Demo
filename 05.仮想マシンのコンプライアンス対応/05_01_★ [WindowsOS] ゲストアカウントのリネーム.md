@@ -1,7 +1,11 @@
 # ★ [WindowsOS] ゲストアカウントのリネーム
 
+GC CSB 対応のため、Windows OS のゲストアカウントをリネームします。
+
+- 本来、リネーム先は乱数生成などにより VM 単位に変えるのが適切ですが、ここでは固定的に "LocalGuest" という名前にしています。より堅牢にするためには変更することをオススメします。
+- VM にログインしてリネームするのは大変なため、runCommand API を利用して外部からコマンドを与えてリネームを行います。
+
 ```bash
- 
 for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
 az account set -s "${TEMP_SUBSCRIPTION_ID}"
  

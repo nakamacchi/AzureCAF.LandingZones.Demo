@@ -1,4 +1,19 @@
-# ★（参考）GC ルールが外れてしまった場合 (Windows 用)
+# ★ GC ルールの割り当て (Windows 用)
+
+Windows OS に対して、適切な GC ルールを設定するための作業を行います。
+
+- GC エージェントは、割り当てられたルールを用いて、仮想マシンの構成設定チェックを行います。Windows OS の場合は、通常、以下の 4 つのルールが割り当てられます。
+  - AuditSecureProtocol (TLS 1.2 以外のプロトコルが利用不可になっているかを確認)
+  - AzureWindowsBaseline (CSB によるハードニングを確認)
+  - AzureWindowsVMEncryptionCompliance (BitLocker 暗号化(ADE) を確認)
+  - WindowsDefenderExploitGuard (Windows Defender Exploit Guard が有効かを確認)
+- これらのルール割り当ての状態は、ゲスト割り当て画面から確認できます。
+  - ![picture 1](./images/4421f59abd8600e613615ba0395277c47add7b41cfd7cb85558bdb6b80341cad.png)  
+- ルールが割り当てられるかどうかは、GC のセットアップ方法により変わります。
+  - MDfC の GC エージェント自動プロビジョニング機能を利用した場合にはこれらの 4 つのルール割り当ても行われます。
+  - 一方、コマンドラインから手動で GC エージェントをインストールした場合には、ルール割り当ては自動では行われません。（エージェントが VM にインストールされるだけ）
+- 後者のようになった場合には、ルールを手作業で割り当てる必要があります。これを行うのが本スクリプトです。
+  - AzureWindowsBaseline の割り当ては[すでに示しています](./05_03_%E2%98%85%20%5BWindows%20OS%5D%20CSB%20%E9%81%A9%E7%94%A8.md)ので、残り 3 つのルール割り当てを行います。
 
 ```bash
 # CSB の再適用の場合は CSB 適用スクリプトをもう一度流す
@@ -156,14 +171,12 @@ done # TEMP_VM_NAME
 done # TEMP_RG_NAME
 done # TEMP_LOCATION_NAME
 done # TEMP_SUBSCRIPTION_ID
- 
- 
- 
- 
+
+# 手作業で 1 台の VM に割り当てたい場合は下記。
 #TEMP_GC_ASSIGNMENT_NAME="AuditSecureProtocol"
 #TEMP_GC_ASSIGNMENT_NAME="AzureWindowsVMEncryptionCompliance"
 #TEMP_GC_ASSIGNMENT_NAME="WindowsDefenderExploitGuard"
 #TEMP_URI="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/rg-ops-eus/providers/Microsoft.Compute/virtualMachines/vm-ops-eus/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/${TEMP_GC_ASSIGNMENT_NAME}?api-version=2022-01-25"
 #az rest --uri ${TEMP_URI} --method GET
- 
+
 ```
