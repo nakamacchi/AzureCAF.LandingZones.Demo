@@ -1,5 +1,9 @@
 # 是正処理 : Windows VM の TLS 1.2 の強制
 
+Windows マシン用の GC のルールの一つである、AuditSecureProtocol ルールの是正方法を示します。このルールは　TLS 1.2 以外のプロトコルが利用不可になっているかを確認するもので、プロトコルを無効化するためにはレジストリを設定します。
+
+コマンドラインから実行する方法は[こちら](/99.Tips/99_03_Windows%20OS%20%E3%81%A7%E3%81%AE%20TLS%201.2%20%E5%BC%B7%E5%88%B6.md)に示していますが、VM にログインするのは面倒なため、runCommand API を使って処理します。
+
 ```bash
  
 # ■ Windows Server の通信プロトコルを TLS 1.2 に限定する
@@ -33,4 +37,5 @@ done #TEMP_SUBSCRIPTION_ID
 # https://github.com/Azure/azure-policy/blob/master/samples/GuestConfiguration/package-samples/resource-modules/SecureProtocolWebServer/DSCResources/SecureWebServer/SecureWebServer.psm1
 # エラーメッセージは以下
 # There is a lower TLS protocol enabled than the minimum TLS protocol version expected on this server. The current lowest TLS version enabled on this machine is '1.1'. The expected minimum TLS protocol version is '1.2'. Displaying current status of protocols: SSL 2.0 - Absent SSL 3.0 - Absent TLS 1.0 - Absent PCT 1.0 - Absent Multi-Protocol Unified Hello - Absent TLS 1.1 - Present TLS 1.2 - Present 
+
 ```
