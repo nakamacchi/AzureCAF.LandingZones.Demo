@@ -1,6 +1,25 @@
 # Web App の閉域化
 
+Web App は SQL Database と同様、既定ではパブリックエンドポイントを使って構成されています。このため、仮想ネットワークに閉じ込めて利用するための作業を行います。SQL Database の場合と異なり、入口と出口の両方について VNET への組み込みが必要になります。
+
+- 出力ロックダウン (Egress Lockdown)
+  - Web アプリから SQL DB へのアクセスのように、Web アプリから「出ていく」通信を VNET の中に閉じるようにするため、リージョナル VNET 統合機能（単に VNET 統合機能とも呼ばれます）を利用します。
+  - 既定では一部の通信しか VNET 内にルーティングされず、またパブリック DNS を引くためにプライベートエンドポイント名を解決できません。このため、Web App に以下 2 つの設定を行います。
+    - WEBSITE_VNET_ROUTE_ALL = 1
+    - WEBSITE_DNS_SERVER = Azure Firewall の IP アドレス
+- 入力ロックダウン（Ingress Lockdown）
+  - Web アプリにアクセスするための経路として、パブリックエンドポイントではなくプライベートエンドポイントを利用するように構成します。（プライベートエンドポイントの作成とプライベート DNS ゾーンを構成します。）
+  - Web App のアプリの管理には、Kudu と呼ばれる Web ベースの管理ツールを利用します。この Web ベース管理ツールへのアクセスにも、プライベートエンドポイントを利用するように構成する必要があります。
+    - Web App の FQDN が https://XXXXX.azurewebsites.net/ の場合、Kudu へアクセスするための FQDN は https://XXXXX.scm.azurewebsites.net/ になります。
+    - DNS ゾーンリンク機能を利用すると、この Kudu の FQDN もまとめてプライベート DNS ゾーンに登録されます。
+
+作業後、動作確認のために DNS 名を nslookup で引いてみます。
+
+- まず、現在作業しているご自身の端末上で、作成した Web App のサーバ名（webapp-spokeb-XXX-XXX.azurewebsites.net）を nslookup で引いてみてください。パブリック IP アドレスが返されるはずです。
+- 今度は Ops VNET 内の運用管理作業端末に Bastion 経由でログインし、そこで作成した Web App のサーバ名（webapp-spokeb-XXX-XXX.azurewebsites.net）を nslookup で引いてみてください。プライベート IP アドレスが返されれば成功です。
+
 ```bash
+
 # Web App の閉域化
 # ネットワークに関わる作業のため、NW チームに依頼する
 # ただし、一部の作業については業務システム B の開発側でもできてしまう。
