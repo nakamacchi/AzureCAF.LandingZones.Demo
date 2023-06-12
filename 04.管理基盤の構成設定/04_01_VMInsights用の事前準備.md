@@ -1,8 +1,23 @@
 # VM Insights 用の事前準備
 
+以降では、仮想マシンの管理などに必要となる共用リソースを作成していきます。まず最初に、VM Insights で利用する DCR (Data Collection Rule) の準備を行います。
+
+- VM Insights とは...
+  - 仮想マシンの詳細解析を行う Azure の機能です。
+  - 通信を行っているプロセスとその通信先の解析を容易に行ったり、Windows/Linux で共通のパフォーマンス解析などを行ったりすることができます。非常に便利ですので、基本的には有効化していただくのがよいと思います。
+  - ![picture 1](./images/83a4e613e483933d51248ec33ddee1f14be369cf40e5d15156bdedfab084f1d3.png)  
+- DCR, DCR-A とは...
+  - VM Insights は、仮想マシンに AMA (Azure Monitor Agent) と DA (Dependency Agent)と呼ばれるエージェントを導入し、エージェントから LAW (Log Analytics Workspace)にログを吸い上げることによってデータ解析を行います。
+  - AMA は DA 以外にも様々なエージェントからログを回収します。どのようなログを回収し、どこの LAW へデータを送るのかを決めるのが DCR と DCR-A です。
+  - DCR はデータの収集ルールを定義したもので、これを仮想マシンに割り当てて利用します。この割り当てのことを DCR-A (DCR Association) と呼びます。
+  - DCR は複数の VM で共用できるため、本ステップではまず DCR を作成しておきます。（DCR の割り当て作業は後で行います。）
+  - ![picture 2](./images/d1f1269e343ec5b7326c0e147f819ec31f4e76d89d158041024e0c27b29dcbfd.png)  
+- DCR の構造について
+  - DCR は、データソース、送信先、その組み合わせ（データフロー）を定義したものです。
+  - 1 つの DCR に様々なデータソースや送信先を定義することができますが、割り当ての柔軟性を高めるために DCR をある程度分けておくようにします。本サンプルでは、LAW 単位に DCR を分けています。
+  - ![picture 3](./images/5651dd913026c1964449057c25631dbb309af64c4db4ecca71d8073494eb211d.png)  
+
 ```bash
- 
- 
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  

@@ -1,5 +1,17 @@
 # Private DNS Zones の作成
 
+本デモでは各スポーク環境（業務システムの VNET）にてプライベートエンドポイントを利用しますが、プライベートエンドポイントの利用には DNS の偽装が必要になります（DNS を引いた際に、パブリック IP アドレスではなくプライベートエンドポイントのプライベート IP アドレスが返されるように構成する必要があります）。この目的で利用されるのがプライベート DNS ゾーンです。
+
+プライベート DNS ゾーンの構成方法は何通りかありますが、本デモでは下図のように構成します。要点は以下の通りです。
+
+- ハブ VNET と地繋がりの VNET については、どこでも共通の DNS を引けるようにする。
+- このために、プライベート DNS ゾーンは一括してハブサブスクリプションで構成・管理する。
+- 各スポーク VNET からハブ VNET の DNS を引けるようにするために、Azure Firewall を DNS プロキシとして利用する。
+  - Azure Firewall の DNS プロキシ機能を有効化する。
+  - 各スポーク VNET の DNS サーバとして Azure Firewall の IP アドレスを指定する。
+
+![picture 1](./images/af748ce97f4bf0a8714599bc8bebe01149ce5fcb1f36a67c502f923c9bb2c72d.png)  
+
 ```bash
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
@@ -49,4 +61,3 @@ done # TEMP_LOCATION
 done # TEMP_PRIVATE_DNS_ZONE_NAME
 
 ```
-
