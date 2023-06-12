@@ -1,5 +1,7 @@
 # AppInsights の経路確保
 
+Application Insights は、物理データストアとして Log Analytics Workspace を利用しますが、Application Insights 特有の監視機能を使うために、追加でいくつかの穴開けが必要になります。以下を実行して、これらの穴開けを実施します。
+
 ```bash
  
 # NW 管理チームに依頼して AppInsights の経路を確保

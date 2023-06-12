@@ -1,5 +1,28 @@
 # SQL IaaS VM Extension 有効化
 
+Azure 環境で SQL Server を利用したい場合には、通常は PaaS 版 SQL Server である SQL Database サービスをご利用いただくのが便利です（詳細は業務システム B にて示します）。しかし SQL Database は SQL Server のフルセット機能が利用できるわけではないため、既存システムの Lift & Shift のような場合には、本デモのように、仮想マシンを利用して SQL Server を構築する場合もあります。
+
+このような場合に備えて、Azure では SQL IaaS VM Extension と呼ばれる VM 拡張機能が用意されています。主には以下のような機能が提供されます。特にライセンス管理やコンプライアンス準拠の観点から、IaaS VM で SQL Server をご利用いただいている場合には必ずインストールしていただくようにしてください。
+
+- 管理性の向上
+  - Azure ポータルでの SQL VM 管理画面の提供
+  - バックアップ・パッチ適用のスケジューリング
+  - tempdb 構成の変更、ディスク使用率の表示
+  - 可用性グループ構成の容易化
+- セキュリティ機能の提供
+  - Azure Key Vault 統合機能の提供
+  - Defender for SQL Server machines の提供（SQLVA, SQLATP）（※ 有償）
+- ライセンス管理・コンプライアンス準拠
+  - ライセンスモデル・エディションの変更
+  - AHUB ライセンス特典の利用
+  - DR 用ライセンスの利用
+- アドバイザリ機能の提供
+  - SQL ベストプラクティスアセスメント機能の提供
+
+![picture 1](./images/1c1c3690089776604b6ed0593e9734398a7298a7ecfd3f1699ea3674e8f73407.png)  
+
+具体的なインストールスクリプトや使い方は以下の通りです
+
 ```bash
  
 # 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
@@ -130,4 +153,5 @@ TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
 az rest --method post --url "https://management.azure.com/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/${TEMP_VM_NAME}/startAssessment?api-version=2022-07-01-preview"
  
 done
+
 ```

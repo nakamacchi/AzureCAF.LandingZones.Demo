@@ -1,20 +1,29 @@
 # AppInsights 可用性テストの作成
 
-一般的な可用性テストは、インターネットからしか叩けない。このため PowerShell や C# のコードと ApplicaitonInsights SDK を利用して可用性をレポートする。
+Application Insights には可用性テストと呼ばれる機能があり、これを利用すると Web アプリの稼働監視（外形監視）を行うことができます。しかし、一般的な可用性テストはインターネット上のサイトから稼働確認を行うため、当該 Web アプリがインターネットに晒されている必要があります。このため本サンプルのようなイントラネットアプリに対して標準の可用性テストの機能をそのまま利用することができませんが、自分で Web アプリの可用性をチェックし、Application Insights SDK を利用して可用性レポートをアップロードすることは可能です。
+
+![picture 1](./images/2d16f1fd99b9553e850bdbacaadae4ef291f4095204ffd787c3d7d79d31d1125.png)  
+
+PowerShell や C# のコードと ApplicaitonInsights SDK を利用して可用性をレポートします。具体的なやり方は以下の通りです。
  
 - vm-ops-eus へログインし、PowerShell を管理者権限で開く
 - 以下の 2 行を 1 行ずつ PowerShell から実行、これにより当該フォルダに  Microsoft.ApplicationInsights パッケージがダウンロードされる
 
 ```PowerShell 
+
 Invoke-WebRequest -Uri " https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile ".\nuget.exe"
+
 .\nuget.exe install Microsoft.ApplicationInsights
+
 ```
 
 - 続いて notepad ping.ps1 で以下の中身を持つファイルを作成
   - $testUrl, $APPLICATIONINSIGHTS_CONNECTION_STRING を適切な値に修正する
-- その後、.\ping.ps1 で実行するとレポートされる
+- その後、.\ping.ps1 で実行すると可用性が AppInsights レポートされる
+  - Azure ポータルの AppInsights の管理画面から可用性を確認できるようになり、他のデータとの突合せも可能になる
 
 ```PowerShell Script
+
 param(
     [string]$testName = "AvailabilityTest",
     [string]$location = [System.Net.Dns]::GetHostName(),
