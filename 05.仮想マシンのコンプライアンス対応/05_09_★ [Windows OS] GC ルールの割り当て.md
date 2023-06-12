@@ -1,4 +1,4 @@
-# ★ GC ルールの割り当て (Windows 用)
+# ★ [Windows OS] GC ルールの割り当て
 
 Windows OS に対して、適切な GC ルールを設定するための作業を行います。
 
