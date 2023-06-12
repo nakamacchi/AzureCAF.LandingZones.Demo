@@ -1,6 +1,19 @@
 # SQL Database のプライベートエンドポイントの作成
 
+既定の状態では、SQL Database はパブリックエンドポイントのみを持ちます。このエンドポイントを VNET 内に引き込み、プライベートエンドポイント経由で SQL Database を利用できるようにします。作業としては以下 2 つを実施します。
+
+- プライベートエンドポイントの作成
+- プライベート DNS ゾーンへの IP アドレスの登録
+  - DNS ゾーングループと呼ばれる機能を利用して登録を行います。これを行うことにより、プライベートエンドポイントの利用に必要な DNS エントリをまとめてプライベート DNS ゾーンに登録することができます。
+
+作業後、動作確認のために DNS 名を nslookup で引いてみます。
+
+- プライベートエンドポイントを利用するためには、プライベートエンドポイントを利用したいサーバやマシンで DNS 名を引いた際に、プライベート IP アドレスに解決される必要があります。
+  - まず、現在作業しているご自身の端末上で、作成した SQL Database の論理サーバ名（sql-spokeb-XXX-XXX.database.windows.net）を nslookup で引いてみてください。パブリック IP アドレスが返されるはずです。
+  - 今度は Ops VNET 内の運用管理作業端末に Bastion 経由でログインし、そこで作成した SQL Database の論理サーバ名（sql-spokeb-XXX-XXX.database.windows.net）を nslookup で引いてみてください。プライベート IP アドレスが返されれば成功です。
+
 ```bash
+
 # NW 構成管理チーム／③ 構成変更の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_nw_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
