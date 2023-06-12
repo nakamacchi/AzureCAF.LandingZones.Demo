@@ -1,6 +1,11 @@
-# ポリシー適用除外 : テスト目的の適用除外 (mitigated)
+# ポリシー適用除外 : テスト目的の適用除外 (Exemption - Mitigated)
+
+続いて、本サンプルがデモを目的としたものであるために、**ルールは充足されていない**が、それによって生じるリスクを許容する、という項目について、適用除外処理（Exemption - Mitigated）を行います。
+
+なお、本ページの適用除外処理は **実際の本番環境では行うべきものではありません**。デモの都合上、手間がかかりすぎるもの（例：MFA 適用）や、コストの関係で割愛するもの（例：DDoS Protection Standard の適用）などを適用除外としています。
 
 ```bash
+
 # 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
