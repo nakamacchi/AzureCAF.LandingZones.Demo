@@ -9,12 +9,13 @@
 
 - DCE (Data Collection Endpoint)の割り当て
   - カスタムログなどを転送する場合に備えて、DCE の利用割り当てを行う必要があります。
-  - API は存在しており、ポータルからの設定でも API を叩いているようなのですが、うまく設定が反映されず。。。というわけで申し訳ありませんが、ここだけ暫定的に手作業での割り当てをお願いします。m(_ _)m　（作業方法はビデオを確認してください。）
+  - ~~API は存在しており、ポータルからの設定でも API を叩いているようなのですが、うまく設定が反映されず。。。というわけで申し訳ありませんが、ここだけ暫定的に手作業での割り当てをお願いします。m(_ _)m　（作業方法はビデオを確認してください。）~~ → 修正済みです。スクリプトでの割り当てが可能になりました。
 - Linux OS のカーネル変更
   - VM Insights の通信モニタリング機能は、残念ながら Linux の最新カーネルでは動作しないという問題があります。利用条件は[こちら](https://learn.microsoft.com/ja-jp/azure/azure-monitor/vm/vminsights-enable-overview)。
   - Ubuntu 20 などではカーネルをダウングレードすることにより機能の有効化が可能です。（ダウングレードを推奨するものでもないので、やってみたい場合には本スクリプトの後半に書かれている方法で有効化してみてください。）
 
 ```bash
+
 # AMA インストールと DCR の割り当てによる VM Insights の有効化
  
 for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
@@ -26,7 +27,7 @@ for i in ${VDC_NUMBERS}; do
   TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
  
 # DCE, DCR はリージョンごとの LAW に対して作成しているのでそれを利用
-TEMP_DCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/microsoft.insights/datacollectionendpoints/dce-vdc-${TEMP_LOCATION_PREFIX}"
+TEMP_DCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Insights/dataCollectionEndpoints/dce-vdc-${TEMP_LOCATION_PREFIX}"
 TEMP_DCR_AMA_WIN_NAME="dcr-law-vdc-${TEMP_LOCATION_PREFIX}-ama-win"
 TEMP_DCR_AMA_LINUX_NAME="dcr-law-vdc-${TEMP_LOCATION_PREFIX}-ama-linux"
 TEMP_DCR_VMI_NAME="dcr-law-vdc-${TEMP_LOCATION_PREFIX}-vmi"
