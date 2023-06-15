@@ -5,22 +5,34 @@ Application Insights には可用性テストと呼ばれる機能があり、�
 ![picture 1](./images/2d16f1fd99b9553e850bdbacaadae4ef291f4095204ffd787c3d7d79d31d1125.png)  
 
 PowerShell や C# のコードと ApplicaitonInsights SDK を利用して可用性をレポートします。具体的なやり方は以下の通りです。
- 
-- vm-ops-eus へログインし、PowerShell を管理者権限で開く
-- 以下の 2 行を 1 行ずつ PowerShell から実行、これにより当該フォルダに  Microsoft.ApplicationInsights パッケージがダウンロードされる
 
-```PowerShell 
+- vm-ops-eus へログインし、PowerShell を管理者権限で開く
+- 適当なフォルダ（例：c:\apptest ）を作成し、そこに移動する
+
+```PowerShell
+cd c:
+cd \
+md apptest
+cd c:\apptest
+```
+
+- 以下を 1 行ずつ PowerShell から実行する。これにより当該フォルダに  Microsoft.ApplicationInsights パッケージがダウンロードされる
+
+```PowerShell
 
 Invoke-WebRequest -Uri " https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile ".\nuget.exe"
+
+```
+
+```PowerShell
 
 .\nuget.exe install Microsoft.ApplicationInsights
 
 ```
 
 - 続いて notepad ping.ps1 で以下の中身を持つファイルを作成
-  - $testUrl, $APPLICATIONINSIGHTS_CONNECTION_STRING を適切な値に修正する
-- その後、.\ping.ps1 で実行すると可用性が AppInsights レポートされる
-  - Azure ポータルの AppInsights の管理画面から可用性を確認できるようになり、他のデータとの突合せも可能になる
+  - Appliction Insights への接続文字列をポータルサイトから入手し、$APPLICATIONINSIGHTS_CONNECTION_STRING 変数に設定する
+  - 必要に応じて、$testUrl を Web サーバの URL に修正する
 
 ```PowerShell Script
 
@@ -71,3 +83,6 @@ while ($true) {
 }
 
 ```
+
+- その後、.\ping.ps1 で実行すると可用性が AppInsights レポートされる
+  - Azure ポータルの AppInsights の管理画面から可用性を確認できるようになり、他のデータとの突合せも可能になる
