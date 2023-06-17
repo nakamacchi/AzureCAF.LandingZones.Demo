@@ -36,3 +36,7 @@ Exemption, Waiver, Mitigated には、それぞれ適用除外、軽減済み、
 - 適用除外 (Exemption) - 軽減済み (Mitigated) : 実質的にルールが充足されている or そもそも問題が起こらない
 - 適用除外 (Exemption) - 免除 (Waiver) : ルールは満たされていないが許容する
 - ポリシーそのものの無効化 : 自社環境には適していないのでポリシーを無効化する
+
+なお、Exemption と Remediation を効率的に行っていくため、組織として、適用除外ガイドラインや是正処理ライブラリを整備していくことをオススメします。ひな形となる Excel シートを readme.md に示しておきましたので、現場にてご活用ください。
+
+![picture 1](./images/a9a3ee5d6e2771afa23e0a8e3bb85e6d6f1700d34e825836dc20e9f5b57ec578.png)  
