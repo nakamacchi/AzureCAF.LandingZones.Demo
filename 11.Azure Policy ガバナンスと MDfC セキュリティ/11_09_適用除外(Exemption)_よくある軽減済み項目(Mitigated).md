@@ -8,6 +8,7 @@
 - Application Gateway v2 に割り当てられている Subnet への NSG 適用ルールの除外
 - WAF の背後にある Web サーバへのアクセスでは HTTPS 通信を除外
 - Private Endpoint サブネットへの UDR 適用の除外
+- Application Gateway v2 にシステム的に割り当てられた NSG の診断ログ出力設定を除外
 
 ```bash
 
@@ -188,6 +189,39 @@ TEMP_RG_NAME="rg-spokeb-${TEMP_LOCATION_PREFIX}"
 TEMP_VNET_NAME="vnet-spokeb-${TEMP_LOCATION_PREFIX}"
  
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_B}/resourcegroups/${TEMP_RG_NAME}/providers/Microsoft.Network/virtualNetworks/${TEMP_VNET_NAME}"
+j=`expr $j + 1`
+done
+ 
+for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
+az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
+done
+
+# ■ Application Gateway v2 にシステム的に割り当てられた NSG の診断ログ出力設定を除外 (Mitigated)
+
+TEMP_EXEMPTION_NAME="Exemption-DiagnosticsSettingsForNSGonAppGatewaySubnet"
+cat > temp.json << EOF
+{
+  "properties": {
+    "policyAssignmentId": "/providers/Microsoft.Management/managementGroups/landingzones/providers/Microsoft.Authorization/policyAssignments/custom-check-lz",
+    "policyDefinitionReferenceIds": [
+      "custom-policy-check-monitoring-diagnostic-logs-enabled"
+    ],
+    "exemptionCategory": "Mitigated",
+    "displayName": "Application Gateway v2 にシステム的に割り当てられた NSG の診断ログ出力設定を除外 (Mitigated)",
+    "description": "AppGateway が利用する NSG はシステム的に管理されているため"
+  }
+}
+EOF
+ 
+TEMP_RESOURCE_IDS=()
+j=0
+for i in ${VDC_NUMBERS}; do
+  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_RG_NAME="rg-spokebdmz-${TEMP_LOCATION_PREFIX}"
+TEMP_NSG_NAME="vnet-spokebdmz-${TEMP_LOCATION_PREFIX}-DmzSubnet-nsg-${TEMP_LOCATION_NAME}"
+
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_B}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.network/networksecuritygroups/${TEMP_NSG_NAME}"
 j=`expr $j + 1`
 done
  
