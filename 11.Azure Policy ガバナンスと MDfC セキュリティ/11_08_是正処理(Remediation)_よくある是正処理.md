@@ -1,6 +1,6 @@
 # 是正処理 (Remediation) : よくある是正処理
 
-是正可能なものは適宜修正を行う必要があります。ここでは、以下の 3 つの是正処理を行います。
+是正可能なものは適宜修正を行う必要があります。ここでは、以下の是正処理を行います。
 
 - フローログの有効化
   - NSG フローログを収集するようにシステムを構成します。
@@ -11,6 +11,8 @@
 - セキュリティパッチの適用指示
   - 未適用のセキュリティパッチがある場合、MDE がこれを検出し、推奨事項（非準拠事項）として報告してきます。セキュリティパッチは速やかに適用するようにしてください。
   - セキュリティパッチの適用は、UMC (Update Management Center) と呼ばれる機能を使って行うことができます。仮想マシンに標準インストールされている VM ゲストエージェントの機能が利用されるため、特に追加のエージェントのインストールは不要です。
+
+またリソース作成後、しばらくしてから[リソース診断ログの出力設定](/01.%E5%88%9D%E6%9C%9F%E7%92%B0%E5%A2%83%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97/01_04_%E2%98%85%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E8%A8%BA%E6%96%AD%E3%83%AD%E3%82%B0%E5%87%BA%E5%8A%9B%E3%81%AE%E4%B8%80%E6%8B%AC%E8%A8%AD%E5%AE%9A.md)も行います。（追加作成したリソースに対してリソース診断ログ出力を設定します。）
 
 ```bash
  
@@ -107,7 +109,7 @@ done #TEMP_SUBSCRIPTION_ID
 
 # 運用管理の日常作業担当者のアカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_mgmt_ops@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
- 
+
 # パッチのアセスメント
 #for TEMP_SUBSCRIPTION_ID in $SUBSCRIPTION_IDS; do
 #az account set -s $TEMP_SUBSCRIPTION_ID
@@ -126,5 +128,10 @@ az rest --method post --url "${TEMP_VM_ID}/installPatches?api-version=2022-03-01
 done
 done
 
+# 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
+if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
+TEMP_SUBSCRIPTION_IDS=$SUBSCRIPTION_IDS
+
+# この後でリソース診断ログ作成スクリプト（01_04_★リソース診断ログ出力の一括設定）を流してください。
 
 ```

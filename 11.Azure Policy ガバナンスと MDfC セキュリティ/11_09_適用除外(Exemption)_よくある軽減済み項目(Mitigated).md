@@ -8,6 +8,7 @@
 - Application Gateway v2 に割り当てられている Subnet への NSG 適用ルールの除外
 - WAF の背後にある Web サーバへのアクセスでは HTTPS 通信を除外
 - Private Endpoint サブネットへの UDR 適用の除外
+- 
 
 ```bash
 
