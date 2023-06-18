@@ -1,8 +1,17 @@
-# ポリシー適用除外 : テスト目的の適用除外 (Exemption - Mitigated)
+# 適用除外 (Exemption) : テストでよくある免除項目 (Waiver)
 
-続いて、本サンプルがデモを目的としたものであるために、**ルールは充足されていない**が、それによって生じるリスクを許容する、という項目について、適用除外処理（Exemption - Mitigated）を行います。
+本サンプルのように、デモやテストを目的とする場合、コストやテスト容易性のために、**ルールは充足されていない**が、意識的に無視する項目があります。これらに関して、適用除外処理（Exemption - Waiver）を行います。
 
-なお、本ページの適用除外処理は **実際の本番環境では行うべきものではありません**。デモの都合上、手間がかかりすぎるもの（例：MFA 適用）や、コストの関係で割愛するもの（例：DDoS Protection Standard の適用）などを適用除外としています。
+なお、特に本ページの適用除外は **実際の本番環境では行うべきものではありません**。デモの都合上、手間がかかりすぎるもの（例：MFA 適用や SQL DB の脆弱性対策）や、環境削除作業が面倒になるもの（例：ADE KeyVault の削除保護や VM Backup の適用）、コストの関係で割愛するもの（例：DDoS Protection Standard の適用）などを適用除外としています。
+
+- 作業アカウントに対する MFA の適用
+- DDoS Protection Standard の適用
+- ADE 用の KeyVault に対する削除保護の適用
+- Application Gateway に対する WAF SKU の適用
+- VM Backup の適用
+- SQL DB の脆弱性対策
+- SQL logical Server の脆弱性対策
+- IaaS SQL VM 関連の脆弱性対策
 
 ```bash
 
@@ -46,7 +55,7 @@ cat > temp.json << EOF
       "identityEnableMFAForWritePermissionsMonitoringNew", 
       "identityEnableMFAForReadPermissionsMonitoringNew"
     ],
-    "exemptionCategory": "Mitigated",
+    "exemptionCategory": "Waiver",
     "displayName": "テスト目的での免除 - MFA を免除",
     "description": "テスト目的での免除 - MFA を免除"
   }
@@ -68,7 +77,7 @@ cat > temp.json << EOF
     "policyDefinitionReferenceIds": [
       "keyVaultsShouldHavePurgeProtectionEnabledMonitoringEffect"
     ],
-    "exemptionCategory": "Mitigated",
+    "exemptionCategory": "Waiver",
     "displayName": "テスト目的での免除 - ADE 用の KeyVault に対する削除保護の適用免除",
     "description": "テスト目的での免除 - ADE 用の KeyVault に対する削除保護の適用免除"
   }
@@ -104,7 +113,7 @@ cat > temp.json << EOF
     "policyDefinitionReferenceIds": [
       "vnetEnableDDoSProtectionMonitoring"
     ],
-    "exemptionCategory": "Mitigated",
+    "exemptionCategory": "Waiver",
     "displayName": "テスト目的での免除 - DDoS Protection の適用免除",
     "description": "テスト目的での免除 - DDoS Protection の適用免除"
   }
@@ -138,7 +147,7 @@ cat > temp.json << EOF
     "policyDefinitionReferenceIds": [
       "webApplicationFirewallShouldBeEnabledForApplicationGatewayMonitoringEffect"
     ],
-    "exemptionCategory": "Mitigated",
+    "exemptionCategory": "Waiver",
     "displayName": "テスト目的での免除 - WAF SKU の適用免除",
     "description": "テスト目的での免除 - WAF SKU の適用免除"
   }
@@ -171,7 +180,7 @@ cat > temp.json << EOF
     "policyDefinitionReferenceIds": [
       "azureBackupShouldBeEnabledForVirtualMachinesMonitoringEffect"
     ],
-    "exemptionCategory": "Mitigated",
+    "exemptionCategory": "Waiver",
     "displayName": "テスト目的での免除 - VM Backup の適用免除",
     "description": "テスト目的での免除 - VM Backup の適用免除"
   }
@@ -203,7 +212,7 @@ cat > temp.json << EOF
     "policyDefinitionReferenceIds": [
       "sqlDbVulnerabilityAssesmentMonitoring"
     ],
-    "exemptionCategory": "Mitigated",
+    "exemptionCategory": "Waiver",
     "displayName": "テスト目的での免除 - SQL DB の構成脆弱性排除の適用免除",
     "description": "テスト目的での免除 - SQL DB の構成脆弱性排除"
   }
@@ -235,7 +244,7 @@ cat > temp.json << EOF
     "policyDefinitionReferenceIds": [
       "vulnerabilityAssessmentOnServerMonitoring"
     ],
-    "exemptionCategory": "Mitigated",
+    "exemptionCategory": "Waiver",
     "displayName": "テスト目的での免除 - SQL Server の構成脆弱性排除の適用免除",
     "description": "テスト目的での免除 - SQL Server の構成脆弱性排除"
   }
@@ -270,7 +279,7 @@ cat > temp.json << EOF
     "policyDefinitionReferenceIds": [
       "serverSqlDbVulnerabilityAssesmentMonitoring"
     ],
-    "exemptionCategory": "Mitigated",
+    "exemptionCategory": "Waiver",
     "displayName": "テスト目的での免除 - IaaS SQL VM の構成脆弱性排除の適用免除",
     "description": "テスト目的での免除 - IaaS SQL VM の構成脆弱性排除"
   }
