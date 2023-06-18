@@ -34,7 +34,7 @@ cat > temp.json << EOF
       "storageAccountShouldUseAPrivateLinkConnectionMonitoringEffect"
     ],
     "exemptionCategory": "Mitigated",
-    "displayName": "フローログ用のストレージであるため適用を除外 (Mitigated)",
+    "displayName": "フローログ用のストレージであるためプライベートエンドポイントの作成を除外 (Mitigated)",
     "description": "フローログ用のストレージであるためプライベートエンドポイントの作成は不要"
   }
 }
@@ -107,8 +107,8 @@ cat > temp.json << EOF
       "networkSecurityGroupsOnSubnetsMonitoring"
     ],
     "exemptionCategory": "Mitigated",
-    "displayName": "AppGateway が利用するサブネットへの NSG 適用の除外 (Mitigated)",
-    "description": "AppGateway が利用するサブネットには NSG が適用できないため"
+    "displayName": "Application Gateway が利用するサブネットへの NSG 適用の除外 (Mitigated)",
+    "description": "Application Gateway が利用するサブネットには NSG が適用できないため"
   }
 }
 EOF

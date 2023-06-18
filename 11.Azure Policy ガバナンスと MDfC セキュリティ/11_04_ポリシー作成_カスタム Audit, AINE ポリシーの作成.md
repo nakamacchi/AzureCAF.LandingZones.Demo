@@ -215,7 +215,7 @@ cat > temp.json << EOF
             "name": "custom-policy-check-monitoring-diagnostic-logs-enabled",
             "apiVersion": "2019-09-01",
             "properties": {
-                "DisplayName": "最低限行うべきリソース診断ログ出力の設定が行われている。",
+                "DisplayName": "最低限行うべきリソース診断ログ出力の設定が行われている",
                 "Description": "ログを出力すべきリソースに対して診断ログ出力の設定が有効化されていることを確認します。",
                 "metadata": {
                     "category": "Custom Policy - Check - Monitoring"
@@ -268,7 +268,7 @@ cat > temp.json << EOF
             "name": "custom-policy-check-resource-uncommon",
             "apiVersion": "2019-09-01",
             "properties": {
-                "DisplayName": "特殊なリソースが使われていないことを確認する。",
+                "DisplayName": "特殊なリソースが使われていないことを確認する",
                 "Description": "一般的でないリソースが使われていた場合に警告を上げます。",
                 "metadata": {
                     "category": "Custom Policy - Check - Resource"
@@ -342,7 +342,7 @@ cat > temp.json << EOF
             "name": "custom-policy-check-resource-location",
             "apiVersion": "2019-09-01",
             "properties": {
-                "DisplayName": "規制要件に準拠していないリージョンを使っていない。",
+                "DisplayName": "規制要件に準拠していないリージョンを使っていない",
                 "Description": "特定リージョン以外を利用している場合に警告を上げます。GDPR のような利用リージョンの規制要件がある場合に利用します。",
                 "metadata": {
                     "category": "Custom Policy - Check - Resource"
