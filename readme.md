@@ -26,6 +26,8 @@
 
 ## 作業デモビデオ
 
+※ ビデオ撮影の際、マンション工事が入っており、一部、工事音が入っているところがあります。ご容赦ください。
+
 | ビデオ | ビデオ時間 | 作業時間目安 | リンク |
 | :-- | :-- | :-- | :-- |
 |ESLZDemo_00_作業の事前準備|27:57|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzxN49yn37eJrnD5f1FLIqDji0dQfZDXWsAPEYrpn9qH4S0xuFNa9lIXx9Lt2NEJfn0bo2GrOG48sGCYb1QcjEM)|
