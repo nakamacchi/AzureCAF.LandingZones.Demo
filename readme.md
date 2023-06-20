@@ -42,9 +42,9 @@
 |ESLZDemo_10_Step08_SpokeB_PaaS型WebDBインフラの作成|30:11|1.5 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFq5y8eAuxNsapqnLIkTPNWf0qCrPLUSSIGN3d5dlZg5czcrTqZ3___vhhYf9e6r___nU5ZTrtrcv)|
 |ESLZDemo_11_Step09・10_SpokeB_WebアプリのセットアップとDMZWAFの作成|24:47|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtwb9ehaqUR1bVgNjwxUn8lZggMKPLUSSIGNk7fN8B___kaWnKpiiBjRvGIuiH0xJ63d9Jmu2g7NvcAqNmRmtTayPyQZNC3UI)|
 |ESLZDemo_12_Step11_AzurePolicyガバナンスとMDfCセキュリティ(前半)|25:31|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtwb9ehaqUR1bVgNjwxUn8lZJY93mIkPLUSSIGNHatQRQSxegbvacyTFt1o8tnNqk5MRXKd___SbqHC66JpMmg4M5cPLUSSIGNre3ucR)|
-|ESLZDemo_13_Step12_AzurePolicyガバナンスとMDfCセキュリティ(後半)|39:31|2 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFwVBCosV6r7yhXDeKFSz26X7XNHEV2FLazNVId7pYkv4oAtFUvtglvyv78ZaClXl___)|
+|ESLZDemo_13_Step12_AzurePolicyガバナンスとMDfCセキュリティ(後半)|45:51|2 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzxN49yn37eJrnD5f1FLIqDhRuH4JlKw3PLUSSIGNcectKpgiH3FI9E24p60lLuqBOHcs2lCyPLUSSIGNZX5Vjg2ojWlrIQz1Pxfc)|
 |ESLZDemo_14_Step13_運用監視（モニタリング）|34:41|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzxN49yn37eJrnD5f1FLIqDqmTK8rH9sN7GlJnK7vj6v06iDkoPOcMtwlIk2i6kSIlz6jAKieqAdRhALIhmiohR)|
-|ESLZDemo_15_後片付け方法とまとめ|11:56|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFj2hHHnDLAoWax6t5ZPCHwlEWXsunU4xC9gcbFz2HLomcsJbbW5CWZc0ncZWPRTGW)|
+|ESLZDemo_15_後片付け方法とまとめ|11:24|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxc0hP9Z1kKTECqbtEgiraQzNcjPLUSSIGNYw78qwv56E4LPcO6jbmVDVsb6aEqZvRzkI0___aJRTiV5DYoFUVPLUSSIGN9uYEd7Oeb)|
 
 ## 関連資料
 
