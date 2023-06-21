@@ -221,8 +221,15 @@ for i in ${VDC_NUMBERS}; do
 TEMP_RG_NAME="rg-spokebdmz-${TEMP_LOCATION_PREFIX}"
 TEMP_NSG_NAME="vnet-spokebdmz-${TEMP_LOCATION_PREFIX}-DmzSubnet-nsg-${TEMP_LOCATION_NAME}"
 
+if [ -z $(az network nsg list --resource-group $TEMP_RG_NAME --subscription ${SUBSCRIPTION_ID_SPOKE_B} --query "[? name == \"${TEMP_NSG_NAME}\" ]" -o tsv
+) ]; then
+  echo "NSG が存在しないため処理を行いません。"
+else
+  echo "NSG が存在するので処理します。"
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_B}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.network/networksecuritygroups/${TEMP_NSG_NAME}"
 j=`expr $j + 1`
+fi
+
 done
  
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
