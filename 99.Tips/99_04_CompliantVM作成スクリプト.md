@@ -23,6 +23,10 @@
 
 ```bash
 
+# VM を作成するリージョン
+TEMP_LOCATION_NAME="eastus"
+TEMP_LOCATION_PREFIX="eus"
+
 TEMP_SUBSCRIPTION_ID="${SUBSCRIPTION_ID_SPOKE_A}"
 TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
 TEMP_VM_NAME="vm-test03-${TEMP_LOCATION_PREFIX}"
@@ -37,8 +41,6 @@ TEMP_VM_SIZE="Standard_D2s_v3"
 # VM を作成するサブネット
 TEMP_SUBNET_ID="/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Network/virtualNetworks/vnet-spokea-${TEMP_LOCATION_PREFIX}/subnets/DefaultSubnet"
 
-TEMP_LOCATION_NAME="eastus"
-TEMP_LOCATION_PREFIX="eus"
 ADMIN_USERNAME="azrefadmin"
 ADMIN_PASSWORD="p&ssw0rdp&ssw0rd"
 
