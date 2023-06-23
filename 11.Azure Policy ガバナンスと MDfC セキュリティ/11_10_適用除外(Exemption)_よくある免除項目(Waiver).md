@@ -5,7 +5,7 @@
 ここでは以下の項目について、Waiver として適用を除外します。
 
 - App Service のクライアント証明書を推奨するポリシー
-  - 認証機能がそもそも不要なアプリであるため。
+  - 今回のサンプルでは認証を入れるとテストがしにくいため。
 - SQL DB へのアクセスに際しての Azure AD 認証
   - アプリケーション側での Azure AD 認証利用が困難なため。
 - CSB の適用除外
@@ -36,7 +36,7 @@ cat > temp.json << EOF
     ],
     "exemptionCategory": "Waiver",
     "displayName": "AppServiceのクライアント証明書認証を除外 (Waiver)",
-    "description": "認証機能がそもそも不要なアプリであるため"
+    "description": "今回のサンプルでは認証を入れるとテストがしにくいため"
   }
 }
 EOF

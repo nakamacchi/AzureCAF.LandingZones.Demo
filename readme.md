@@ -17,7 +17,6 @@
 
 ![overall](./images/overall.png)  
 
-
 ## Azure 共通基盤の設計・構築の概要を知りたい場合
 
 - 一連の作業スクリプトを、技術説明を織り交ぜながら実行していくデモビデオを以下に用意してありますので、こちらを見るのがオススメです。
@@ -25,6 +24,8 @@
 - どうしても自力で動かしてみたい方は、末尾をご確認ください。
 
 ## 作業デモビデオ
+
+※ ビデオ撮影の際、マンション工事が入っており、一部、工事音が入っているところがあります（マイクの収音性能が高いため、稀に子供の声も入ってしまっています）。申し訳ありませんが、ご容赦いただければ幸いです。
 
 | ビデオ | ビデオ時間 | 作業時間目安 | リンク |
 | :-- | :-- | :-- | :-- |
@@ -41,9 +42,9 @@
 |ESLZDemo_10_Step08_SpokeB_PaaS型WebDBインフラの作成|30:11|1.5 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFq5y8eAuxNsapqnLIkTPNWf0qCrPLUSSIGN3d5dlZg5czcrTqZ3___vhhYf9e6r___nU5ZTrtrcv)|
 |ESLZDemo_11_Step09・10_SpokeB_WebアプリのセットアップとDMZWAFの作成|24:47|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtwb9ehaqUR1bVgNjwxUn8lZggMKPLUSSIGNk7fN8B___kaWnKpiiBjRvGIuiH0xJ63d9Jmu2g7NvcAqNmRmtTayPyQZNC3UI)|
 |ESLZDemo_12_Step11_AzurePolicyガバナンスとMDfCセキュリティ(前半)|25:31|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtwb9ehaqUR1bVgNjwxUn8lZJY93mIkPLUSSIGNHatQRQSxegbvacyTFt1o8tnNqk5MRXKd___SbqHC66JpMmg4M5cPLUSSIGNre3ucR)|
-|ESLZDemo_13_Step12_AzurePolicyガバナンスとMDfCセキュリティ(後半)|39:31|2 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFwVBCosV6r7yhXDeKFSz26X7XNHEV2FLazNVId7pYkv4oAtFUvtglvyv78ZaClXl___)|
+|ESLZDemo_13_Step12_AzurePolicyガバナンスとMDfCセキュリティ(後半)|45:51|2 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzxN49yn37eJrnD5f1FLIqDhRuH4JlKw3PLUSSIGNcectKpgiH3FI9E24p60lLuqBOHcs2lCyPLUSSIGNZX5Vjg2ojWlrIQz1Pxfc)|
 |ESLZDemo_14_Step13_運用監視（モニタリング）|34:41|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzxN49yn37eJrnD5f1FLIqDqmTK8rH9sN7GlJnK7vj6v06iDkoPOcMtwlIk2i6kSIlz6jAKieqAdRhALIhmiohR)|
-|ESLZDemo_15_後片付け方法とまとめ|11:56|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFj2hHHnDLAoWax6t5ZPCHwlEWXsunU4xC9gcbFz2HLomcsJbbW5CWZc0ncZWPRTGW)|
+|ESLZDemo_15_後片付け方法とまとめ|11:24|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxc0hP9Z1kKTECqbtEgiraQzNcjPLUSSIGNYw78qwv56E4LPcO6jbmVDVsb6aEqZvRzkI0___aJRTiV5DYoFUVPLUSSIGN9uYEd7Oeb)|
 
 ## 関連資料
 
@@ -53,9 +54,9 @@
 
 | 資料名 | リンク |
 | :-- | :-- |
-| 本デモビデオで利用している解説資料 | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFsEFNlzuWWX33ZeMbHAmCICLEiCQGOKRUGseM___zBc376Orq7Ohi8WkCCPLUSSIGN8IzIIJFy) |
-| Azure 共通基盤設計ガイド（※ 作成途中です） | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw6G7iQYzLWpOMJ73X83AsFmmPLUSSIGNB7a1iYsI6AZxvTP0___Qq41JtPLUSSIGNSmSMJkBmjV3S5X7euwMAyDyYri1yLiqUJPLUSSIGNr4T) |
-| Azure 共通基盤設計 ガバナンス設計 Excel シート | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxQXPLUSSIGN___dalE8F4n68O7GPED3PLUSSIGNEd1DnAGagmPOLSkuUD7Qpm5ms0xyKUHsAMqcJquJoBtxjPLUSSIGNs5kN15NOhEcTyIgWW) |
+| 本デモビデオで利用している解説資料 | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmty3lIBTiHyk___aKePLUSSIGNrkA2HFWWrR8VvyRuWQPLUSSIGN52pEYERsWu4iOrKNzV7UrsexQvun6pO6pBDPJ89k2nd9eGgvMNWo) |
+| Azure 共通基盤設計ガイド（※ 作成途中です） | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxAtF90TfxlLPb0dJI0rbI3PU9f36PLUSSIGNsr9CLdIGpK8KBxHAzIPz7PLUSSIGN0gHZLoobE46HM4b67Rfd5dvr34RAPLUSSIGNN0amq5) |
+| Azure 共通基盤設計 ガバナンス設計 Excel シート | [リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE64Syy7H6UHhao19mGQ6SdMhQ1___l4rEsmMFXZmgWJvVjoxOI5K7mwavHIsfJFxyRF) |
 | 超訳 Azure CAF | [ppt](https://download.microsoft.com/download/2/a/b/2ab69a5d-7c69-4a24-a692-50823e3255d6/Translations_AzureCAF_v0.11.pptx) [前半](https://www.youtube.com/watch?v=eHLpPk6P8hw&t=10s) [後半](https://www.youtube.com/watch?v=RwAtcn75_7A&t=0s) |
 | Azure jp-techdocs | [リンク](https://github.com/Azure/jp-techdocs) |
 
@@ -97,12 +98,7 @@
 
 作業の際はマルチモニタを利用し、片方のモニタでビデオを流しつつ、もう片方のモニタをスクリプト貼り付け用に利用していただくと作業しやすいと思います。（ブラウザの拡大率を変更して縮小し、GitHub のフォルダビューを出していただくと、bash への貼り付けを容易に行っていただけると思います。）
 
-![picture 2](images/d909fede17032125f7a072c54c2d46f10663061a30287daffb6ddf8c007a8c1a.png)  
-
-
-## マイクロソフト社員の方へ
-
-MS 社員が社内環境を使って作業する際の注意事項メモを別途まとめてあります。必要な場合は赤間（nakama）までご連絡ください。
+![picture 2](images/workimage.png)  
 
 ## 制限事項・免責事項
 
@@ -118,3 +114,7 @@ MS 社員が社内環境を使って作業する際の注意事項メモを別�
 本資料は、アーキテクトやエンジニアの皆様に向けた技術情報のご提供を目的としています。コンテンツの内容について何ら保証するものではなく、使用に関連してお客様、お客様の関連会社、または第三者に生ずる間接的、付随的、結果的な損害（営業機会や営業情報の損失などを含む）について一切責任を負いません。
 
 ※ 特に、サンプルスクリプトの中には、環境内のリソースや設定をまとめて一括削除するクリーンアップ処理なども含まれています。くれぐれも十分にご注意のうえ、内容を理解した上でご利用・ご活用ください。
+
+## （参考） マイクロソフト社員の方へ
+
+MS 社員が社内環境を使って作業する際の注意事項メモを別途まとめてあります。必要な場合は赤間（nakama）までご連絡ください。

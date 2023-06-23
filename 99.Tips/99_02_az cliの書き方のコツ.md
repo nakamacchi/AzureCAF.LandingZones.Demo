@@ -41,3 +41,34 @@ done
 ```bash
 az vm list --query "[? location == '${TEMP_LOCATION_NAME}' ].id" --subscription ${SUBSCRIPTION_ID_SPOKE_A}
 ```
+
+## OS 種別判定
+
+- osProfile の configuration で見分けるとよい
+- list で検索する場合は [?osProfile.xxxConfiguration!=null] で一覧、show で一意検索する場合は以下のようにして true/false を取得
+
+```bash
+
+TEMP_VM_ID="/subscriptions/4104fe87-a508-4913-813c-0a23748cd402/resourceGroups/rg-spokea-eus/providers/Microsoft.Compute/virtualMachines/vm-web-eus"
+
+TEMP_IS_WIN=$(az vm show --ids "${TEMP_VM_ID}" --query osProfile.windowsConfiguration!=null -o tsv)
+TEMP_IS_LINUX=$(az vm show --ids "${TEMP_VM_ID}" --query osProfile.linuxConfiguration!=null -o tsv)
+if [ "$TEMP_IS_LINUX" == "true" ] ; then
+  echo "Linux OS です"
+elif [ "$TEMP_IS_WIN" == "true" ]; then
+  echo "Windows OS です"
+else
+  echo "不明な OS です"
+fi
+
+# または
+
+if [ $(az vm show --ids "${TEMP_VM_ID}" --query osProfile.windowsConfiguration!=null -o tsv) == "true" ]; then
+  echo "Windows OS です"
+fi
+
+if [ $(az vm show --ids "${TEMP_VM_ID}" --query osProfile.linuxConfiguration!=null -o tsv) == "true" ]; then
+  echo "Linux OS です"
+fi
+
+```
