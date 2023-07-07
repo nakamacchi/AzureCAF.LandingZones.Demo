@@ -68,7 +68,9 @@ TEMP_VNET_NAME="vnet-spokeb-${TEMP_LOCATION_PREFIX}"
 TEMP_WEBAPP_NAME="webapp-spokeb-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
 TEMP_WEBAPP_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_B}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Web/sites/${TEMP_WEBAPP_NAME}"
 TEMP_PE_NAME="pe-${TEMP_WEBAPP_NAME}"
- 
+TEMP_NSG_NAME="${TEMP_VNET_NAME}-nsg"
+TEMP_UDR_NAME="${TEMP_VNET_NAME}-udr"
+
 # UDR も有効化
 az network vnet subnet update --name "PrivateEndpointSubnet" --vnet-name $TEMP_VNET_NAME --resource-group $TEMP_RG_NAME --route-table ${TEMP_UDR_NAME} --disable-private-endpoint-network-policies false
 az network private-endpoint create --name $TEMP_PE_NAME --resource-group $TEMP_RG_NAME --vnet-name $TEMP_VNET_NAME --subnet "PrivateEndpointSubnet" --private-connection-resource-id $TEMP_WEBAPP_ID --group-ids sites --connection-name "${TEMP_WEBAPP_NAME}_${TEMP_VNET_NAME}"
