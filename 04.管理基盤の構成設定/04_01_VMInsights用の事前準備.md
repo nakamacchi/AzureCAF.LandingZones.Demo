@@ -18,6 +18,7 @@
   - ![picture 3](./images/5651dd913026c1964449057c25631dbb309af64c4db4ecca71d8073494eb211d.png)  
 
 ```bash
+
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
@@ -25,16 +26,15 @@ if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMAR
 az account set -s "${SUBSCRIPTION_ID_MGMT}"
  
 # DCR を MGMT サブスクリプション側に作成しておく
- 
 for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
-  TEMP_RG_NAME="rg-vdc-${TEMP_LOCATION_PREFIX}"
-  TEMP_LAW_NAME="law-vdc-${TEMP_LOCATION_PREFIX}"
-  TEMP_LAW_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/microsoft.operationalinsights/workspaces/${TEMP_LAW_NAME}"
-  TEMP_DCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/microsoft.insights/datacollectionendpoints/dce-vdc-${TEMP_LOCATION_PREFIX}"
- 
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
+TEMP_RG_NAME="rg-vdc-${TEMP_LOCATION_PREFIX}"
+TEMP_LAW_NAME="law-vdc-${TEMP_LOCATION_PREFIX}"
+TEMP_LAW_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/microsoft.operationalinsights/workspaces/${TEMP_LAW_NAME}"
+TEMP_DCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/microsoft.insights/datacollectionendpoints/dce-vdc-${TEMP_LOCATION_PREFIX}"
+
 TEMP_DCR_AMA_WIN_NAME="dcr-law-vdc-${TEMP_LOCATION_PREFIX}-ama-win"
 TEMP_DCR_AMA_LINUX_NAME="dcr-law-vdc-${TEMP_LOCATION_PREFIX}-ama-linux"
 TEMP_DCR_VMI_NAME="dcr-law-vdc-${TEMP_LOCATION_PREFIX}-vmi"
@@ -357,6 +357,6 @@ cat <<EOF > dcr.json
 EOF
 az monitor data-collection rule create --name ${TEMP_DCR_VMI_NAME} --resource-group "${TEMP_RG_NAME}" --location "${TEMP_LOCATION_NAME}" --rule-file dcr.json
  
-done
+done # TEMP_LOCATION
 
 ```
