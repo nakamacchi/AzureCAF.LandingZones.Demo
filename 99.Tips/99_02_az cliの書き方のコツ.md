@@ -142,6 +142,23 @@ fi
 
 ```
 
+## エラーが出た場合にはエラーが出なくなるまで繰り返す方法
+
+- 下記の例では、az monitor data-collection rule create で InvalidPayload というエラー文字列が出た場合には、しばらく待機して繰り返している
+- 2>&1 が重要。エラーメッセージは標準出力 (stdout) ではなく標準エラー出力 (stderr) に出力されるため、単に変数で受ける方法だとデータが取れない。2>&1 を記述することで、標準エラー出力を標準出力にリダイレクトし、これを変数で受けることができるようになる。
+
+```bash
+
+TEMP="(InvalidPayload)"
+while [[ ${TEMP} =~ "InvalidPayload" ]]
+do
+  echo "Trying to create DCR ${TEMP_DCR_FIM_NAME}..."
+  sleep 10
+  TEMP=$(az monitor data-collection rule create --name "${TEMP_DCR_FIM_NAME}" --resource-group "${TEMP_RG_NAME}" --location "${TEMP_LOCATION_NAME}" --rule-file dcr.json 2>&1)
+done
+
+```
+
 ## プライベートエンドポイント作成
 
 - プライベートエンドポイント作成に必要な DNS 情報や Group ID などは、az network private-endpoint dns-zone-group list コマンドで取得できる。
