@@ -181,9 +181,10 @@ TEMP_PE_VNET_NAME="vnet-spokeb-${TEMP_LOCATION_PREFIX}"
 TEMP_PE_SUBNET_NAME="PrivateEndpointSubnet"
 az network vnet subnet update --name "${TEMP_PE_SUBNET_NAME}" --vnet-name $TEMP_PE_VNET_NAME --resource-group $TEMP_PE_RG_NAME --disable-private-endpoint-network-policies
 
-# プライベート DNS ゾーンを登録するサブスクリプション ID とリソースグループ
+# プライベート DNS ゾーンを登録するサブスクリプション ID とリソースグループ、リンク先 VNET
 TEMP_PDZ_SUBSCRIPTION_ID="${SUBSCRIPTION_ID_HUB}"
 TEMP_PDZ_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
+TEMP_PDZ_VNET_ID="/subscriptions/${SUBSCRIPTION_ID_HUB}/resourceGroups/rg-hub-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/virtualNetworks/vnet-hub-${TEMP_LOCATION_PREFIX}"
 
 # PE作成・DNS登録（※ 設定ここまで、以降は原則的にいじらない）
 for TEMP_RESOURCE_ID in $TEMP_RESOURCE_IDS; do
@@ -204,8 +205,11 @@ TEMP_PRIVATE_DNS_ZONE_ID="/subscriptions/${TEMP_PDZ_SUBSCRIPTION_ID}/resourceGro
 
 TEMP_ISEXISTS=$(az rest --method get --uri "${TEMP_PRIVATE_DNS_ZONE_ID}?api-version=2020-06-01" --query id -o tsv)
 if [[ $TEMP_ISEXISTS == *"ERROR"* || -z $TEMP_ISEXISTS ]]; then
-  echo "Private DNS Zone does not exist. Creating Private DNS Zone on Subscription ${TEMP_PDZ_SUBSCRIPTION_ID}."
+  echo "Private DNS Zone ${TEMP_REQUIRED_ZONE_NAME} does not exist. Creating Private DNS Zone on Subscription ${TEMP_PDZ_SUBSCRIPTION_ID}."
   az network private-dns zone create --resource-group ${TEMP_PDZ_RG_NAME} --name ${TEMP_REQUIRED_ZONE_NAME} --subscription "${TEMP_PDZ_SUBSCRIPTION_ID}"
+  echo "Linking Private DNS Zones ${TEMP_REQUIRED_ZONE_NAME} to VNET ${TEMP_PDZ_VNET_ID}."
+  TEMP_PDZ_VNET_NAME=${TEMP_PDZ_VNET_ID##*/}
+  az network private-dns link vnet create --resource-group $TEMP_PDZ_RG_NAME --zone-name $TEMP_REQUIRED_ZONE_NAME --name $TEMP_PDZ_VNET_NAME --virtual-network $TEMP_PDZ_VNET_ID --registration-enabled false --subscription "${TEMP_PDZ_SUBSCRIPTION_ID}"
 else
   echo "Private DNS Zone already exists."
 fi
