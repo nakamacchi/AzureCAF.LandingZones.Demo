@@ -23,42 +23,63 @@ PaaS 型 SQL Server である SQL Database を作成します。
 なお上記の説明は上位エディションの場合の挙動です。物理的に 3 ノード以上を利用するものの共有型サービスであるため、比較的安価にサービスが提供されています。ホットスタンバイ構成であるためフェイルオーバが超絶に速いことが最大の特徴である一方、そこまでのフェイルオーバ性能が必要ない場合は、ストレージベースで冗長性を確保する下位エディションを安価に利用することも可能です。内部アーキテクチャを知りたい場合には[こちら](https://learn.microsoft.com/ja-jp/azure/azure-sql/database/high-availability-sla?view=azuresql&tabs=azure-powershell)をご確認ください。
 
 ```bash
- 
+
 # 業務システム B チーム／① 初期構築の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_spokeb_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
- 
+
 # Spoke B サブスクリプションで作業
 az account set -s "${SUBSCRIPTION_ID_SPOKE_B}"
- 
+
 for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
 # パラメータ
 # （論理サーバはグローバル一意名が必要なため UNIQUE_SUFFIX を付与して名前を作る）
 TEMP_SQL_SERVER_NAME="sql-spokeb-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
 TEMP_SQL_DB_NAME="pubs"
 TEMP_RG_NAME="rg-spokeb-${TEMP_LOCATION_PREFIX}"
- 
+
 # SQL Server（論理サーバ）の作成
 az sql server create --name $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME --location $TEMP_LOCATION_NAME --admin-user $ADMIN_USERNAME --admin-password $ADMIN_PASSWORD --enable-public-network false
- 
+
 # SQL Database の作成
 az sql db create --server $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME --name $TEMP_SQL_DB_NAME --edition Basic --capacity 5
- 
-done
+
+done # TEMP_LOCATION
 
 ```
 
-- 上記のコマンドの終了後、SQL Server の Audit 機能を GUI から有効化してください。
-  - （コマンドラインから実行する方法が現時点で不明。以下の方法ではうまく有効化できない）
-  - ※ Audit 機能の有効化は、サーバとデータベースの両方について実施してください。
+- ~~上記のコマンドの終了後、SQL Server の Audit 機能を GUI から有効化してください。~~
+  - ~~（コマンドラインから実行する方法が現時点で不明。以下の方法ではうまく有効化できない）~~
+  - ~~※ Audit 機能の有効化は、サーバとデータベースの両方について実施してください。~~ → コマンドラインから有効化できるようになりました。下記のコマンドを実行して、論理 SQL Server と SQL Database の監査機能を有効化してください。
 
 ```bash
-# SQL Server Audit の有効化
-#TEMP_MAIN_LOCATION_PREFIX=${LOCATION_PREFIXS[0]}
-#TEMP_LAW_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_MAIN_LOCATION_PREFIX}/providers/microsoft.operationalinsights/workspaces/law-vdc-${TEMP_MAIN_LOCATION_PREFIX}"
-#az sql server audit-policy update --resource-group $TEMP_RG_NAME --name $TEMP_SQL_SERVER_NAME --state Enabled --lats Enabled --lawri ${TEMP_LAW_ID}
+
+# ガバナンス管理のアカウントに切り替え
+if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
+
+# スポーク B 上で作業
+az account set -s "${SUBSCRIPTION_ID_SPOKE_B}"
+
+for i in ${VDC_NUMBERS}; do
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
+TEMP_SQL_SERVER_NAME="sql-spokeb-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+TEMP_SQL_DB_NAME="pubs"
+TEMP_RG_NAME="rg-spokeb-${TEMP_LOCATION_PREFIX}"
+
+TEMP_LAW_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/microsoft.operationalinsights/workspaces/law-vdc-${TEMP_LOCATION_PREFIX}"
+
+# サーバ監査の有効化
+az sql server audit-policy update --resource-group $TEMP_RG_NAME --name $TEMP_SQL_SERVER_NAME --state Enabled --lats Enabled --lawri ${TEMP_LAW_ID}
+
+# データベース監査の有効化
+az sql db audit-policy update --resource-group $TEMP_RG_NAME --server $TEMP_SQL_SERVER_NAME --name $TEMP_SQL_DB_NAME --state Enabled --lats Enabled --lawri ${TEMP_LAW_ID}
+
+done # TEMP_LOCATION
+
 ```
 
 ![picture 1](./images/7b96001ade7b42feab63d1920f433019a1bccb91752570cc761f1296547821a1.png)  

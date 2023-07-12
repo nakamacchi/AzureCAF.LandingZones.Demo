@@ -144,14 +144,14 @@ done
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_spokea_ops@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
 for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
 TEMP_VM_NAME=vm-db-${TEMP_LOCATION_PREFIX}
 TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
- 
+
 az rest --method post --url "https://management.azure.com/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.SqlVirtualMachine/sqlVirtualMachines/${TEMP_VM_NAME}/startAssessment?api-version=2022-07-01-preview"
- 
-done
+
+done # TEMP_LOCATION
 
 ```

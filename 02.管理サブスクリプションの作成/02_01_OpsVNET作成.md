@@ -25,7 +25,7 @@
 まずは以下のスクリプトで Ops VNET と Azure Bastion を作成します。
 
 ```bash
- 
+
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
@@ -59,7 +59,7 @@ for i in ${VDC_NUMBERS}; do
   az network vnet subnet create --name "AzureBastionSubnet" --address-prefix ${TEMP_SUBNET_BASTION} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME}
   az network vnet subnet create --name "ProxySubnet" --address-prefix ${TEMP_SUBNET_PROXY} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME}
  
-done
+done # TEMP_LOCATION
  
 # Bastion 作成
 for i in ${VDC_NUMBERS}; do
@@ -75,7 +75,7 @@ for i in ${VDC_NUMBERS}; do
  
   az network public-ip create --name ${TEMP_BASTION_PIP_NAME} --resource-group ${TEMP_RG_NAME} --sku Standard
   az network bastion create --name ${TEMP_BASTION_NAME} --public-ip-address ${TEMP_BASTION_PIP_NAME} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --location ${TEMP_LOCATION_NAME} --no-wait
- 
-done
- 
+
+done # TEMP_LOCATION
+
 ```

@@ -9,6 +9,7 @@ GC CSB を適用し、Windows OS をハードニングします。
 - CSB によるハードニング処理とその結果報告には、少なくとも 10～30 分程度かかります。適用結果は Azure ポータルの "Guest Assginment" （ゲスト割り当て）のページから確認することができます。
 
 ```bash
+
 for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
 echo "Setting GC CSB... ${TEMP_SUBSCRIPTION_ID}"
 az account set -s "${TEMP_SUBSCRIPTION_ID}"
@@ -29,12 +30,17 @@ fi
  
 TEMP_GC_ASSIGNMENT_NAME="AzureWindowsBaseline"
 TEMP_URI="/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/${TEMP_GC_ASSIGNMENT_NAME}?api-version=2022-01-25"
- 
+
 # 既存のものがある場合、一回消さないと割り当てられない
-# （既存のものがない場合にはエラーが出るが、無視してよい）
+echo "Checking existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
+TEMP=$(az rest --uri ${TEMP_URI} --method GET 2>&1)
+if [[ ${TEMP} =~ "Not Found" ]]; then
+echo "Not existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
+else
 echo "Deleting existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
 az rest --uri ${TEMP_URI} --method DELETE
- 
+fi
+
 # Resource Manager で割り当てる
 cat <<EOF > tmp.json
 {

@@ -15,42 +15,79 @@ Azure 上の仮想マシンのセキュリティパッチ管理については�
 ```bash
 
 # 各 VM の構成設定を変更し、メンテナンス構成（メンテナンス時間など）を設定
- 
+
 for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
 echo "Setting Update Management... ${TEMP_SUBSCRIPTION_ID}"
 az account set -s "${TEMP_SUBSCRIPTION_ID}"
- 
+
 for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
 # 当該リージョンのリソースグループを拾って処理
 for TEMP_RG_NAME in $(az group list --query "[?location == '${TEMP_LOCATION_NAME}' ].name" -o tsv); do
- 
+
+# https://learn.microsoft.com/ja-jp/rest/api/compute/virtual-machines/create-or-update?tabs=HTTP
 # Windows マシンへ適用
 for TEMP_VM_NAME in $(az vm list --resource-group ${TEMP_RG_NAME} --query "[?storageProfile.osDisk.osType=='Windows'].name" -o tsv); do
-  echo ${TEMP_VM_NAME}
-  az rest --method patch --url "https://management.azure.com/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}?api-version=2021-03-01" --body "{ \"location\": \"${TEMP_LOCATION_NAME}\", \"properties\": { \"osProfile\": { \"windowsConfiguration\": { \"patchSettings\": { \"assessmentMode\": \"AutomaticByPlatform\", \"patchMode\": \"AutomaticByPlatform\" } } } } }"
-done
- 
+echo ${TEMP_VM_NAME}
+az rest --method patch --url "https://management.azure.com/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}?api-version=2023-03-01" --body @- <<EOF
+{
+  "location": "${TEMP_LOCATION_NAME}", 
+  "properties": { 
+    "osProfile": { 
+      "windowsConfiguration": { 
+        "patchSettings": { 
+          "assessmentMode": "AutomaticByPlatform", 
+          "patchMode": "AutomaticByPlatform", 
+          "automaticByPlatformSettings": { 
+            "rebootSetting": "Never", 
+            "bypassPlatformSafetyChecksOnUserSchedule": true 
+          }
+        }
+      }
+    }
+  }
+}
+EOF
+done # TEMP_VM_NAME
+
 # Linux マシンへ適用
 for TEMP_VM_NAME in $(az vm list --resource-group ${TEMP_RG_NAME} --query "[?storageProfile.osDisk.osType=='Linux'].name" -o tsv); do
-  echo ${TEMP_VM_NAME}
-  az rest --method patch --url "https://management.azure.com/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}?api-version=2021-03-01" --body "{ \"location\": \"${TEMP_LOCATION_NAME}\", \"properties\": { \"osProfile\": { \"linuxConfiguration\": { \"patchSettings\": { \"assessmentMode\": \"AutomaticByPlatform\", \"patchMode\": \"AutomaticByPlatform\" } } } } }"
-done
- 
+echo ${TEMP_VM_NAME}
+az rest --method patch --url "https://management.azure.com/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}?api-version=2023-03-01" --body @- <<EOF
+{
+  "location": "${TEMP_LOCATION_NAME}", 
+  "properties": { 
+    "osProfile": { 
+      "windowsConfiguration": { 
+        "patchSettings": { 
+          "assessmentMode": "AutomaticByPlatform", 
+          "patchMode": "AutomaticByPlatform", 
+          "automaticByPlatformSettings": { 
+            "rebootSetting": "Never", 
+            "bypassPlatformSafetyChecksOnUserSchedule": true 
+          }
+        }
+      }
+    }
+  }
+}
+EOF
+done # TEMP_VM_NAME
+
 # 当該リソースグループ内に 1 台でもマシンがある場合にはメンテナンス構成を作成
 if [ -z $(az vm list --query [0].name -o tsv --resource-group ${TEMP_RG_NAME}) ]; then
-  echo "当該リソースグループ内にはマシンがありません。"
+echo "リソースグループ ${TEMP_RG_NAME} 内にはマシンがありません。"
 else
-  echo "当該リソースグループ内にはマシンがあるので、メンテナンス構成を作成して割り当てます。"
+echo "リソースグループ ${TEMP_RG_NAME} 内にはマシンがあるので、メンテナンス構成を作成して割り当てます。"
 
 # メンテナンス構成の作成
 TEMP_MC_NAME="mc-daily-patching"
 
 # 翌日の夜 1 時から有効になるメンテナンス構成を作成
 TEMP_DATE=$(date "+%Y-%m-%d" -d "1 days")
- 
+
 cat <<EOF > tmp.json
 {
   "\$schema": " https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -100,12 +137,19 @@ EOF
 az deployment group create --name ${TEMP_MC_NAME} --resource-group ${TEMP_RG_NAME} --template-file tmp.json
 
 # VM をメンテナンス構成へ関連付ける
- 
+
 for TEMP_VM_NAME in $(az vm list --resource-group ${TEMP_RG_NAME} --query [].name -o tsv); do
-  echo ${TEMP_VM_NAME}
-  az rest --method put --url "https://management.azure.com/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}/providers/Microsoft.Maintenance/configurationAssignments/${TEMP_MC_NAME}Assignment?api-version=2021-09-01-preview" --body "{ \"properties\": { \"maintenanceConfigurationId\": \"/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourcegroups/${TEMP_RG_NAME}/providers/Microsoft.Maintenance/maintenanceConfigurations/${TEMP_MC_NAME}\" }, \"location\": \"${TEMP_LOCATION_NAME}\" }"
-done
- 
+echo ${TEMP_VM_NAME}
+az rest --method put --url "https://management.azure.com/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}/providers/Microsoft.Maintenance/configurationAssignments/${TEMP_MC_NAME}Assignment?api-version=2021-09-01-preview" --body @- <<EOF
+{
+  "location": "${TEMP_LOCATION_NAME}",
+  "properties": {
+    "maintenanceConfigurationId": "/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourcegroups/${TEMP_RG_NAME}/providers/Microsoft.Maintenance/maintenanceConfigurations/${TEMP_MC_NAME}" 
+  }
+}
+EOF
+done # TEMP_VM_NAME
+
 fi # 仮想マシンの存否チェック
 
 done # TEMP_RG_NAME
