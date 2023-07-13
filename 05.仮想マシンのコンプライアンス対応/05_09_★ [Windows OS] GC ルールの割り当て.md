@@ -18,7 +18,6 @@ Windows OS に対して、適切な GC ルールを設定するための作業�
 ```bash
 # CSB の再適用の場合は CSB 適用スクリプトをもう一度流す
 # 以下はそれ以外の GC ルールが外れてしまった場合にそれらを再設定するもの
-# （外してから付け直すため、まだついていなかった場合にはエラーが出るが無視してよい）
  
 # vm-web, db に対して適用する場合は以下
 #TEMP_TARGET_SUBSCRIPTION_IDS=$SUBSCRIPTION_ID_SPOKE_A
@@ -42,8 +41,17 @@ for TEMP_VM_NAME in $(az vm list --resource-group ${TEMP_RG_NAME} --query "[?sto
 # AuditSecureProtocol
 TEMP_GC_ASSIGNMENT_NAME="AuditSecureProtocol"
 TEMP_URI="/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/${TEMP_GC_ASSIGNMENT_NAME}?api-version=2022-01-25"
+
+# 既存のものがある場合には消してから割り当て
+echo "Checking existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
+TEMP=$(az rest --uri ${TEMP_URI} --method GET 2>&1)
+if [[ ${TEMP} =~ "Not Found" ]]; then
+echo "Not existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
+else
 echo "Deleting existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
 az rest --uri ${TEMP_URI} --method DELETE
+fi
+
 cat <<EOF > tmp.json
 {
   "\$schema": " https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -85,8 +93,17 @@ az deployment group create --name "${TEMP_VM_NAME}-${TEMP_GC_ASSIGNMENT_NAME}" -
 # AzureWindowsVMEncryptionCompliance
 TEMP_GC_ASSIGNMENT_NAME="AzureWindowsVMEncryptionCompliance"
 TEMP_URI="/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/${TEMP_GC_ASSIGNMENT_NAME}?api-version=2022-01-25"
+
+# 既存のものがある場合には消してから割り当て
+echo "Checking existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
+TEMP=$(az rest --uri ${TEMP_URI} --method GET 2>&1)
+if [[ ${TEMP} =~ "Not Found" ]]; then
+echo "Not existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
+else
 echo "Deleting existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
 az rest --uri ${TEMP_URI} --method DELETE
+fi
+
 cat <<EOF > tmp.json
 {
   "\$schema": " https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -123,8 +140,17 @@ az deployment group create --name "${TEMP_VM_NAME}-${TEMP_GC_ASSIGNMENT_NAME}" -
 # WindowsDefenderExploitGuard
 TEMP_GC_ASSIGNMENT_NAME="WindowsDefenderExploitGuard"
 TEMP_URI="/subscriptions/${TEMP_SUBSCRIPTION_ID}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Compute/virtualMachines/${TEMP_VM_NAME}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/${TEMP_GC_ASSIGNMENT_NAME}?api-version=2022-01-25"
+
+# 既存のものがある場合には消してから割り当て
+echo "Checking existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
+TEMP=$(az rest --uri ${TEMP_URI} --method GET 2>&1)
+if [[ ${TEMP} =~ "Not Found" ]]; then
+echo "Not existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
+else
 echo "Deleting existing GC ${TEMP_GC_ASSIGNMENT_NAME} rule on ${TEMP_VM_NAME}"
 az rest --uri ${TEMP_URI} --method DELETE
+fi
+
 cat <<EOF > tmp.json
 {
   "\$schema": " https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

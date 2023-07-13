@@ -9,59 +9,48 @@
 - 上図には出てきていませんが ＆ 本サンプルでは使いませんが、下記サンプルでは DefaultSubnet というサブネットも作成しています。ハブ VNET 内には様々な共有機能を作成する場合があり、そのようなケースではこのサブネットを利用してください。
 
 ```bash
+
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
 # ハブサブスクリプションに切り替え
 az account set -s "${SUBSCRIPTION_ID_HUB}"
- 
+
 for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
-  # HUB VNET 作成
-  TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
-  TEMP_VNET_NAME="vnet-hub-${TEMP_LOCATION_PREFIX}"
-  TEMP_IP_PREFIX=${IP_HUB_PREFIXS[$i]}
-  TEMP_VNET_ADDRESS="${TEMP_IP_PREFIX}.0.0/16"
-  TEMP_SUBNET_DEFAULT="${TEMP_IP_PREFIX}.0.0/24"
-  TEMP_SUBNET_FW="${TEMP_IP_PREFIX}.251.0/25"
-  TEMP_SUBNET_FWMGMT="${TEMP_IP_PREFIX}.251.128/25"
-  TEMP_NSG_NAME="${TEMP_VNET_NAME}-nsg"
- 
-  az group create --name ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME}
-  az network nsg create --name ${TEMP_NSG_NAME} --resource-group ${TEMP_RG_NAME}
-  az network vnet create --resource-group ${TEMP_RG_NAME} --name ${TEMP_VNET_NAME} --address-prefixes ${TEMP_VNET_ADDRESS}
-  az network vnet subnet create --name "DefaultSubnet" --address-prefix ${TEMP_SUBNET_DEFAULT} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME}
-  az network vnet subnet create --name "AzureFirewallSubnet" --address-prefix ${TEMP_SUBNET_FW} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME}
-  az network vnet subnet create --name "AzureFirewallManagementSubnet" --address-prefix ${TEMP_SUBNET_FWMGMT} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME}
- 
-done
- 
-# Firewall 作成
-# Azure Firewall 作成
-# 共用する Azure Firewall ポリシーをメインサイト側に作成
-TEMP_MAIN_LOCATION=${LOCATION_NAMES[0]}
-TEMP_MAIN_RG_NAME="rg-hub-${LOCATION_PREFIXS[0]}"
-TEMP_MAIN_FWP_NAME="fwp-fw-hub-${LOCATION_PREFIXS[0]}"
- 
-az group create --name ${TEMP_MAIN_RG_NAME} --location ${TEMP_MAIN_LOCATION}
-az network firewall policy create --name ${TEMP_MAIN_FWP_NAME} --resource-group ${TEMP_MAIN_RG_NAME} --sku Standard
- 
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
+# HUB VNET 作成
+TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
+TEMP_VNET_NAME="vnet-hub-${TEMP_LOCATION_PREFIX}"
+TEMP_IP_PREFIX=${IP_HUB_PREFIXS[$i]}
+TEMP_VNET_ADDRESS="${TEMP_IP_PREFIX}.0.0/16"
+TEMP_SUBNET_DEFAULT="${TEMP_IP_PREFIX}.0.0/24"
+TEMP_SUBNET_FW="${TEMP_IP_PREFIX}.251.0/25"
+TEMP_SUBNET_FWMGMT="${TEMP_IP_PREFIX}.251.128/25"
+TEMP_NSG_NAME="${TEMP_VNET_NAME}-nsg"
+TEMP_UDR_NAME="${TEMP_VNET_NAME}-udr"
+
+az group create --name ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME}
+az network nsg create --name ${TEMP_NSG_NAME} --resource-group ${TEMP_RG_NAME}
+az network vnet create --resource-group ${TEMP_RG_NAME} --name ${TEMP_VNET_NAME} --address-prefixes ${TEMP_VNET_ADDRESS}
+az network vnet subnet create --name "DefaultSubnet" --address-prefix ${TEMP_SUBNET_DEFAULT} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME}
+az network vnet subnet create --name "AzureFirewallSubnet" --address-prefix ${TEMP_SUBNET_FW} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME}
+az network vnet subnet create --name "AzureFirewallManagementSubnet" --address-prefix ${TEMP_SUBNET_FWMGMT} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME}
+
 # 各 Hub VNET に Azure Firewall Standard を作成
-for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
-  TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
-  TEMP_VNET_NAME="vnet-hub-${TEMP_LOCATION_PREFIX}"
-  TEMP_FW_NAME="fw-hub-${TEMP_LOCATION_PREFIX}"
-  TEMP_FW_PIP_NAME="${TEMP_FW_NAME}-pip"
-  TEMP_FW_MGMT_PIP_NAME="${TEMP_FW_NAME}-mgmt-pip"
- 
-  # パブリック IP、管理 IP を作成
-  az network public-ip create --name ${TEMP_FW_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard
-  az network public-ip create --name ${TEMP_FW_MGMT_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard
+TEMP_FW_NAME="fw-hub-${TEMP_LOCATION_PREFIX}"
+TEMP_FW_PIP_NAME="${TEMP_FW_NAME}-pip"
+TEMP_FW_MGMT_PIP_NAME="${TEMP_FW_NAME}-mgmt-pip"
+TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
+TEMP_FW_SKU="Standard" # DNS proxy 機能を利用するために Standard が必要
+
+# Firewall Policy 作成
+az network firewall policy create --name ${TEMP_FWP_NAME} --resource-group ${TEMP_RG_NAME} --sku Standard
+
+# パブリック IP、管理 IP を作成
+az network public-ip create --name ${TEMP_FW_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard
+az network public-ip create --name ${TEMP_FW_MGMT_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard
  
 # ARM テンプレートで Azure Firewall を作成
 cat <<EOF > tmp.json
@@ -103,7 +92,7 @@ cat <<EOF > tmp.json
                     }
                 },
                 "firewallPolicy": {
-                    "id": "$(az network firewall policy show --name "${TEMP_MAIN_FWP_NAME}" --resource-group "${TEMP_MAIN_RG_NAME}" --query id -o tsv)"
+                    "id": "$(az network firewall policy show --name "${TEMP_FWP_NAME}" --resource-group "${TEMP_RG_NAME}" --query id -o tsv)"
                 }
       }
     }
@@ -112,34 +101,21 @@ cat <<EOF > tmp.json
 EOF
 az deployment group create --name ${TEMP_FW_NAME} --resource-group ${TEMP_RG_NAME} --template-file tmp.json --no-wait
  
-done
- 
-######################################
- 
-for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
-  TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
-  TEMP_VNET_NAME="vnet-hub-${TEMP_LOCATION_PREFIX}"
-  TEMP_UDR_NAME="${TEMP_VNET_NAME}-udr"
-  TEMP_FW_NAME="fw-hub-${TEMP_LOCATION_PREFIX}"
- 
-  # UDR 作成・割り当て
-  az network route-table create --resource-group ${TEMP_RG_NAME} --name ${TEMP_UDR_NAME}
- 
-  # Azure Firewall のプロビジョニングが完了していないと IP アドレスが取得できないので待機
-  TEMP_FW_IP=$(az network firewall ip-config list -g ${TEMP_RG_NAME} -f ${TEMP_FW_NAME} --query "[0].privateIpAddress" --output tsv)
+# UDR 作成・割り当て
+az network route-table create --resource-group ${TEMP_RG_NAME} --name ${TEMP_UDR_NAME}
+
+# Azure Firewall のプロビジョニングが完了していないと IP アドレスが取得できないので待機
+TEMP_FW_IP=$(az network firewall ip-config list -g ${TEMP_RG_NAME} -f ${TEMP_FW_NAME} --query "[0].privateIpAddress" --output tsv)
 while [ -z $TEMP_FW_IP ]
 do
   echo "Waiting for provisioning..."
   TEMP_FW_IP=$(az network firewall ip-config list -g ${TEMP_RG_NAME} -f ${TEMP_FW_NAME} --query "[0].privateIpAddress" --output tsv)
   sleep 10
 done
- 
-  az network route-table route create --resource-group ${TEMP_RG_NAME} --name default --route-table-name ${TEMP_UDR_NAME} --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address ${TEMP_FW_IP}
-  az network vnet subnet update --resource-group ${TEMP_RG_NAME} --route-table ${TEMP_UDR_NAME} --ids $(az network vnet subnet show --resource-group ${TEMP_RG_NAME} --vnet-name $TEMP_VNET_NAME --name "DefaultSubnet" --query id -o tsv)
- 
-done
- 
+
+az network route-table route create --resource-group ${TEMP_RG_NAME} --name default --route-table-name ${TEMP_UDR_NAME} --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address ${TEMP_FW_IP}
+az network vnet subnet update --resource-group ${TEMP_RG_NAME} --route-table ${TEMP_UDR_NAME} --ids $(az network vnet subnet show --resource-group ${TEMP_RG_NAME} --vnet-name $TEMP_VNET_NAME --name "DefaultSubnet" --query id -o tsv)
+
+done # TEMP_LOCATION
+
 ```
