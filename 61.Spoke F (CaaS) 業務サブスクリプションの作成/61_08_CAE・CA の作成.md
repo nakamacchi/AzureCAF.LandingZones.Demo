@@ -119,10 +119,4 @@ az containerapp create \
 
 done # TEMP_LOCATION
 
-
-
-
-
-
-
 ```
