@@ -37,3 +37,7 @@ EOF
   - Password : p&ssw0rdp&ssw0rd
 - pubs データベースに入った後、以下のファイルの SQL 文を実行してテーブルとデータを作成
   - pubs_azure_timestampつき.txt
+
+![picture 1](./images/43283d9fbe6f66cb81baae293bb8a79464611e51e526dca2a2c4883b9def2d01.png)  
+
+![picture 0](./images/eb57638f091f5a9d1f16008beb0e8c7214a25f0dd5c9435940ecf1f92969e80b.png)  
