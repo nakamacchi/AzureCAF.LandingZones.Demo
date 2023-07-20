@@ -34,7 +34,6 @@ TEMP_SUBNET_ASB="${TEMP_IP_PREFIX}.2.0/24"
 TEMP_NSG_NAME="${TEMP_VNET_NAME}-nsg"
 TEMP_UDR_NAME="${TEMP_VNET_NAME}-udr"
 
-az group create --name ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME}
 az network nsg create --name ${TEMP_NSG_NAME} --resource-group ${TEMP_RG_NAME}
 az network route-table create --resource-group ${TEMP_RG_NAME} --name ${TEMP_UDR_NAME}
 az network vnet create --resource-group ${TEMP_RG_NAME} --name ${TEMP_VNET_NAME} --address-prefixes ${TEMP_VNET_ADDRESS}
