@@ -12,25 +12,23 @@ for i in ${VDC_NUMBERS}; do
 TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
 TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
 
-TEMP_ASP_WIN_NAME="aspw-spoked-${TEMP_LOCATION_PREFIX}"
+TEMP_ASP_LINUX_NAME="aspl-spoked-${TEMP_LOCATION_PREFIX}"
 TEMP_RG_NAME="rg-spoked-${TEMP_LOCATION_PREFIX}"
 
-# App Service Plan (Windows) の作成
-az appservice plan create --name "${TEMP_ASP_WIN_NAME}" --resource-group "$TEMP_RG_NAME" --location "${TEMP_LOCATION_NAME}" --sku P1V2 --number-of-workers 2
+# App Service Plan (Linux) の作成
+# ※ Windows 版は Python が 3.4 までしかサポートされていないため、今回のケースでは利用できない
+# ※ Python 3.10 を利用するために Linux 版の App Service Plan を利用する。
+az appservice plan create --name "${TEMP_ASP_LINUX_NAME}" --resource-group "$TEMP_RG_NAME" --location "${TEMP_LOCATION_NAME}" --sku P1V2 --number-of-workers 2 --is-linux
 
 # Web App の作成
 # Web App 名はグローバルに一意である必要があるため UNIQUE_SUFFIX を付与する
 TEMP_WEBAPP_NAME="webapp-spoked-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
-TEMP_ASP_WIN_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_D}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Web/serverFarms/${TEMP_ASP_WIN_NAME}"
-az webapp create --name $TEMP_WEBAPP_NAME --resource-group $TEMP_RG_NAME --plan $TEMP_ASP_WIN_ID
+TEMP_ASP_LINUX_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_D}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Web/serverFarms/${TEMP_ASP_LINUX_NAME}"
+az webapp create --name $TEMP_WEBAPP_NAME --resource-group $TEMP_RG_NAME --plan $TEMP_ASP_LINUX_ID --runtime "python|3.10"
 
 # システム割当 MID を有効化しておく
 az webapp identity assign --name $TEMP_WEBAPP_NAME --resource-group $TEMP_RG_NAME
 
-# タイムゾーンの設定
-az webapp config appsettings set --name ${TEMP_WEBAPP_NAME} --resource-group ${TEMP_RG_NAME} --settings "WEBSITE_TIME_ZONE=Tokyo Standard Time"
-# FTP の無効化 (Windows 版では Kudu で事足りるので塞ぐ)
-az webapp config set --ftps-state Disabled --name ${TEMP_WEBAPP_NAME} --resource-group ${TEMP_RG_NAME}
 # ログの有効化 (App Service Log)
 az webapp log config --name ${TEMP_WEBAPP_NAME} --resource-group ${TEMP_RG_NAME} --application-logging filesystem --detailed-error-messages true --failed-request-tracing true --web-server-logging filesystem --level warning
 
