@@ -55,7 +55,7 @@
 | 資料名 | リンク |
 | :-- | :-- |
 | 本デモビデオで利用している解説資料 | [ppt](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmty3lIBTiHyk___aKePLUSSIGNrkA2HFWWrR8VvyRuWQPLUSSIGN52pEYERsWu4iOrKNzV7UrsexQvun6pO6pBDPJ89k2nd9eGgvMNWo) |
-| Azure 共通基盤設計ガイド | [ppt](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xPRxcaoPTCo0vNxq4lZp3rNm81jrfH7PLUSSIGNwU5D1HKPLUSSIGN1AAH7rYfBj7APLUSSIGNBEMv0pjNYIBq) |
+| Azure 共通基盤設計ガイド | [ppt](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xZs017DXdoHTy9fn4yYVLPLUSSIGNFXTyy5PLUSSIGNS14p0PLUSSIGNmFpjO3IMyMfU0fsLySs2___VfgpCKqbQ) |
 | Azure 共通基盤設計 ガバナンス設計 Excel シート | [xls](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE64Syy7H6UHhao19mGQ6SdMhQ1___l4rEsmMFXZmgWJvVjoxOI5K7mwavHIsfJFxyRF) |
 | 超訳 Azure CAF | [ppt](https://download.microsoft.com/download/2/a/b/2ab69a5d-7c69-4a24-a692-50823e3255d6/Translations_AzureCAF_v0.11.pptx) [前半](https://www.youtube.com/watch?v=eHLpPk6P8hw&t=10s) [後半](https://www.youtube.com/watch?v=RwAtcn75_7A&t=0s) |
 | Azure jp-techdocs | [リンク](https://github.com/Azure/jp-techdocs) |
