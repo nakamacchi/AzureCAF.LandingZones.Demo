@@ -45,9 +45,9 @@ Audit ポリシー、AINE ポリシーを理解するためには、Azure Policy
 ```bash
 
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
- 
+
 TEMP_MG_TRG_ID=$(az account management-group list --query "[?displayName=='Tenant Root Group'].id" -o tsv)
- 
+
 # カスタムポリシーの作成
 cat > temp.json << EOF
 {
@@ -326,7 +326,11 @@ cat > temp.json << EOF
                                     "Microsoft.SqlVirtualMachine/SqlVirtualMachines",
                                     "Microsoft.Storage/storageAccounts",
                                     "Microsoft.Web/serverFarms",
-                                    "Microsoft.Web/sites"
+                                    "Microsoft.Web/sites",
+                                    "Microsoft.Network/loadBalancers",
+                                    "Microsoft.App/containerApps",
+                                    "Microsoft.App/managedEnvironments",
+                                    "Microsoft.ContainerRegistry/registries"
                                 ]
                             }
                         ]
@@ -379,10 +383,10 @@ cat > temp.json << EOF
     ]
 }
 EOF
- 
+
 TEMP=(${TEMP_MG_TRG_ID//\// })
 az deployment mg create --location ${LOCATION_NAMES[0]} --name "custom-policies" --template-file temp.json --management-group-id "${TEMP[3]}"
- 
+
 # ※（参考）westcentralus リージョンは、Canary リージョンに次いで最も早く変更がデプロイされるリージョン。このためミッションクリティカルシステムではこのリージョンにパイロットシステムを配置してチェックしておくと、変更の確認などが行える
 
 ```
