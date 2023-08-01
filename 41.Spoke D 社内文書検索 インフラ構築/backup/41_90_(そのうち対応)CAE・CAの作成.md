@@ -25,13 +25,20 @@ TEMP_VNET_NAME="vnet-spoked-${TEMP_LOCATION_PREFIX}"
 
 TEMP_CAE_SUBNET_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_D}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Network/virtualNetworks/${TEMP_VNET_NAME}/subnets/ContainerAppsSubnet"
 
-# Subnet を ContainerAppsEnvironment に委任できるように設定
+# Subnet を ContainerAppsEnvironment に委任できるように設定 (Workload Profile に必要)
 az network vnet subnet update --ids "${TEMP_CAE_SUBNET_ID}" --delegations "Microsoft.App/environments"
 
 az containerapp env create --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --location ${TEMP_LOCATION_NAME} --infrastructure-subnet-resource-id "${TEMP_CAE_SUBNET_ID}" --internal-only true --logs-destination azure-monitor --enable-workload-profiles
 
 # 占有型マシンを追加する場合
-# az containerapp env workload-profile add --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --workload-profile-name "wp-d4" --max-nodes 1 --min-nodes 1 --workload-profile-type "D4"
+az containerapp env workload-profile add --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --workload-profile-name "wp-d4" --max-nodes 1 --min-nodes 1 --workload-profile-type "D4"
+
+# CAE のプロビジョニングの完了を待機
+while [ $(az containerapp env show --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --query properties.provisioningState -o tsv) != "Succeeded" ]
+do
+echo "CAE provisioning State is $(az containerapp env show --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --query properties.provisioningState -o tsv) ..."
+sleep 10
+done
 
 # ==============================
 # CA の作成
@@ -47,7 +54,9 @@ az containerapp create \
   --ingress external \
   --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest \
   --environment "${TEMP_CAE_NAME}" \
-  --workload-profile-name "Consumption"
+  --workload-profile-name "wp-d4"
+
+#   --workload-profile-name "Consumption"
 
 done # TEMP_LOCATION
 
