@@ -2,6 +2,20 @@
 
 Spoke VNET を作成します。
 
+- Spoke VNET は本番システムへのアクセスを行うための VNET 環境です。このために、以下のような VNET を作成します。
+  - サブネット
+    - Default :（今回は使いませんが、テスト用の VM などを立てたりするために利用してください）
+    - PrivateEndpointSubnet : 各種のプライベートエンドポイントを作成するためのサブネット
+    - AppServiceBackendSubnet : App Service の VNET 統合を行うためのサブネット
+    - ContainerAppsSubnet : Container Apps の組み込みに利用するサブネット（今回は使いません）
+  - ピアリング
+    - 本番系 NW （Hub VNET）に対してピアリング
+  - 名前解決
+    - 本番系 NW の Azure Firewall を DNS プロキシとして利用
+    - プライベートエンドポイントのプライベートゾーンは Hub VNET で管理
+  - UDR・NSG
+    - Hub VNET の Azure Firewall を通るように構成
+
 ```bash
 
 # 業務システム D チーム／① 初期構築の作業アカウントに切り替え

@@ -1,6 +1,6 @@
 # Azure Firewall の経路開放
 
-Azure OpenAI Service を利用する際に必要となるライブラリ取得への経路開放を行います。
+Azure OpenAI Service を利用する際に必要となるライブラリやデータを取得するため、Web アプリから以下の FQDN への経路を行います。
 
 - openaipublic.blob.core.windows.net
 
