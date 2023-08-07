@@ -1,3 +1,10 @@
+# Web App の構成設定
+
+Web App に対して以下を設定します。
+
+- アプリケーションを動作させるために必要な環境変数を Web App の構成設定として作成
+- Web App の動作を完全閉域化（ACR Pull も閉域動作するように設定）
+- Web App に対して取得するコンテナの設定
 
 ```bash
 
@@ -32,12 +39,11 @@ TEMP_AOAI_API_VERSION='2023-05-15'
 
 TEMP_IMAGE_NAME="${TEMP_ACR_NAME}.azurecr.io/aoai.sample4:latest"
 
-#構成設定
-
 TEMP_RG_NAME="rg-spoked-${TEMP_LOCATION_PREFIX}"
 TEMP_APP_NAME="app-spoked-${TEMP_LOCATION_PREFIX}"
 TEMP_APPINSIGHTS_CONNECTION_STRING=$(az monitor app-insights component show --app ${TEMP_APP_NAME} --resource-group ${TEMP_RG_NAME} --query 'connectionString' -o tsv)
 
+# 環境変数の設定
 az webapp config appsettings set --name ${TEMP_WEBAPP_NAME} --resource-group $TEMP_RG_NAME --settings \
 "AZURE_STORAGE_ACCOUNT=${TEMP_STORAGE_NAME}" \
 "AZURE_STORAGE_CONTAINER=content" \
@@ -54,12 +60,17 @@ az webapp config appsettings set --name ${TEMP_WEBAPP_NAME} --resource-group $TE
 "AZURE_COSMOSDB_ENDPOINT=https://${TEMP_COSMOSDB_NAME}.documents.azure.com" \
 "APPLICATIONINSIGHTS_CONNECTION_STRING=${TEMP_APPINSIGHTS_CONNECTION_STRING}"
 
+# 閉域動作の設定
 # https://learn.microsoft.com/ja-jp/azure/app-service/configure-custom-container?tabs=debian&pivots=container-linux
 # https://learn.microsoft.com/ja-jp/azure/app-service/configure-vnet-integration-routing
 # WEBSITE_PULL_IMAGE_OVER_VNET
 az webapp config set --name $TEMP_WEBAPP_NAME --resource-group $TEMP_RG_NAME --vnet-route-all-enabled
+
+# ACR からのコンテナ取得に VNET と MID を利用する
 az webapp config set --name $TEMP_WEBAPP_NAME --resource-group $TEMP_RG_NAME --generic-configurations '{"acrUseManagedIdentityCreds": true}'
 az resource update --name $TEMP_WEBAPP_NAME --resource-group $TEMP_RG_NAME --resource-type "Microsoft.Web/sites" --set properties.vnetImagePullEnabled=true
+
+# 取得するコンテナを指定
 az webapp config container set --name $TEMP_WEBAPP_NAME --resource-group $TEMP_RG_NAME --docker-custom-image-name $TEMP_IMAGE_NAME --docker-registry-server-url "https://${TEMP_ACR_NAME}.azurecr.io"
 
 done # TEMP_LOCATION
