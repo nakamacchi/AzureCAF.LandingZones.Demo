@@ -222,3 +222,17 @@ done # TEMP_RESOURCE_ID
 done # TEMP_LOCATION
 
 ```
+
+## プロビジョニング完了待機
+
+- while ループでリソース作成の完了を待機
+
+```bash
+
+while [ $(az containerapp env show --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --query properties.provisioningState -o tsv) != "Succeeded" ]
+do
+echo "CAE provisioning State is $(az containerapp env show --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --query properties.provisioningState -o tsv) ..."
+sleep 10
+done
+
+```
