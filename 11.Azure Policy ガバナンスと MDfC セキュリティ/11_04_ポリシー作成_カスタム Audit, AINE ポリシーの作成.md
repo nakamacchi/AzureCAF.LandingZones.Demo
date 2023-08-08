@@ -330,7 +330,10 @@ cat > temp.json << EOF
                                     "Microsoft.Network/loadBalancers",
                                     "Microsoft.App/containerApps",
                                     "Microsoft.App/managedEnvironments",
-                                    "Microsoft.ContainerRegistry/registries"
+                                    "Microsoft.ContainerRegistry/registries",
+                                    "Microsoft.CognitiveServices/accounts",
+                                    "Microsoft.DocumentDB/databaseAccounts",
+                                    "Microsoft.Search/searchServices"
                                 ]
                             }
                         ]
