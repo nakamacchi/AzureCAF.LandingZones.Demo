@@ -45,4 +45,39 @@ for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
 
+# ■ App Service のクライアント証明書を推奨するポリシーを除外 (Waiver)
+# App Service apps should have 'Client Certificates (Incoming client certificates)' enabled
+#TEMP_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_B}/resourcegroups/rg-spokeb-eus/providers/microsoft.web/sites/webapp-spokeb-eus"
+
+TEMP_EXEMPTION_NAME="Exemption-AppServiceClientCertificates"
+cat > temp.json << EOF
+{
+  "properties": {
+    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
+    "policyDefinitionReferenceIds": [
+      "ensureWEBAppHasClientCertificatesIncomingClientCertificatesSetToOnMonitoringEffect"
+    ],
+    "exemptionCategory": "Waiver",
+    "displayName": "AppServiceのクライアント証明書認証を除外 (Waiver)",
+    "description": "今回のサンプルでは認証を入れるとテストがしにくいため"
+  }
+}
+EOF
+ 
+TEMP_RESOURCE_IDS=()
+j=0
+for i in ${VDC_NUMBERS}; do
+  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+TEMP_RG_NAME="rg-spoked-${TEMP_LOCATION_PREFIX}"
+TEMP_WEBAPP_NAME="webapp-spoked-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+ 
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_D}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.web/sites/${TEMP_WEBAPP_NAME}"
+j=`expr $j + 1`
+done
+ 
+for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
+az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
+done
+
+
 ```
