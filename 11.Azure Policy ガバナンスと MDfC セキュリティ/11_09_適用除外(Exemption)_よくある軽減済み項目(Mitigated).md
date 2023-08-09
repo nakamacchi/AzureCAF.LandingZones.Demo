@@ -55,10 +55,10 @@ done
 # Azure Key Vaults should use private link
 # /providers/Microsoft.Authorization/policyDefinitions/a6abeaec-4d90-4a02-805f-6b26c4d3fbe9
 # privateEndpointShouldBeConfiguredForKeyVaultMonitoringEffect
- 
+
 #TEMP_RESOURCE_IDS[1]="/subscriptions/4104fe87-a508-4913-813c-0a23748cd402/resourcegroups/rg-test/providers/microsoft.keyvault/vaults/kv-test-spokea"
 #TEMP_RESOURCE_IDS[2]="/subscriptions/903c6183-3adc-4577-9114-b3fef417ff28/resourcegroups/rg-ops-eus/providers/microsoft.keyvault/vaults/kv-ops-ade-20299-eus"
- 
+
 TEMP_EXEMPTION_NAME="Exemption-ADEKeyVault"
 cat > temp.json << EOF
 {
@@ -73,26 +73,34 @@ cat > temp.json << EOF
   }
 }
 EOF
- 
+
 TEMP_RESOURCE_IDS=()
 j=0
 for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
-  TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
-  TEMP_ADE_KV_NAME="kv-spokea-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
+TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
+TEMP_ADE_KV_NAME="kv-spokea-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
+
 j=`expr $j + 1`
- 
-  TEMP_RG_NAME="rg-ops-${TEMP_LOCATION_PREFIX}"
+
+TEMP_RG_NAME="rg-ops-${TEMP_LOCATION_PREFIX}"
 TEMP_ADE_KV_NAME="kv-ops-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
 j=`expr $j + 1`
+
+TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
+TEMP_ADE_KV_NAME="kv-hub-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_HUB}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
+j=`expr $j + 1`
+
 done
- 
+
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
- 
+
 
 # ■ Application Gateway v2 に割り当てられている Subnet には NSG が付与できないため NSG 適用ルールを除外 (Mitigated)
 # Subnets should be associated with a Network Security Group

@@ -63,12 +63,12 @@ cat > temp.json << EOF
 EOF
  
 az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyExemptions/Test-MFA-Exemption?api-version=2022-07-01-preview" --body @temp.json
- 
+
 # ■ ADE 用の KeyVault に対する削除保護の適用免除
 # Key vaults should have deletion protection enabled
 # /providers/Microsoft.Authorization/policyDefinitions/0b60c0b2-2dc2-4e1c-b5c9-abbed971de53
 # keyVaultsShouldHavePurgeProtectionEnabledMonitoringEffect
- 
+
 TEMP_EXEMPTION_NAME="Test-Exemption-KeyVaultPurgeProtection"
 cat > temp.json << EOF
 {
@@ -83,26 +83,32 @@ cat > temp.json << EOF
   }
 }
 EOF
- 
+
 TEMP_RESOURCE_IDS=()
 j=0
 for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
-  TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
-  TEMP_ADE_KV_NAME="kv-spokea-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
+TEMP_ADE_KV_NAME="kv-spokea-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
 j=`expr $j + 1`
- 
-  TEMP_RG_NAME="rg-ops-${TEMP_LOCATION_PREFIX}"
+
+TEMP_RG_NAME="rg-ops-${TEMP_LOCATION_PREFIX}"
 TEMP_ADE_KV_NAME="kv-ops-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
 j=`expr $j + 1`
+
+TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
+TEMP_ADE_KV_NAME="kv-hub-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_HUB}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
+j=`expr $j + 1`
+
 done
- 
+
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
- 
+
 # ■ DDoS Protection 適用の免除（コストのため）
  
 TEMP_EXEMPTION_NAME="Test-Exemption-DDoSProtection"
