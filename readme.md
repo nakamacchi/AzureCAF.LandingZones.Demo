@@ -115,6 +115,20 @@
 
 ※ 特に、サンプルスクリプトの中には、環境内のリソースや設定をまとめて一括削除するクリーンアップ処理なども含まれています。くれぐれも十分にご注意のうえ、内容を理解した上でご利用・ご活用ください。
 
+## （参考） 設計・構築支援サービスについて
+
+本サイトのコンテンツや資料に関しては、基本的に「読めばわかる」「ほぼそのまま使える」ように作っている（つもり）ですが、Azure 共通基盤の設計・構築に関する支援が必要な場合、マイクロソフトの Unified Support の中で設計・構築支援サービスメニューをご用意しています。また、マイクロソフトのサポート部門からの直接支援だけでなく、弊社パートナー企業様からのご支援も可能な場合があります。ご興味がある場合には、弊社担当営業までご相談ください。
+
+また関連して Azure の技術を深く知りたい場合や基礎知識を強化したい場合には、以下のコンテンツがお薦めです。（いずれも無料で利用できます）　ぜひご活用ください。
+
+- [Azure 技術資料インデックス](https://github.com/Azure/jp-techdocs)
+- [FgCF](https://github.com/nakamacchi/fgcf)
+- [mstep オンライン](https://partner.microsoft.com/ja-jp/training/mstep-platform)
+- [Microsoft Learn](https://learn.microsoft.com/ja-jp/training/browse/)
+- [オンライン・オフラインセミナー](https://events.microsoft.com/ja-jp/Azure)
+
+![picture 2](images/610fb90b207624f58307dc5d23df4d40780973b14d8f2eb2a0c75bd6f5cf9bc8.png)  
+
 ## （参考） マイクロソフト社員の方へ
 
 MS 社員が社内環境を使って作業する際の注意事項メモを別途まとめてあります。必要な場合は赤間（nakama）までご連絡ください。
