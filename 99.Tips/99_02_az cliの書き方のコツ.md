@@ -236,3 +236,19 @@ sleep 10
 done
 
 ```
+
+```bash
+
+while true
+do
+  HEALTH_STATUS=$(az rest --method GET --uri "${TEMP_NC_ID}?api-version=2023-04-01" --query properties.healthCheckStatus -o tsv)
+  echo "Network Connection HealthCheck State is $HEALTH_STATUS ..."
+  if [ "$HEALTH_STATUS" == "Succeeded" ] || [ "$HEALTH_STATUS" == "Warning" ]; then
+    break
+  fi
+  sleep 10
+done
+
+```
+
+
