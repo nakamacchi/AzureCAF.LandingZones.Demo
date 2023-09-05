@@ -36,7 +36,7 @@
 - Allowed virtual machine size SKUs
   - [cccc23c7-8427-4f53-ad12-b6a63eb452b3](https://www.azadvertizer.net/azpolicyadvertizer/cccc23c7-8427-4f53-ad12-b6a63eb452b3.html)
   - パラメータ listOfAllowedSKUs により、作成を許可する VM サイズを指定できる
-  
+
 ## ポリシーイニシアティブの作成と割り当て
 
 これらのポリシーは、取り扱いを容易にするため、いったんイニシアティブに束ねてから適用します。
