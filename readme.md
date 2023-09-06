@@ -21,6 +21,21 @@
 
 ![overall](./images/overall.png)  
 
+各サブスクリプションの位置付けは以下のとおりです。基本サンプルとして上4つ、拡張・追加サンプルとして下6つを用意しています。
+
+| 分類 | subscription | 載せているもの |
+| ---- | ------------ | ------------- |
+| 基盤 | subscription-mgmt | 運用監視基盤（Log Analytics Workspace, 運用管理端末） |
+| 基盤 | subscription-hub | 本番環境用ハブ（Azure Firewall）(※ 本デモでは ER は省略) |
+| 業務 | subscription-spoke-a | 業務システムサンプル A（IaaS Web-DB アプリ） |
+| 業務 | subscription-spoke-b | 業務システムサンプル B（PaaS Web-DB アプリ） |
+| 業務 | subscription-spoke-c | (未定) |
+| 業務 | subscription-spoke-d | 業務システムサンプル D（AOAI 社内文書検索） |
+| 業務 | subscription-spoke-e | (未定) |
+| 業務 | subscription-spoke-f | 業務システムサンプル F（CaaS Web-DB アプリ） |
+| 開発 | subscription-dev1 | 開発環境（管理用） (DevCenter, DevBox) |
+| 開発 | subscription-dev1 | 開発環境（サンドボックス） (Deployment Environment) |
+
 ## Azure 共通基盤の設計・構築の概要を知りたい場合
 
 - 一連の作業スクリプトを、技術説明を織り交ぜながら実行していくデモビデオを以下に用意してありますので、こちらを見るのがオススメです。
