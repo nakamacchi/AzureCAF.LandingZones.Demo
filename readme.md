@@ -1,11 +1,59 @@
-# Azure CAF Landing Zones 設計・構築ガイドライン ＆ ハンズオンデモ
+# 日本語版 Azure 共通基盤（ランディングゾーン） 設計・構築ガイド
 
 ## 本資料について
 
-本資料は、Azure 共通基盤（ランディングゾーン）の設計・構築ガイドラインとそのハンズオン（デモつき）資料です。
+本資料は、Azure 共通基盤（ランディングゾーン）の設計・構築ガイドです。
 
-- マイクロソフトの公式ガイドラインである Azure CAF と、そのリファレンス実装である ESLZ (Enterprise-scale landing zones, ALZ / Azure landing zones) をベースにしつつ、日本特有の事情を加味して、赤間が作成したものです。日本のお客様に馴染みやすい形で整理しています。
-- このデモ一つで、以下の内容がすべて含まれています。（フォルダ番号 00～12）
+- マイクロソフトの公式ガイドラインである Azure CAF と、そのエンタープライズ向けリファレンス実装である ESLZ (Enterprise-scale landing zones, ALZ / Azure landing zones) をベースにしつつ、日本特有の事情を加味して、赤間が作成したものです。日本のエンプラのお客様に馴染みやすい形で整理しています。
+- 本資料をベースにして設計・構築を進めていただければ、セキュアかつガバナンスの効いた Azure 共通基盤の構築をスムーズに進めていただくことができます。
+- 新しく Azure 共通基盤を作る場合だけでなく、すでに共通基盤をお持ちのお客様も、セキュリティやガバナンスの強化にご活用いただけます。
+
+![picture 0](./images/7d20ded25549438777dc8878522705a6db56aa799234ce8a4009301ea7c2790c.png)  
+
+### 資料の全体構成について
+
+本 GitHub 上には共通基盤構築デモの部分が掲載されていますが、上図にある各コンテンツは以下にあります。
+
+| カテゴリ | コンテンツ | リンク |
+| :-- | :-- | :-- |
+| 戦略立案ガイド | 超訳 Azure CAF | [ppt](https://download.microsoft.com/download/2/a/b/2ab69a5d-7c69-4a24-a692-50823e3255d6/Translations_AzureCAF_v0.11.pptx) <br> [解説ビデオ前半](https://www.youtube.com/watch?v=eHLpPk6P8hw&t=10s) <br> [解説ビデオ後半](https://www.youtube.com/watch?v=RwAtcn75_7A&t=0s) |
+| 共通基盤設計ガイド | Azure 共通基盤設計ガイド | [解説ppt](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xZs017DXdoHTy9fn4yYVLPLUSSIGNFXTyy5PLUSSIGNS14p0PLUSSIGNmFpjO3IMyMfU0fsLySs2___VfgpCKqbQ)  <br> [ガバナンス設計用Excelシート](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE64Syy7H6UHhao19mGQ6SdMhQ1___l4rEsmMFXZmgWJvVjoxOI5K7mwavHIsfJFxyRF) |
+| 共通基盤構築デモ | Azure 共通基盤構築デモ | [GitHub](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo/) <br> [デモビデオ](#作業デモビデオ) |
+
+全体概要や活用方法を知りたい場合には、下記 Webinar（約1時間）をご覧ください。
+
+- セキュアかつ制御可能なクラウド利用を目指して ～Azure 共通基盤 設計・構築のススメ ～
+  - Azure 共通基盤 設計・構築ガイドが開発された経緯、何ができるのか・何が含まれているのか、共通基盤開発の進め方のポイント、エンド企業様やパートナー企業様が本ガイドをどのようにご活用いただけるのかに関して解説します。
+  - Webinarの登録URLは[こちら](https://mktoevents.com/Microsoft+Event/408256/157-GQE-382)です。
+
+### 各コンテンツの概要と実際の使い方について
+
+上記 3 つのコンテンツは、資料上、下記のような体系で整理されています。
+
+![picture 2](./images/69e0e9d4d66a02bc089961c77f57c1a75c8af1c781e89bffa05ae01b61a256c8.png)  
+
+一方、実際にご利用いただく場合には、以下のような点もあると思います。
+
+- エンドユーザ様とパートナー様（SIerなど）で、知るべき・興味を持つポイントが異なる。
+  - エンドユーザ企業様の CCoE チームであれば、企画推進のために概要や設計の要点を知りたい
+  - パートナー企業様のエンジニアであれば、実際の設計上の留意点や構築方法の詳細を知りたい
+- しかしプロジェクトとしては、お互いに共通認識・ゴールを持つ必要がある。
+
+このため共通基盤の検討を進める場合には、以下のようなコンテンツの使い方をオススメします。（すでに先行してご利用いただいているあるお客様では、このやり方で非常にスムーズに進められています。）
+
+- まず全員（基盤構築に関わるエンドユーザ企業様とパートナー企業様全員）で、**共通基盤構築のデモビデオの鑑賞会**を行う。
+  - 共通基盤はどのようなもので、何をゴールとして進めればよいのかの**共通認識**を持つことができます。これにより、エンドユーザ様とパートナー企業様の間での議論が円滑に進みます。
+  - Azure の予備知識がなくても見ることができるように作ってあります。（時間のかかるところはビデオ編集してありますが）作業手順のところは 1.5 倍速再生でもよいと思います。
+- その後、エンドユーザ企業様は戦略立案ガイドを、パートナー企業様は共通基盤設計ガイドを詳細に読み込んでいく。
+
+![picture 3](./images/b1f3e84ce251418a3eac50970bbdc7608b53278df657880ecae2842281716304.png)  
+
+## Azure 共通基盤 構築デモについて
+
+本 GitHub サイトの構築デモに含まれるものは以下の通りです。
+
+- 基本部分として、以下の内容が含まれています。（フォルダ番号 00～12）
+  - マルチサブスクリプションの Azure 環境
   - Hub-Spoke VNET 環境（ゼロトラストベースの閉域構成）
   - 動作可能な IaaS Web-DB アプリと PaaS Web-DB アプリを実際に載せる
   - SoD (権限分掌) に基づくカスタム RBAC ロールと実機操作
@@ -16,10 +64,6 @@
   - AOAI 社内文書検索（Azure OpenAI Service リファレンスアーキテクチャのエンプラ対応版）（フォルダ番号 41～44）
   - CaaS Web-DB アプリ (Azure Container Apps)（フォルダ番号 61～65）
   - DevCenter Deployment Environment によるセルフサービス型サンドボックス環境（フォルダ番号 71～74）
-- 本ハンズオン資料をベースにしてご検討いただければ、セキュアかつガバナンスの効いた Azure 共通基盤の構築がかなりラクになる ＆ 速やかにご検討いただけると思います。
-  - すでに共通基盤をお持ちのお客様も、セキュリティやガバナンスの強化にご活用ください。
-
-![overall](./images/overall.png)  
 
 各サブスクリプションの位置付けは以下のとおりです。基本サンプルとして上4つ、拡張・追加サンプルとして下6つを用意しています。
 
@@ -36,15 +80,18 @@
 | 開発 | subscription-dev1 | 開発環境（管理用） (DevCenter, DevBox) |
 | 開発 | subscription-dev1 | 開発環境（サンドボックス） (Deployment Environment) |
 
-## Azure 共通基盤の設計・構築の概要を知りたい場合
+基本部分のシステム構成図は下図のようになります。（よくある Hub-Spoke 型構成です。）
 
-- 一連の作業スクリプトを、技術説明を織り交ぜながら実行していくデモビデオを以下に用意してありますので、こちらを見るのがオススメです。
-- デモビデオはトータルで約 8 時間あります。構築スクリプトを流している待機時間はカットしている一方で、Azure をほとんど知らないユーザにも理解してもらえるように基本的な事項の説明も織り交ぜています。
+![overall](./images/overall.png)  
+
+### Azure 共通基盤 構築デモビデオについて
+
+本サイトには構築用のスクリプトが掲載されていますが、複数のサブスクリプションを利用する必要がある関係で、手元で実機演習として行うことは難しい場合が多いと思います。このため、一連の作業スクリプトを、技術説明を織り交ぜながら実行していくデモビデオを以下に用意してありますので、こちらを見るのがオススメです。
+
+デモビデオはトータルで約 8 時間あります。構築スクリプトを流している待機時間はカットしている一方で、Azure をほとんど知らないユーザにも理解してもらえるように基本的な事項の説明も織り交ぜています。
+
 - どうしても自力で動かしてみたい方は、末尾をご確認ください。
-
-## 作業デモビデオ
-
-※ ビデオ撮影の際、マンション工事が入っており、一部、工事音が入っているところがあります（マイクの収音性能が高いため、稀に子供の声も入ってしまっています）。申し訳ありませんが、ご容赦いただければ幸いです。
+- ビデオ撮影の際、マンション工事が入っており、一部、工事音が入っているところがあります（マイクの収音性能が高いため、稀に子供の声も入ってしまっています…orz）。申し訳ありませんが、ご容赦いただければ幸いです。
 
 | ビデオ | ビデオ時間 | 作業時間目安 | リンク |
 | :-- | :-- | :-- | :-- |
@@ -65,20 +112,6 @@
 |ESLZDemo_14_Step13_運用監視（モニタリング）|34:41|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzxN49yn37eJrnD5f1FLIqDqmTK8rH9sN7GlJnK7vj6v06iDkoPOcMtwlIk2i6kSIlz6jAKieqAdRhALIhmiohR)|
 |ESLZDemo_15_後片付け方法とまとめ|11:24|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxc0hP9Z1kKTECqbtEgiraQzNcjPLUSSIGNYw78qwv56E4LPcO6jbmVDVsb6aEqZvRzkI0___aJRTiV5DYoFUVPLUSSIGN9uYEd7Oeb)|
 
-## 関連資料
-
-- Azure CAF ってそもそも何？みたいな方は、超訳 Azure CAF のビデオをご確認ください。（約2.5hのビデオで、実践的な観点から Azure CAF を読み解きます。）
-- Azure 共通基盤の設計方法をより深く学びたい方は、Azure 共通基盤設計ガイドを見てください。
-- その他、Azure の個々の技術トピックを知りたい方は、jp-techdocs をご確認ください。
-
-| 資料名 | リンク |
-| :-- | :-- |
-| 本デモビデオで利用している解説資料 | [ppt](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmty3lIBTiHyk___aKePLUSSIGNrkA2HFWWrR8VvyRuWQPLUSSIGN52pEYERsWu4iOrKNzV7UrsexQvun6pO6pBDPJ89k2nd9eGgvMNWo) |
-| Azure 共通基盤設計ガイド | [ppt](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xZs017DXdoHTy9fn4yYVLPLUSSIGNFXTyy5PLUSSIGNS14p0PLUSSIGNmFpjO3IMyMfU0fsLySs2___VfgpCKqbQ) |
-| Azure 共通基盤設計 ガバナンス設計 Excel シート | [xls](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE64Syy7H6UHhao19mGQ6SdMhQ1___l4rEsmMFXZmgWJvVjoxOI5K7mwavHIsfJFxyRF) |
-| 超訳 Azure CAF | [ppt](https://download.microsoft.com/download/2/a/b/2ab69a5d-7c69-4a24-a692-50823e3255d6/Translations_AzureCAF_v0.11.pptx) [前半](https://www.youtube.com/watch?v=eHLpPk6P8hw&t=10s) [後半](https://www.youtube.com/watch?v=RwAtcn75_7A&t=0s) |
-| Azure jp-techdocs | [リンク](https://github.com/Azure/jp-techdocs) |
-
 ## どうしても自力でやってみたい場合
 
 ### 実機演習のために必要な環境
@@ -86,7 +119,7 @@
 自力で動かしてみたい場合、実習に必要な機材は以下の 3 つです。（1作業者につき①～③が1セット必要です。）
 
 - ① 新規作成したテスト用の Azure AD テナント
-- ② テスト環境を作成する Azure サブスクリプション 4 つ
+- ② テスト環境を作成する Azure サブスクリプション 4 つ（拡張サンプルまでやりたい場合は 10 個）
 - ③ テスト環境の作成スクリプトを順次実行するための端末
 
 それぞれ以下に補足します。
@@ -97,7 +130,7 @@
 
 ### ② テスト環境を作成する Azure サブスクリプション 4 つ
 
-今回の演習では大規模な Azure 環境を模倣するため、管理サブスクリプション、ハブサブスクリプション、業務システム用サブスクリプション2つ、合計4つのサブスクリプションを利用します。これらのサブスクリプションは、現在お使いの EA 契約から作成されたサブスクリプションで構いませんが、必ず①のAADへの付け替えを行ってください。（※ Spoke D, F, DevCenter なども確認したい場合には、最大 10 個のサブスクリプションがあると便利です。）
+今回の演習では大規模な Azure 環境を模倣するため、管理サブスクリプション、ハブサブスクリプション、業務システム用サブスクリプション2つ、合計4つのサブスクリプションを利用します。これらのサブスクリプションは、現在お使いの EA 契約から作成されたサブスクリプションで構いませんが、必ず①のAADへの付け替えを行ってください。（※ Spoke D, F, DevCenter などの拡張サンプルも確認したい場合には、最大 10 個のサブスクリプションをご用意ください。）
 
 なお、EA 契約からサブスクリプションを作成した場合、サブスクリプションは作成者のホームAADテナントに自動的に紐づきます。このため、テスト用にサブスクリプションを新規に作成するのであれば、①のAADアカウントをEA契約のアカウント管理者として登録し、そのアカウントでサブスクリプションを新規作成すると簡単です。
 
