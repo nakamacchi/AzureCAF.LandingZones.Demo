@@ -49,4 +49,31 @@ for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
 
+# ■ CSB の適用除外
+# Symbolic links が CSB に抵触するため
+# Windows machines should meet requirements of the Azure compute security baseline
+# /providers/Microsoft.Authorization/policyDefinitions/72650e9f-97bc-4b2a-ab5f-9781a9fcecbc
+# windowsGuestConfigBaselinesMonitoring
+ 
+TEMP_EXEMPTION_NAME="Exemption-CSB"
+cat > temp.json << EOF
+{
+  "properties": {
+    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
+    "policyDefinitionReferenceIds": [
+      "windowsGuestConfigBaselinesMonitoring"
+    ],
+    "exemptionCategory": "Waiver",
+    "displayName": "ミドルウェア (IIS, SQL) が CSB に抵触するため適用を免除 (Waiver)",
+    "description": "いったん CSB によるハードニングを行った上でミドルウェアをインストールしているため、他の項目については充足されている"
+  }
+}
+EOF
+ 
+for i in ${VDC_NUMBERS}; do
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+TEMP_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/rg-spokefmtn-${TEMP_LOCATION_PREFIX}/providers/microsoft.compute/virtualmachines/vm-mnt-${TEMP_LOCATION_PREFIX}"
+az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
+done
+
 ```
