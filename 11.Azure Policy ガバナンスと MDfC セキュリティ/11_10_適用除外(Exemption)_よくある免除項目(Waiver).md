@@ -140,7 +140,8 @@ cat > temp.json << EOF
     "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
     "policyDefinitionReferenceIds": [
       "storageAccountsShouldRestrictNetworkAccessUsingVirtualNetworkRulesMonitoringEffect",
-      "storageAccountShouldUseAPrivateLinkConnectionMonitoringEffect"
+      "storageAccountShouldUseAPrivateLinkConnectionMonitoringEffect",
+      "storageAccountsShouldPreventSharedKeyAccess"
     ],
     "exemptionCategory": "Waiver",
     "displayName": "Cloud Shell ストレージアカウントへのセキュリティ強化ルールの適用除外 (Waiver)",
