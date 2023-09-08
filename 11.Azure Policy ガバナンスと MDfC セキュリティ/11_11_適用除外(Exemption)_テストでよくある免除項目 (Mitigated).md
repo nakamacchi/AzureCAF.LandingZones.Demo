@@ -303,7 +303,7 @@ TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourcegroups/r
 j=`expr $j + 1`
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-ops-${TEMP_LOCATION_PREFIX}/providers/microsoft.compute/virtualmachines/vm-ops-${TEMP_LOCATION_PREFIX}"
 j=`expr $j + 1`
- 
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_HUB}/resourcegroups/rg-hub-${TEMP_LOCATION_PREFIX}/providers/microsoft.compute/virtualmachines/vm-usr-${TEMP_LOCATION_PREFIX}"
 j=`expr $j + 1`
 done
  
