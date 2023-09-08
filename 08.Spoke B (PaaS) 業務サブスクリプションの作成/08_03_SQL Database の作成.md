@@ -8,7 +8,7 @@ PaaS 型 SQL Server である SQL Database を作成します。
 - 次に、SQL Database（データベース）を作成します。
   - 作成したデータベースは、クラスタリングされた物理 SQL Server ノードの中から少なくとも 3 ノード以上に複製・保持されます。（Premium または Business Critical SKU の場合）
   - この 3 つのデータベースはプライマリノードが決められており、ユーザがデータベースに接続しようとすると、SQL TDS 経由でプライマリノードに接続されます。プライマリノードへの書き込みで発生したログデータはセカンダリノードに複製され（トランザクションレプリケーション）、半数以上のノードから ACK 応答が返されると書き込みコミットの扱いになる、という仕組みで動作します。
-- 作成後、Audit 機能を Azure ポータルから手作業で有効化してください。
+- 作成後、Audit 機能を有効化します。
 
 ご参考までに、SQL Database は内部的に以下のように動作します。
 
@@ -48,14 +48,6 @@ az sql db create --server $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME -
 
 done # TEMP_LOCATION
 
-```
-
-- ~~上記のコマンドの終了後、SQL Server の Audit 機能を GUI から有効化してください。~~
-  - ~~（コマンドラインから実行する方法が現時点で不明。以下の方法ではうまく有効化できない）~~
-  - ~~※ Audit 機能の有効化は、サーバとデータベースの両方について実施してください。~~ → コマンドラインから有効化できるようになりました。下記のコマンドを実行して、論理 SQL Server と SQL Database の監査機能を有効化してください。
-
-```bash
-
 # ガバナンス管理のアカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
 
@@ -81,5 +73,7 @@ az sql db audit-policy update --resource-group $TEMP_RG_NAME --server $TEMP_SQL_
 done # TEMP_LOCATION
 
 ```
+
+なお、監査機能は Azure ポータルサイトから有効化することもできます。有効化する場合には、サーバ監査、データベース監査の両方を有効化してください。
 
 ![picture 1](./images/7b96001ade7b42feab63d1920f433019a1bccb91752570cc761f1296547821a1.png)  
