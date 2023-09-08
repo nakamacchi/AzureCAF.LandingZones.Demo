@@ -32,7 +32,7 @@ for i in ${VDC_NUMBERS}; do
   TEMP_DCE_NAME="dce-vdc-${TEMP_LOCATION_PREFIX}"
   TEMP_FLOWLOG_STORAGE_NAME="stvdcfl${TEMP_LOCATION_PREFIX}${UNIQUE_SUFFIX}"
  
-  az storage account create --name ${TEMP_FLOWLOG_STORAGE_NAME} --resource-group ${TEMP_RG_NAME} --location $TEMP_LOCATION_NAME --sku Standard_LRS --allow-blob-public-access false --public-network-access Disabled --default-action Deny
+  az storage account create --name ${TEMP_FLOWLOG_STORAGE_NAME} --resource-group ${TEMP_RG_NAME} --location $TEMP_LOCATION_NAME --sku Standard_LRS --allow-blob-public-access false --public-network-access Disabled --default-action Deny --allow-shared-key-access false
 done
  
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_nw_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
