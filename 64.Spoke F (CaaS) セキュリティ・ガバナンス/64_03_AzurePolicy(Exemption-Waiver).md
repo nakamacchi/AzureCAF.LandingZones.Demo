@@ -64,8 +64,8 @@ cat > temp.json << EOF
       "windowsGuestConfigBaselinesMonitoring"
     ],
     "exemptionCategory": "Waiver",
-    "displayName": "ミドルウェア (IIS, SQL) が CSB に抵触するため適用を免除 (Waiver)",
-    "description": "いったん CSB によるハードニングを行った上でミドルウェアをインストールしているため、他の項目については充足されている"
+    "displayName": "VM に対する CSB を免除 (Waiver)",
+    "description": "Symbolic links が CSB に抵触するため"
   }
 }
 EOF
