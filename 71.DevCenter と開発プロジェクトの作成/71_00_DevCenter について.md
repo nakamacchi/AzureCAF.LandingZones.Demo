@@ -7,6 +7,8 @@
 
 ![picture 0](./images/107283abccf7b1f34817f37457b6c759b294ec6be026836f7cf051bffb08b098.png)  
 
+![picture 1](./images/6433dcfba5fc397950ef5f0045f345b86be08c341091724e147531c9cc5770ad.png)  
+
 活用方法は多岐に渡りますが、真っ先に重要なのが「Deployment Environment を使った、自由に触れる Azure 環境の提供」です。
 
 - 開発者が自由に触れる Azure 環境を提供することで、開発者が Azure の機能を自由に試せるようになる
