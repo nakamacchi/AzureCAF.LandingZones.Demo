@@ -102,7 +102,7 @@ done
 # /providers/Microsoft.Authorization/policyDefinitions/72650e9f-97bc-4b2a-ab5f-9781a9fcecbc
 # windowsGuestConfigBaselinesMonitoring
  
-TEMP_EXEMPTION_NAME="Exemption-FlowLogStorage"
+TEMP_EXEMPTION_NAME="Exemption-CSB"
 cat > temp.json << EOF
 {
   "properties": {
@@ -140,7 +140,8 @@ cat > temp.json << EOF
     "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
     "policyDefinitionReferenceIds": [
       "storageAccountsShouldRestrictNetworkAccessUsingVirtualNetworkRulesMonitoringEffect",
-      "storageAccountShouldUseAPrivateLinkConnectionMonitoringEffect"
+      "storageAccountShouldUseAPrivateLinkConnectionMonitoringEffect",
+      "storageAccountsShouldPreventSharedKeyAccess"
     ],
     "exemptionCategory": "Waiver",
     "displayName": "Cloud Shell ストレージアカウントへのセキュリティ強化ルールの適用除外 (Waiver)",
