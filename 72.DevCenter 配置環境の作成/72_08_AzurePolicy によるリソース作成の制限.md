@@ -48,14 +48,13 @@
 
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
  
-TEMP_MG_TRG_ID=$(az account management-group list --query "[?displayName=='Tenant Root Group'].id" -o tsv)
 TEMP_POLICYSET_DEFINITION_NAME="custom-initiative-restriction-for-depenv"
 
 az rest --method PUT --uri "/subscriptions/${SUBSCRIPTION_ID_DEV2}/providers/Microsoft.Authorization/policySetDefinitions/${TEMP_POLICYSET_DEFINITION_NAME}?api-version=2021-06-01" --body @- <<EOF
 {
   "properties": {
-    "displayName": "Policy Set for Sandbox Environment",
-    "description": "Restriction Policy Set for Sandbox Environment",
+    "displayName": "Restriction Policies for Sandbox",
+    "description": "Deny Policies for sandbox subcrtipions",
     "metadata": {
       "category": "Custom Initiative - Guardrail"
     },
@@ -118,7 +117,7 @@ EOF
 az rest --method PUT --uri "/subscriptions/${SUBSCRIPTION_ID_DEV2}/providers/Microsoft.Authorization/policyAssignments/RestrictionForSandbox?api-version=2022-06-01" --body @- <<EOF
 {
   "properties": {
-    "displayName": "Restriction for Sandbox Environment",
+    "displayName": "Restriction for Sandbox",
     "scope": "/subscriptions/${SUBSCRIPTION_ID_DEV2}",
     "notScopes": [],
     "policyDefinitionId": "/subscriptions/${SUBSCRIPTION_ID_DEV2}/providers/Microsoft.Authorization/policySetDefinitions/${TEMP_POLICYSET_DEFINITION_NAME}",
