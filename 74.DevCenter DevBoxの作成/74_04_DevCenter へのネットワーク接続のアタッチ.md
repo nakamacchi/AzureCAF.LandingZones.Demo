@@ -1,4 +1,4 @@
-# ネットワーク接続の作成
+# DevCenter へのネットワーク接続のアタッチ
 
 DevBox を収容するネットワーク（サブネット）に対して、ネットワーク接続オブジェクト（Network Connection）を作成します。
 
@@ -25,8 +25,8 @@ TEMP_LOCATION_NAME=${LOCATION_NAMES[0]}
 TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[0]}
 
 TEMP_NC_DEFS="\
-/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devbox-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/virtualNetworks/vnet-devbox-${TEMP_LOCATION_PREFIX}/subnets/DevBoxPool1Subnet,/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devbox-${TEMP_LOCATION_PREFIX}/providers/Microsoft.DevCenter/networkConnections/nc-devbox-pool1-${TEMP_LOCATION_PREFIX},/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devcenter-${TEMP_LOCATION_PREFIX}/providers/Microsoft.DevCenter/devcenters/dc-devcenter-${TEMP_LOCATION_PREFIX}/attachednetworks/nc-devbox-pool1-${TEMP_LOCATION_PREFIX},rg-devbox-${TEMP_LOCATION_PREFIX}-NIC-pool1 \
-/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devbox-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/virtualNetworks/vnet-devbox-${TEMP_LOCATION_PREFIX}/subnets/DevBoxPool2Subnet,/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devbox-${TEMP_LOCATION_PREFIX}/providers/Microsoft.DevCenter/networkConnections/nc-devbox-pool2-${TEMP_LOCATION_PREFIX},/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devcenter-${TEMP_LOCATION_PREFIX}/providers/Microsoft.DevCenter/devcenters/dc-devcenter-${TEMP_LOCATION_PREFIX}/attachednetworks/nc-devbox-pool2-${TEMP_LOCATION_PREFIX},rg-devbox-${TEMP_LOCATION_PREFIX}-NIC-pool2 \
+/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devbox-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/virtualNetworks/vnet-devbox-${TEMP_LOCATION_PREFIX}/subnets/DevBoxPoolXSubnet,/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devbox-${TEMP_LOCATION_PREFIX}/providers/Microsoft.DevCenter/networkConnections/nc-devbox-poolx-${TEMP_LOCATION_PREFIX},/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devcenter-${TEMP_LOCATION_PREFIX}/providers/Microsoft.DevCenter/devcenters/dc-devcenter-${TEMP_LOCATION_PREFIX}/attachednetworks/nc-devbox-poolx-${TEMP_LOCATION_PREFIX},rg-devbox-${TEMP_LOCATION_PREFIX}-NIC-poolx \
+/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devbox-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/virtualNetworks/vnet-devbox-${TEMP_LOCATION_PREFIX}/subnets/DevBoxPoolYSubnet,/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devbox-${TEMP_LOCATION_PREFIX}/providers/Microsoft.DevCenter/networkConnections/nc-devbox-pooly-${TEMP_LOCATION_PREFIX},/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devcenter-${TEMP_LOCATION_PREFIX}/providers/Microsoft.DevCenter/devcenters/dc-devcenter-${TEMP_LOCATION_PREFIX}/attachednetworks/nc-devbox-pooly-${TEMP_LOCATION_PREFIX},rg-devbox-${TEMP_LOCATION_PREFIX}-NIC-pooly \
 "
 
 for TEMP_NC_DEF in $TEMP_NC_DEFS; do

@@ -54,16 +54,16 @@ TEMP_VNET_NAME="vnet-devbox-${TEMP_LOCATION_PREFIX}"
 TEMP_VNET_ADDRESS="${TEMP_IP_PREFIX}.0.0/16"
 TEMP_NSG_NAME="${TEMP_VNET_NAME}-nsg"
 TEMP_UDR_NAME="${TEMP_VNET_NAME}-udr"
-TEMP_SUBNET_POOL1="${TEMP_IP_PREFIX}.10.0/25"
-TEMP_SUBNET_POOL2="${TEMP_IP_PREFIX}.20.0/25"
+TEMP_SUBNET_POOL_X="${TEMP_IP_PREFIX}.10.0/24"
+TEMP_SUBNET_POOL_Y="${TEMP_IP_PREFIX}.20.0/24"
 
 az group create --name ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME}
 az network vnet create --resource-group ${TEMP_RG_NAME} --name ${TEMP_VNET_NAME} --address-prefixes ${TEMP_VNET_ADDRESS}
 az network route-table create --resource-group ${TEMP_RG_NAME} --name ${TEMP_UDR_NAME}
 az network nsg create --name ${TEMP_NSG_NAME} --resource-group ${TEMP_RG_NAME}
 
-az network vnet subnet create --name "DevBoxPool1Subnet" --address-prefix ${TEMP_SUBNET_POOL1} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
-az network vnet subnet create --name "DevBoxPool2Subnet" --address-prefix ${TEMP_SUBNET_POOL2} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
+az network vnet subnet create --name "DevBoxPoolXSubnet" --address-prefix ${TEMP_SUBNET_POOL_X} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
+az network vnet subnet create --name "DevBoxPoolYSubnet" --address-prefix ${TEMP_SUBNET_POOL_Y} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
 
 # VNET ピアリング設定
 TEMP_HUB_VNET_ID="/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devhub-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/virtualNetworks/vnet-devhub-${TEMP_LOCATION_PREFIX}"
