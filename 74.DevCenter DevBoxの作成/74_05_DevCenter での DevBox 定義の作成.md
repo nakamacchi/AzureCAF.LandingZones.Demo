@@ -104,8 +104,7 @@ az rest --method PUT --uri "${TEMP_DC_ID}/devboxdefinitions/${TEMP_DBD_NAME}?api
   "location": "${TEMP_LOCATION_NAME}",
   "properties": {
     "imageReference": {
-        "id": "${TEMP_DC_ID}/galleries/default/images/${TEMP_VM_IMAGE_NAME}",
-        "exactVersion": "1.0.0"
+        "id": "${TEMP_DC_ID}/galleries/default/images/${TEMP_VM_IMAGE_NAME}"
     },
     "sku": {
         "name": "${TEMP_VM_SKU_NAME}"
