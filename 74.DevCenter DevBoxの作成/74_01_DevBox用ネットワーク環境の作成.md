@@ -9,6 +9,8 @@ DevBox を利用するには、DevBox を収容するためのネットワーク
 - devhub, devbox の VNET の作成とピアリング
 - Azure Firewall の作成と UDR の設定（※ 通信ルール設定は次セクション）
 
+なお、ネットワークを設計する際、ひとつのサブネットに複数の開発ボックスプールが割り当てられる場合があることに注意してください。（一つの開発プロジェクトで異なるサイズの VM を利用する場合などに発生します）　このため本サンプルでは、サブネット名に開発プロジェクト名を利用し、当該サブネットには当該開発プロジェクトの複数の開発ボックスプールが割り当てられる、という想定で設計しています。
+
 ```bash
 
 IP_DEV1_HUB_PREFIXS[0]="10.30"
@@ -54,16 +56,16 @@ TEMP_VNET_NAME="vnet-devbox-${TEMP_LOCATION_PREFIX}"
 TEMP_VNET_ADDRESS="${TEMP_IP_PREFIX}.0.0/16"
 TEMP_NSG_NAME="${TEMP_VNET_NAME}-nsg"
 TEMP_UDR_NAME="${TEMP_VNET_NAME}-udr"
-TEMP_SUBNET_POOL_X="${TEMP_IP_PREFIX}.10.0/24"
-TEMP_SUBNET_POOL_Y="${TEMP_IP_PREFIX}.20.0/24"
+TEMP_SUBNET_DEVPROJECT_X="${TEMP_IP_PREFIX}.10.0/24"
+TEMP_SUBNET_DEVPROJECT_Y="${TEMP_IP_PREFIX}.20.0/24"
 
 az group create --name ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME}
 az network vnet create --resource-group ${TEMP_RG_NAME} --name ${TEMP_VNET_NAME} --address-prefixes ${TEMP_VNET_ADDRESS}
 az network route-table create --resource-group ${TEMP_RG_NAME} --name ${TEMP_UDR_NAME}
 az network nsg create --name ${TEMP_NSG_NAME} --resource-group ${TEMP_RG_NAME}
 
-az network vnet subnet create --name "DevBoxPoolXSubnet" --address-prefix ${TEMP_SUBNET_POOL_X} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
-az network vnet subnet create --name "DevBoxPoolYSubnet" --address-prefix ${TEMP_SUBNET_POOL_Y} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
+az network vnet subnet create --name "DevProjectXSubnet" --address-prefix ${TEMP_SUBNET_DEVPROJECT_X} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
+az network vnet subnet create --name "DevProjectYSubnet" --address-prefix ${TEMP_SUBNET_DEVPROJECT_Y} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
 
 # VNET ピアリング設定
 TEMP_HUB_VNET_ID="/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/rg-devhub-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/virtualNetworks/vnet-devhub-${TEMP_LOCATION_PREFIX}"

@@ -12,10 +12,10 @@
 本サンプルでは、以下のような DevBox プールを作成します。
 
 | 開発プロジェクト名 | DevBox プール名 | DevBox 定義 | アタッチドネットワーク接続 |
-| DevProjectX | dbp-devprojectx-vs2022-8core | vs2022ent-8core-32gb-256gb | nc-devbox-poolx-eus |
-| DevProjectX | dbp-devprojectx-vs2022-16core | vs2022ent-16core-64gb-256gb | nc-devbox-poolx-eus |
-| DevProjectY | dbp-devprojecty-vs2022-8core | vs2022ent-8core-32gb-256gb | nc-devbox-pooly-eus |
-| DevProjectY | dbp-devprojecty-vs2022-16core | vs2022ent-16core-64gb-256gb | nc-devbox-pooly-eus |
+| DevProjectX | dbp-devprojectx-vs2022-8core-${TEMP_LOCATION_PREFIX} | vs2022ent-8core-32gb-256gb | an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojectx |
+| DevProjectX | dbp-devprojectx-vs2022-16core-${TEMP_LOCATION_PREFIX} | vs2022ent-16core-64gb-256gb | an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojectx |
+| DevProjectY | dbp-devprojecty-vs2022-8core-${TEMP_LOCATION_PREFIX} | vs2022ent-8core-32gb-256gb | an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojecty |
+| DevProjectY | dbp-devprojecty-vs2022-16core-${TEMP_LOCATION_PREFIX} | vs2022ent-16core-64gb-256gb | an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojecty |
 
 ```bash
 
@@ -30,14 +30,16 @@ TEMP_RG_NAME="rg-devcenter-${TEMP_LOCATION_PREFIX}"
 TEMP_DC_NAME="dc-devcenter-${TEMP_LOCATION_PREFIX}"
 
 TEMP_DBP_DEFS="\
-DevProjectX,dbp-devprojectx-poolx,vs2022ent-8core-32gb-256gb,nc-devbox-poolx-eus \
-DevProjectY,dbp-devprojectx-pooly,vs2022ent-8core-32gb-256gb,nc-devbox-pooly-eus \
+DevProjectX,dbp-devprojectx-vs2022-8core-${TEMP_LOCATION_PREFIX},vs2022ent-8core-32gb-256gb,an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojectx \
+DevProjectX,dbp-devprojectx-vs2022-16core-${TEMP_LOCATION_PREFIX},vs2022ent-16core-64gb-256gb,an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojectx \
+DevProjectY,dbp-devprojecty-vs2022-8core-${TEMP_LOCATION_PREFIX},vs2022ent-8core-32gb-256gb,an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojecty \
+DevProjectY,dbp-devprojecty-vs2022-16core-${TEMP_LOCATION_PREFIX},vs2022ent-16core-64gb-256gb,an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojecty \
 "
 
 for TEMP_DBP_DEF in $TEMP_DBP_DEFS; do
 TEMP=(${TEMP_DBP_DEF//,/ })
 TEMP_PRJ_NAME=${TEMP[0]}
-TEMP_POOL_IMAGE_NAME=${TEMP[1]}
+TEMP_POOL_NAME=${TEMP[1]}
 TEMP_DBD_NAME=${TEMP[2]}
 TEMP_AN_NAME=${TEMP[3]}
 
