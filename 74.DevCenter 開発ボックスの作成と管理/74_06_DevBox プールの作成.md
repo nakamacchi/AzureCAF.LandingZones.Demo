@@ -12,6 +12,7 @@
 本サンプルでは、以下のような DevBox プールを作成します。
 
 | 開発プロジェクト名 | DevBox プール名 | DevBox 定義 | アタッチドネットワーク接続 |
+| --- | --- | --- | --- |
 | DevProjectX | dbp-devprojectx-vs2022-8core-${TEMP_LOCATION_PREFIX} | vs2022ent-8core-32gb-256gb | an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojectx |
 | DevProjectX | dbp-devprojectx-vs2022-16core-${TEMP_LOCATION_PREFIX} | vs2022ent-16core-64gb-256gb | an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojectx |
 | DevProjectY | dbp-devprojecty-vs2022-8core-${TEMP_LOCATION_PREFIX} | vs2022ent-8core-32gb-256gb | an-vnet-devbox-${TEMP_LOCATION_PREFIX}-subnet-devprojecty |
