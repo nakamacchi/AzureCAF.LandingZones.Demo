@@ -26,3 +26,17 @@ EOF
 上記のユーザアカウントでセルフサービスポータル（https://devbox.microsoft.com/）にログインし、開発ボックスを作成してください。
 
 ![picture 0](./images/341f0d421051f738bfaf9dddfc87f5a0757015d01640db32631b39ea03220300.png)  
+
+## VM へのログイン
+
+
+
+## OS の日本語化
+
+今回、開発ボックスの VM イメージはマイクロソフトが用意した英語版のものをそのまま利用しています。このため、日本語化したい場合には、VM 作成後に言語パックを適用する必要があります。
+
+- Windows OS
+  - Settings > Time & Language > Language & Region > Preferred languages > Add a language > 日本語
+- Visual Studio
+  - 
+
