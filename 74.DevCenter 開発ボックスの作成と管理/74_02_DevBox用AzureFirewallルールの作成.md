@@ -18,7 +18,6 @@
 - DefaultNetworkRuleCollectionGroup (2000)
   - 10000 : Windows 365 の基本的な通信を許可
   - 30000 : OS の時刻同期に関する通信を許可
-  - 50000 : すべてのトラフィックを許可
 
 ```bash
 
@@ -205,15 +204,6 @@ az rest --method PUT --uri "/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroup
         "priority": 30000,
         "rules": [
           { "ruleType": "NetworkRule", "ipProtocols": [ "TCP" ], "sourceAddresses": [ "*" ], "name": "KMS", "destinationPorts": [ 1688 ],  "destinationAddresses": [ "20.118.99.224", "40.83.235.53", "23.102.135.246" ] }
-        ]
-      },
-      {
-        "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
-        "action": { "type": "Allow" },
-        "name": "AllowAllTraffic",
-        "priority": 50000,
-        "rules": [
-          { "ruleType": "NetworkRule", "ipProtocols": [ "Any" ], "sourceAddresses": [ "*" ], "name": "AllowAllTraffic", "destinationPorts": [ "*" ],  "destinationAddresses": [ "*" ] }
         ]
       }
     ]
