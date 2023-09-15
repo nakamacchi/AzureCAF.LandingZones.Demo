@@ -192,7 +192,7 @@ az rest --method PUT --uri "/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroup
         "priority": 10000,
         "rules": [
           { "ruleType": "NetworkRule", "ipProtocols": [ "TCP" ], "sourceAddresses": [ "*" ], "name": "KMS", "destinationPorts": [ 1688 ],  "destinationFqdns": [ "kms.core.windows.net", "azkms.core.windows.net" ] },
-          { "ruleType": "NetworkRule", "ipProtocols": [ "TCP" ], "sourceAddresses": [ "*" ], "name": "Registration", "destinationPorts": [ 443, 5671 ],  "destinationFqdns": [ "global.azure-devices-provisioning.net", "hm-iot-in-prod-preu01.azure-devices.net", "hm-iot-in-prod-prap01.azure-devices.net", "hm-iot-in-prod-prna01.azure-devices.net", "hm-iot-in-prod-prau01.azure-devices.net" ] },
+          { "ruleType": "NetworkRule", "ipProtocols": [ "TCP" ], "sourceAddresses": [ "*" ], "name": "Registration", "destinationPorts": [ 443, 5671 ],  "destinationFqdns": [ "global.azure-devices-provisioning.net", "hm-iot-in-prod-preu01.azure-devices.net", "hm-iot-in-prod-prap01.azure-devices.net", "hm-iot-in-prod-prna01.azure-devices.net", "hm-iot-in-prod-prau01.azure-devices.net", "hm-iot-in-2-prod-prna01.azure-devices.net", "hm-iot-in-3-prod-prna01.azure-devices.net", "hm-iot-in-2-prod-prna01.azure-devices.net", "hm-iot-in-3-prod-prna01.azure-devices.net" ] },
           { "ruleType": "NetworkRule", "ipProtocols": [ "UDP" ], "sourceAddresses": [ "*" ], "name": "TURN-UDP", "destinationPorts": [ 3478 ],  "destinationAddresses": [ "20.202.0.0/16", "13.107.17.41/32" ] },
           { "ruleType": "NetworkRule", "ipProtocols": [ "TCP" ], "sourceAddresses": [ "*" ], "name": "TURN-TCP", "destinationPorts": [ 443 ],  "destinationAddresses": [ "20.202.0.0/16" ] }
         ]
