@@ -51,7 +51,8 @@ az rest --method GET --uri "/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroup
     - microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
   - なお、OS はいずれも英語イメージです。
     - 日本語化が必要な場合には、設定画面から変更を行います。（方法は Windows 365 の場合と同じです。）
-    - Settings > Time & Language > Language & Region > Preferred languages > Add a language > 日本語
+    - Settings > Time & Language > Language & Region > Preferred languages > Add a language > 日本語 (Japanese) を追加
+    - Set as my Windows display language をチェックして install
 
 ## 利用可能なマシンタイプについて
 
