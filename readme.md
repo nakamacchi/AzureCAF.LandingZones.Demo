@@ -8,7 +8,7 @@
 - 本資料をベースにして設計・構築を進めていただければ、セキュアかつガバナンスの効いた Azure 共通基盤の構築をスムーズに進めていただくことができます。
 - 新しく Azure 共通基盤を作る場合だけでなく、すでに共通基盤をお持ちのお客様も、セキュリティやガバナンスの強化にご活用いただけます。
 
-![picture 0](./images/7d20ded25549438777dc8878522705a6db56aa799234ce8a4009301ea7c2790c.png)  
+![picture 4](images/62c5f347d71f4fb7e71801de83cfbca083327b31ce671a6cd2a8206e4b843bff.png)  
 
 ### 資料の全体構成について
 
@@ -17,7 +17,7 @@
 | カテゴリ | コンテンツ | リンク |
 | :-- | :-- | :-- |
 | 戦略立案ガイド | 超訳 Azure CAF | [解説資料](https://download.microsoft.com/download/2/a/b/2ab69a5d-7c69-4a24-a692-50823e3255d6/Translations_AzureCAF_v0.11.pptx) <br> [解説ビデオ前半](https://www.youtube.com/watch?v=eHLpPk6P8hw&t=10s) <br> [解説ビデオ後半](https://www.youtube.com/watch?v=RwAtcn75_7A&t=0s) |
-| 共通基盤設計ガイド | Azure 共通基盤設計ガイド | [解説資料](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xZs017DXdoHTy9fn4yYVLPLUSSIGNFXTyy5PLUSSIGNS14p0PLUSSIGNmFpjO3IMyMfU0fsLySs2___VfgpCKqbQ)  <br> [付録（ガバナンス設計用Excelシート）](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE64Syy7H6UHhao19mGQ6SdMhQ1___l4rEsmMFXZmgWJvVjoxOI5K7mwavHIsfJFxyRF) |
+| 共通基盤設計ガイド | Azure 共通基盤設計ガイド | [解説資料](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xZs017DXdoHTy9fn4yYVLPLUSSIGNFXTyy5PLUSSIGNS14p0PLUSSIGNmFpjO3IMyMfU0fsLySs2___VfgpCKqbQ)  <br> [付録（ガバナンス設計用Excelシート）](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE64Syy7H6UHhao19mGQ6SdMhQ1___l4rEsmMFXZmgWJvVjoxOI5K7mwavHIsfJFxyRF) <br> [ターゲットアーキテクチャと基本セオリー概説ビデオ](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyR3BFiBxV1NLfAMSorZfZ3ln6JjL76CumxD3AotPdEdyU1uh9MnZt4aKP5CCTqrb79tByYCWwydnEDK3RSWpLu) |
 | 共通基盤構築デモ | Azure 共通基盤構築デモ | [構築スクリプト](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo/) <br> [デモビデオ](#作業デモビデオ) |
 
 全体概要や活用方法を知りたい場合には、下記 Webinar（約1時間）をご覧ください。
@@ -30,7 +30,7 @@
 
 上記 3 つのコンテンツは、資料上、下記のような体系で整理されています。
 
-![picture 2](./images/69e0e9d4d66a02bc089961c77f57c1a75c8af1c781e89bffa05ae01b61a256c8.png)  
+![picture 2](images/ee963f2ed82dee37c9664ed445e19f44a35bfd11d773927ac0818a5557c22810.png)  
 
 一方、実際にご利用いただく場合には、以下のような点もあると思います。
 
@@ -46,7 +46,7 @@
   - 簡単な Azure の解説も含めていますので、ビデオは Azure の予備知識がなくても見ることができるように作ってあります。（時間のかかるところはビデオ編集してありますが）作業手順のところは 1.5 倍速再生でもよいと思います。
 - その後、エンドユーザ企業様は戦略立案ガイドを、パートナー企業様は共通基盤設計ガイドを詳細に読み込んでいく。
 
-![picture 3](./images/b1f3e84ce251418a3eac50970bbdc7608b53278df657880ecae2842281716304.png)  
+![picture 0](images/4dc6b363ea5ef535b52e76cacede048485eee4731aaea5356970ccb994a2675f.png)  
 
 ## Azure 共通基盤 構築デモについて
 
@@ -78,7 +78,7 @@
 | 業務 | subscription-spoke-e | (未定) |
 | 業務 | subscription-spoke-f | 業務システムサンプル F（CaaS Web-DB アプリ） |
 | 開発 | subscription-dev1 | 開発環境（管理用） (DevCenter, DevBox) |
-| 開発 | subscription-dev1 | 開発環境（サンドボックス） (Deployment Environment) |
+| 開発 | subscription-dev2 | 開発環境（サンドボックス） (Deployment Environment) |
 
 基本部分（基盤＋Spoke A,B）のシステム構成図は下図のようになります。（よくある Hub-Spoke 型構成です。図中にオンプレとの ER 接続が描かれていますが、これは実際には含まれていません。）
 
