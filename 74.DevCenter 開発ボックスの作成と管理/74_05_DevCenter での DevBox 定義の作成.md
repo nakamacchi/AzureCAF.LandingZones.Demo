@@ -20,8 +20,9 @@ DevBox 定義を作成し、当該 DevCenter 内で利用してよい VM イメ�
       - Windows 11 Enterprise + OS Optimizations 22H2
       - Windows 11 Enterprise + Microsoft 365 Apps 21H2
       - Windows 11 Enterprise + Microsoft 365 Apps 22H2
-      - Windows 11 Enterprise + Developer Optimizations 22H2
   - DevBox 専用イメージ
+    - OS のみの基本イメージ
+      - Windows 11 Enterprise + Developer Optimizations 22H2
     - Windows 10 + Visual Studio Professional 系列
       - Visual Studio 2019 Pro on Windows 10 Enterprise + Microsoft 365 Apps 22H2
       - Visual Studio 2022 Pro on Windows 10 Enterprise + Microsoft 365 Apps 22H2
