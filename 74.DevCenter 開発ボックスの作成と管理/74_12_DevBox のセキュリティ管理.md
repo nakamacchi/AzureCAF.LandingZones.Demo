@@ -16,7 +16,9 @@ DevBox VM は Windows 365 Cloud PC、すなわちクライアント PC です。
 
 ## RDP プロトコルのセキュリティ管理について
 
-※ 後日執筆予定です
+DevBox VM を利用する際、特に規制業界では、RDP プロトコルを介した情報流出リスクを気にする場合があります。例えばデバイスリダイレクション機能を利用してローカルの USB メモリをクラウド PC につなぐ機能は便利ですが、制限をかけたいと考える場合もあるでしょう。AVD (Azure Virtual Desktop) では、VM プールに対して RDP プロパティを設定することにより容易なカスタマイズが可能でしたが（[Customize Remote Desktop Protocol (RDP) properties for a host pool](https://learn.microsoft.com/en-us/azure/virtual-desktop/customize-rdp-properties)）、Windows 365, DevBox の場合にはこの方法は利用できません。同様のことを行いたい場合にはグループポリシーを作成し、Intune から割り当てることにより実現します。
+
+なお注意点として、開発者用 VM の場合、利用ユーザに対してローカルマシンの管理者権限を与えることが多く、この場合にはグループポリシーを強制的に上書きすることも可能になりますし、他のソフトウェアのインストール・利用など、原理的に様々な方法での不正行動が可能になり得ます。またリモート開発の場合にはモニタをスマホカメラで撮影する、といった古典的な情報漏洩も起こり得ます。このため厳格なセキュリティ管理にはどうしても限界がある、という点も加味しての検討が必要です。
 
 ## Azure Security Benchmark への対応について
 
