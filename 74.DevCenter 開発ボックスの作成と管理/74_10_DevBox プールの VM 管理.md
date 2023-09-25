@@ -1,6 +1,6 @@
 # DevBox プールの VM 管理
 
-DevBox プールの中に作成された VM を確認するには、以下の方法があります。2023/09 時点では、ARM API を通して簡単に VM の一覧を取得する方法が提供されていないため、下記の方法を組み合わせて利用する必要があります。
+DevBox プールの中に作成された VM に対する主な管理作業として、以下を解説します。
 
 - プール内の VM 数を確認する
 - プール内の VM の一覧を確認する
@@ -10,7 +10,7 @@ DevBox プールの中に作成された VM を確認するには、以下の方
 
 ## プール内の VM 数を確認する
 
-プール内の VM 総数は、Azure Portal またはコマンドラインから確認できます。（プールごとに VM 総数は確認できますが、残念ながら VM の一覧取得などはできません。）
+プール内の VM 総数は、Azure Portal またはコマンドラインから確認できます。
 
 ```bash
 
@@ -30,7 +30,89 @@ az rest --method GET --uri "/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroup
 
 ## プール内の VM の一覧を確認する
 
-Azure Portal からはプール内の VM 一覧を取得する機能がありませんが、デバイス管理ツールである Intune から確認することができます。これは DevBox VM は Windows 365 Cloud PC としてデバイス管理ツールである Intune に登録されているためです。
+以下の 3 つの方法で VM 一覧を取得できます。
+
+- Azure Portal
+- DevCenter REST API
+- Intune ポータル
+
+### Azure Portal
+
+Azure Portal から開発ボックスプールの詳細を確認すると、プール内の VM 一覧を確認できます。この際、**DevCenter や開発プロジェクトに対して Owner, Contributor などの権限を有しているだけでは一覧が取得できない**点に注意してください。開発プロジェクトに対して管理者権限をもっている（**DevCenter Project Admin ロールを保有している**）ユーザアカウントで Azure Portal にログインすると、下図のように VM 一覧を確認することができます。（次に説明する DevCenter REST API についても同様です。）
+
+![picture 0](./images/a48f365d292bfe437061b791b2fc76f4d70413541ebbfab5ed3b1b1102044589.png)  
+
+### DevCenter REST API
+
+DevCenter API を利用すると、開発プロジェクトに属する VM の一覧を取得できます。詳細情報も含まれているため、各種の検索を行うことも可能です。
+
+```bash
+
+# 開発プロジェクトの管理者権限 (DevCenter Project Admin ロール)に属するユーザアカウントで作業
+az login -u "user_projectx_admin@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"
+
+TEMP_LOCATION_NAME=${LOCATION_NAMES[0]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[0]}
+TEMP_RG_NAME="rg-devcenter-${TEMP_LOCATION_PREFIX}"
+TEMP_DC_NAME="dc-devcenter-${TEMP_LOCATION_PREFIX}"
+TEMP_PRJ_NAME="DevProjectX"
+TEMP_DBP_NAME="dbp-devprojectx-vs2022-8core-${TEMP_LOCATION_PREFIX}"
+
+# DevCenter API を使う場合には、まず DevCenter URI を拾う
+# 例）https://5f335032-b138-4484-8436-45b77a200855-dc-devcenter-eus.eastus.devcenter.azure.com/
+TEMP_DC_URI=$(az rest --method GET --uri "/subscriptions/${SUBSCRIPTION_ID_DEV1}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.DevCenter/projects/${TEMP_PRJ_NAME}?api-version=2023-04-01" --query "properties.devCenterUri" -o tsv)
+
+# DevCenter API から DevBox 一覧を取得　※ 開発プロジェクト管理者権限が必要
+az rest --method GET --uri "${TEMP_DC_URI}devboxes?api-version=2023-04-01" --resource https://devcenter.azure.com/
+# または az devcenter dev dev-box list --dev-center-name "${TEMP_DC_NAME}"
+
+```
+
+取得される情報は以下の通りです。VM イメージ、SKU サイズ、VM GUID、所属する VM プールなどの他に、作成者、作成日時、現在の VM の状態などが含まれます。
+
+```az cli
+
+[
+  {
+    "actionState": "Started",
+    "createdTime": "2023-09-13T13:24:04.290014+00:00",
+    "error": null,
+    "hardwareProfile": {
+      "memoryGb": 32,
+      "skuName": "general_i_8c32gb256ssd_v2",
+      "vCpUs": 8
+    },
+    "hibernateSupport": "Enabled",
+    "imageReference": {
+      "name": "microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2",
+      "operatingSystem": "Windows11",
+      "osBuildNumber": "vs-2022-ent-general-win11-m365-gen2",
+      "publishedDate": "2022-09-20T00:00:00+00:00",
+      "version": "1.0.0"
+    },
+    "localAdministrator": "Enabled",
+    "location": "eastus",
+    "name": "vm001",
+    "osType": "Windows",
+    "poolName": "dbp-devprojectx-vs2022-8core-eus",
+    "powerState": "Running",
+    "projectName": "DevProjectX",
+    "provisioningState": "Succeeded",
+    "storageProfile": {
+      "osDisk": {
+        "diskSizeGb": 256
+      }
+    },
+    "uniqueId": "37fb8241-bde8-4098-ae6a-ebbd5082361e",
+    "user": "9e78363b-ea6f-4b97-a1cf-8484617b3a8f"
+  }
+]
+
+```
+
+### Intune ポータル
+
+DevBox VM は Windows 365 Cloud PC としてデバイス管理ツールである Intune に登録されているため、デバイス管理ツールである Intune から作成されている VM を確認することができます。（ただし Windows 365 を利用している場合にはそちらも表示されます。）
 
 ![picture 1](./images/4699a570936b2a65765ebae2bea8673cb759b328b787e3b237a1dcefc038f37b.png)  
 
@@ -42,7 +124,22 @@ Azure Portal からはプール内の VM 一覧を取得する機能がありま
 
 ## プール内での VM の作成と削除の履歴を確認する
 
-前述した Intune の機能は、セキュリティ管理者でないとアクセスすることができません。このため、開発プロジェクトの管理者がプール内の VM の一覧を取得したい場合には、（現状では）DevCenter から出力される診断ログを検索するのがよいでしょう。
+プール内の各 VM の作成日時は、VM の一覧を REST API で参照することにより確認できます。
+
+```bash
+
+# 開発プロジェクト内の各プールの VM を作成日時とともに表示する
+az devcenter dev dev-box list --dev-center-name "${TEMP_DC_NAME}" --query [].[projectName,poolName,user,name,createdTime,uniqueId] -o tsv
+
+```
+
+| projectName | poolName | user | name | createdTime | uniqueId |
+| --- | --- | --- | --- | --- | --- |
+| DevProjectX  | dbp-devprojectx-vs2022-8core-eus |       9e78363b-ea6f-4b97-a1cf-8484617b3a8f  |  vm001 |  2023-09-13T13:24:04.290014+00:00  |     37fb8241-bde8-4098-ae6a-ebbd5082361e |
+| DevProjectX | dbp-devprojectx-vs2022-8core-eus  |      9e78363b-ea6f-4b97-a1cf-8484617b3a8f | vm002 | 2023-09-25T08:22:58.588065+00:00  |  63b1efdf-ee7d-419f-a373-11f30fa5111f |
+
+
+他の方法として、DevCenter からの診断ログ出力を有効化している場合には、ログから作成・削除などの履歴を取得することができます。
 
 ```KQL クエリ
 
@@ -70,7 +167,7 @@ DevCenterDiagnosticLogs
 
 ## 特定のユーザが作成した VM を管理者が強制削除する
 
-すべてのユーザが作成した VM の一覧取得は厄介ですが、特定ユーザが作成した VM の一覧の取得は DevCenter に API があるため、容易です。さらにこれらを強制削除することも可能です。それぞれ以下の API を利用します。
+開発ボックス VM を一台単位で削除するのであれば Azure Portal を使っても可能ですが、退職したメンバーが持っていた VM をまとめて削除したいといった目的であれば、スクリプトを使うのが便利です。それぞれ以下の API を利用します。
 
 - [特定ユーザが作成した VM の一覧を取得する](https://learn.microsoft.com/en-us/rest/api/devcenter/developer/dev-boxes/list-dev-boxes-by-user?tabs=HTTP)
 - [プール内の VM を管理者が強制削除する](https://learn.microsoft.com/en-us/rest/api/devcenter/developer/dev-boxes/delete-dev-box?tabs=HTTP)
