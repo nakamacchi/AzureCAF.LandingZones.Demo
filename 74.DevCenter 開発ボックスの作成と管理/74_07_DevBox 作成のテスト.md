@@ -52,3 +52,9 @@ EOF
 上記の作業をいちいち開発者に行わせたくない場合や、他のツールをイメージの中に取り込んでおきたいような場合には、VM イメージのカスタマイズを行います。カスタマイズには AIB (Azure VM Image Builder)を利用します。実施方法は下記を参照してください。
 
 - [Azure VM Image Builder を使用して開発ボックスを構成する](https://learn.microsoft.com/ja-jp/azure/dev-box/how-to-customize-devbox-azure-image-builder)
+
+## (参考) Windows 365 クラウド PC としての扱い
+
+Dev Box VM は Windows 365 クラウド PC でもあるため、Windows 365 のセルフサービスポータル（[https://windows365.microsoft.com/](https://windows365.microsoft.com/)）にも表示されます。（ただしこちらのポータルからでは DevBox 固有のサスペンド操作などはできません。）
+
+![picture 1](./images/317d20fb5e3f1956f2581741378283153ac9c587e49bf623a1d9763b9dbb2638.png)  
