@@ -9,6 +9,7 @@
 - WAF の背後にある Web サーバへのアクセスでは HTTPS 通信を除外
 - Private Endpoint サブネットへの UDR 適用の除外
 - Application Gateway v2 にシステム的に割り当てられた NSG の診断ログ出力設定を除外
+- ADE が適用されている VM に対する Host Encryption の適用を除外
 
 ```bash
 
@@ -240,6 +241,41 @@ fi
 
 done
  
+for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
+az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
+done
+
+# ■ ADE が適用されている VM に対する Host Encryption の適用を除外(Mitigated)
+
+TEMP_EXEMPTION_NAME="Exemption-EncryptionAtHostLevelWithADE"
+cat > temp.json << EOF
+{
+  "properties": {
+    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
+    "policyDefinitionReferenceIds": [
+      "virtualMachinesAndVirtualMachineScaleSetsShouldHaveEncryptionAtHostEnabled"
+    ],
+    "exemptionCategory": "Mitigated",
+    "displayName": "ADE が適用されている VM に対して EncryptionAtHost の適用を除外 (Mitigated)",
+    "description": "ADE が適用されている場合は EncryptionAtHost の適用は不要"
+  }
+}
+EOF
+ 
+TEMP_RESOURCE_IDS=()
+j=0
+for TEMP_SUBSCRIPTION_ID in $SUBSCRIPTION_IDS; do
+az account set -s $TEMP_SUBSCRIPTION_ID
+for TEMP_VM_ID in $(az vm list --query [].id -o tsv); do
+TEMP_ENC_STATE=$(az vm encryption show --ids $TEMP_VM_ID --query "disks[0].statuses[0].code" -o tsv)
+if [[ $TEMP_ENC_STATE == "EncryptionState/encrypted" ]]; then
+  echo $TEMP_VM_ID $TEMP_ENC_STATE
+  TEMP_RESOURCE_IDS[j]=$TEMP_VM_ID
+  j=`expr $j + 1`
+fi
+done #TEMP_VM_ID
+done #TEMP_SUBSCRIPTION_ID
+
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
