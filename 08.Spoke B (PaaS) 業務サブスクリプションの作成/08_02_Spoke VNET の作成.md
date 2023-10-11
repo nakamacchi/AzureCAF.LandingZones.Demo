@@ -57,6 +57,7 @@ az network route-table route create --resource-group ${TEMP_RG_NAME} --name defa
 # UDR 割り当て
 az network vnet subnet update --route-table ${TEMP_UDR_NAME} --ids $(az network vnet subnet show --resource-group ${TEMP_RG_NAME} --vnet-name $TEMP_VNET_NAME --name "AppServiceBackendSubnet" --query id -o tsv)
 az network vnet subnet update --route-table ${TEMP_UDR_NAME} --ids $(az network vnet subnet show --resource-group ${TEMP_RG_NAME} --vnet-name $TEMP_VNET_NAME --name "DefaultSubnet" --query id -o tsv)
+az network vnet subnet update --route-table ${TEMP_UDR_NAME} --ids $(az network vnet subnet show --resource-group ${TEMP_RG_NAME} --vnet-name $TEMP_VNET_NAME --name "PrivateEndpointSubnet" --query id -o tsv)
 
 done # TEMP_LOCATION
 
