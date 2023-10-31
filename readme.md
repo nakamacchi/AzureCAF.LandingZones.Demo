@@ -17,7 +17,7 @@
 | カテゴリ | コンテンツ | リンク |
 | :-- | :-- | :-- |
 | 戦略立案ガイド | 超訳 Azure CAF | [解説資料](https://download.microsoft.com/download/2/a/b/2ab69a5d-7c69-4a24-a692-50823e3255d6/Translations_AzureCAF_v0.11.pptx) <br> [解説ビデオ前半](https://www.youtube.com/watch?v=eHLpPk6P8hw&t=10s) <br> [解説ビデオ後半](https://www.youtube.com/watch?v=RwAtcn75_7A&t=0s) |
-| 共通基盤設計ガイド | Azure 共通基盤設計ガイド | [解説資料](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xZs017DXdoHTy9fn4yYVLPLUSSIGNFXTyy5PLUSSIGNS14p0PLUSSIGNmFpjO3IMyMfU0fsLySs2___VfgpCKqbQ)  <br> [付録（ガバナンス設計用Excelシート）](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE64Syy7H6UHhao19mGQ6SdMhQ1___l4rEsmMFXZmgWJvVjoxOI5K7mwavHIsfJFxyRF) <br> [ターゲットアーキテクチャと基本セオリー概説ビデオ](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyR3BFiBxV1NLfAMSorZfZ3ln6JjL76CumxD3AotPdEdyU1uh9MnZt4aKP5CCTqrb79tByYCWwydnEDK3RSWpLu) |
+| 共通基盤設計ガイド | Azure 共通基盤設計ガイド | [解説資料](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxzAeXDiVVZPCGzgHUv3RusgLCcbVRQ4GXqcbXnq9ojW2h5cXOZCjQEtqTe0yHJU7O7IgbwndOxHjvrfkUUxaMM)  <br> [付録（ガバナンス設計用Excelシート）](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE64Syy7H6UHhao19mGQ6SdMhQ1___l4rEsmMFXZmgWJvVjoxOI5K7mwavHIsfJFxyRF) <br> [ターゲットアーキテクチャと基本セオリー概説ビデオ](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyR3BFiBxV1NLfAMSorZfZ3ln6JjL76CumxD3AotPdEdyU1uh9MnZt4aKP5CCTqrb79tByYCWwydnEDK3RSWpLu) |
 | 共通基盤構築デモ | Azure 共通基盤構築デモ | [構築スクリプト](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo/) <br> [デモビデオ](#作業デモビデオ) |
 
 全体概要や活用方法を知りたい場合には、下記 Webinar（約1時間）をご覧ください。
