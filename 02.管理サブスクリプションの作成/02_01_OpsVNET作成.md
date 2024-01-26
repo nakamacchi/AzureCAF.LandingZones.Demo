@@ -24,6 +24,19 @@
 
 まずは以下のスクリプトで Ops VNET と Azure Bastion を作成します。
 
+## Bastion の SKU 選択
+
+ここでは Standard SKU を利用しています。主な違いは[以下](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings)の通りです。
+
+- Basic SKU 以上のみ
+  - VNET Peering を介した接続
+  - Kerberos 認証のサポート
+- Standard SKU のみ
+  - ホストスケーリング
+  - ファイルのアップロード・ダウンロード
+  - Web クライアントでのコピペ無効化
+  - 共有リンク
+
 ```bash
 
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
@@ -74,7 +87,7 @@ for i in ${VDC_NUMBERS}; do
   TEMP_VNET_NAME="vnet-ops-${TEMP_LOCATION_PREFIX}"
  
   az network public-ip create --name ${TEMP_BASTION_PIP_NAME} --resource-group ${TEMP_RG_NAME} --sku Standard
-  az network bastion create --name ${TEMP_BASTION_NAME} --public-ip-address ${TEMP_BASTION_PIP_NAME} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --location ${TEMP_LOCATION_NAME} --no-wait
+  az network bastion create --name ${TEMP_BASTION_NAME} --public-ip-address ${TEMP_BASTION_PIP_NAME} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --location ${TEMP_LOCATION_NAME} --no-wait --sku Standard
 
 done # TEMP_LOCATION
 

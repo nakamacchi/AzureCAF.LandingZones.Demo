@@ -48,11 +48,13 @@ TEMP_FW_SKU="Standard" # DNS proxy 機能を利用するために Standard が�
 # Firewall Policy 作成
 az network firewall policy create --name ${TEMP_FWP_NAME} --resource-group ${TEMP_RG_NAME} --sku Standard
 
+TEMP_ZONE_REDUNDANCY=$( [ "$FLAG_USE_PLATFORM_AZ" = true ] && echo "--zone 1 2 3" )
 # パブリック IP、管理 IP を作成
-az network public-ip create --name ${TEMP_FW_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard
-az network public-ip create --name ${TEMP_FW_MGMT_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard
+az network public-ip create --name ${TEMP_FW_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard ${TEMP_ZONE_REDUNDANCY}
+az network public-ip create --name ${TEMP_FW_MGMT_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard ${TEMP_ZONE_REDUNDANCY}
  
 # ARM テンプレートで Azure Firewall を作成
+ZONES_FLAGMENT='"zones": ["1", "2", "3"]'
 cat <<EOF > tmp.json
 {
   "\$schema": " https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
@@ -63,6 +65,7 @@ cat <<EOF > tmp.json
       "apiVersion": "2020-05-01",
       "name": "${TEMP_FW_NAME}",
       "location": "${TEMP_LOCATION_NAME}",
+      $( [ "$FLAG_USE_PLATFORM_AZ" = true ] && echo "$ZONES_FLAGMENT," )
       "properties": {
                 "ipConfigurations": [
                     {
