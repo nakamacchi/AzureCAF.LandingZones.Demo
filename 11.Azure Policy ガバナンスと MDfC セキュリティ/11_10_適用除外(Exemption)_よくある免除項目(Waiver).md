@@ -23,7 +23,10 @@ TEMP_MG_TRG_ID=$(az account management-group list --query "[?displayName=='Tenan
 TEMP_ASSIGNMENT_ID=$(az policy assignment list --scope $TEMP_MG_TRG_ID --query "[? displayName == 'Microsoft Cloud Security Benchmark'].id" -o tsv)
 
 # ■ App Service のクライアント証明書を推奨するポリシーを除外 (Waiver)
-# App Service apps should have 'Client Certificates (Incoming client certificates)' enabled
+#[Deprecated]: App Service apps should have 'Client Certificates (Incoming client certificates)' enabled (5bb220d9-2698-4ee4-8404-b9c30c9df609)
+#ensureWEBAppHasClientCertificatesIncomingClientCertificatesSetToOnMonitoringEffect
+#App Service apps should have Client Certificates (Incoming client certificates) enabled (19dd1db6-f442-49cf-a838-b0786b4401ef)
+#ensureWebAppHasIncomingClientCertificatesSetToOnMonitoringEffect
 #TEMP_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_B}/resourcegroups/rg-spokeb-eus/providers/microsoft.web/sites/webapp-spokeb-eus"
  
 TEMP_EXEMPTION_NAME="Exemption-AppServiceClientCertificates"
@@ -32,7 +35,7 @@ cat > temp.json << EOF
   "properties": {
     "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
     "policyDefinitionReferenceIds": [
-      "ensureWEBAppHasClientCertificatesIncomingClientCertificatesSetToOnMonitoringEffect"
+      "ensureWebAppHasIncomingClientCertificatesSetToOnMonitoringEffect"
     ],
     "exemptionCategory": "Waiver",
     "displayName": "AppServiceのクライアント証明書認証を除外 (Waiver)",

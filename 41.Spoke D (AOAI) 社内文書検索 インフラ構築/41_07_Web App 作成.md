@@ -29,7 +29,8 @@ TEMP_RG_NAME="rg-spoked-${TEMP_LOCATION_PREFIX}"
 # App Service Plan (Linux) の作成
 # ※ Windows 版は Python が 3.4 までしかサポートされていないため、今回のケースでは利用できない
 # ※ Python 3.10 を利用するために Linux 版の App Service Plan を利用する。
-az appservice plan create --name "${TEMP_ASP_LINUX_NAME}" --resource-group "$TEMP_RG_NAME" --location "${TEMP_LOCATION_NAME}" --sku P2V2 --number-of-workers 2 --is-linux
+TEMP_ASP_OPTIONS=$( [[ "$FLAG_USE_WORKLOAD_AZ" = true ]] && echo "--sku P2V2 --number-of-workers 3 --zone-redundant" || echo "--sku P2V2 --number-of-workers 1" )
+az appservice plan create --name "${TEMP_ASP_LINUX_NAME}" --resource-group "$TEMP_RG_NAME" --location "${TEMP_LOCATION_NAME}" --is-linux $TEMP_ASP_OPTIONS
 
 # Web App の作成
 # Web App 名はグローバルに一意である必要があるため UNIQUE_SUFFIX を付与する
