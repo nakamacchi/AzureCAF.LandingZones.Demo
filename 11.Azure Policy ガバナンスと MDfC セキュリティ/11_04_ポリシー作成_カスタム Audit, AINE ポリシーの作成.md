@@ -42,6 +42,349 @@ Audit ポリシー、AINE ポリシーを理解するためには、Azure Policy
   - 特殊なリソースが使われていないことを確認する
   - 規制要件に準拠していないリージョンを使っていない
 
+（参考）westcentralus リージョンは、Canary リージョンに次いで最も早く変更がデプロイされるリージョンです。このためミッションクリティカルシステムではこのリージョンにパイロットシステムを配置してポリシーでチェックしておくと、変更の確認などが行えます。
+
+```bash
+
+# https://learn.microsoft.com/ja-jp/azure/governance/policy/tutorials/create-and-manage
+
+if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
+TEMP_MG_TRG_ID=$(az account management-group list --query "[?displayName=='Tenant Root Group'].id" -o tsv)
+
+az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-network-udr-no-internet-route?api-version=2023-04-01" --body @- <<EOF
+{
+    "properties": {
+        "DisplayName": "Check no internet route in UDR",
+        "Description": "Confirm that the Internet is not included as the Next Hop in UDR.",
+        "metadata": {
+            "category": "Custom Policy - Check - Network"
+        },
+        "Mode": "Indexed",
+        "PolicyType": "Custom",
+        "PolicyRule": {
+            "if": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            {
+                                "equals": "Microsoft.Network/routeTables",
+                                "field": "type"
+                            },
+                            {
+                                "count": {
+                                    "field": "Microsoft.Network/routeTables/routes[*]",
+                                    "where": {
+                                        "equals": "Internet",
+                                        "field": "Microsoft.Network/routeTables/routes[*].nextHopType"
+                                    }
+                                },
+                                "greater": 0
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            {
+                                "equals": "Microsoft.Network/routeTables/routes",
+                                "field": "type"
+                            },
+                            {
+                                "equals": "Internet",
+                                "field": "Microsoft.Network/routeTables/routes/nextHopType"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "audit"
+            }
+        }
+    }
+}
+EOF
+
+az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-network-subnet-with-udr?api-version=2023-04-01" --body @- <<EOF
+{
+    "properties": {
+        "DisplayName": "UDR is assigned to the subnet",
+        "Description": "Ensure that there are no subnets without an assigned UDR.",
+        "metadata": {
+            "category": "Custom Policy - Check - Network"
+        },
+        "Mode": "Indexed",
+        "PolicyType": "Custom",
+        "PolicyRule": {
+            "if": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            {
+                                "equals": "Microsoft.Network/virtualNetworks",
+                                "field": "type"
+                            },
+                            {
+                                "count": {
+                                    "field": "Microsoft.Network/virtualNetworks/subnets[*]",
+                                    "where": {
+                                        "allOf": [
+                                            {
+                                                "exists": "false",
+                                                "field": "Microsoft.Network/virtualNetworks/subnets[*].routeTable.id"
+                                            },
+                                            {
+                                                "field": "Microsoft.Network/virtualNetworks/subnets[*].name",
+                                                "notIn": [
+                                                    "AzureFirewallSubnet",
+                                                    "AzureBastionSubnet"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                "notEquals": 0
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            {
+                                "field": "type",
+                                "equals": "Microsoft.Network/virtualNetworks/subnets"
+                            },
+                            {
+                                "field": "name",
+                                "notIn": [
+                                    "AzureFirewallSubnet",
+                                    "AzureBastionSubnet"
+                                ]
+                            },
+                            {
+                                "field": "Microsoft.Network/virtualNetworks/subnets/routeTable.id",
+                                "exists": "false"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "audit"
+            }
+        }
+    }
+}
+
+az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-network-no-service-endpoint?api-version=2023-04-01" --body @- <<EOF
+{
+    "properties": {
+        "DisplayName": "No Service Endpoint is set in the subnet",
+        "Description": "Confirm that no service endpoints are set in the subnet.",
+        "metadata": {
+            "category": "Custom Policy - Check - Network"
+        },
+        "Mode": "Indexed",
+        "PolicyType": "Custom",
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Network/virtualNetworks/subnets"
+                    },
+                    {
+                        "field": "Microsoft.Network/virtualNetworks/subnets/serviceEndpoints[*].service",
+                        "exists": "true"
+                    }
+                ]
+            },
+            "then": {
+                "effect": "audit"
+            }
+        }
+
+    }
+}
+EOF
+
+az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-monitoring-diagnostic-logs-enabled?api-version=2023-04-01" --body @- <<EOF
+{
+    "properties": {
+        "DisplayName": "Necessary resource diagnostic log settings are implemented.",
+        "Description": "Ensure that diagnostic log settings are enabled for resources that should output the logs.",
+        "metadata": {
+            "category": "Custom Policy - Check - Monitoring"
+        },
+        "Mode": "Indexed",
+        "PolicyType": "Custom",
+        "policyRule": {
+            "if": {
+                "anyOf": [
+                    {
+                        "field": "type",
+                        "in": [
+                            "Microsoft.Network/azureFirewalls",
+                            "Microsoft.Network/applicationGateways",
+                            "Microsoft.Network/azureFirewalls",
+                            "Microsoft.Network/bastionHosts",
+                            "Microsoft.Network/networkSecurityGroups",
+                            "Microsoft.Network/publicIPAddresses",
+                            "Microsoft.Storage/storageAccounts",
+                            "Microsoft.KeyVault/vaults",
+                            "Microsoft.RecoveryServices/vaults",
+                            "Microsoft.OperationalInsights/workspaces"
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "AuditIfNotExists",
+                "details": {
+                    "type": "Microsoft.Insights/diagnosticSettings",
+                    "existenceCondition": {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                                "equals": "true"
+                            },
+                            {
+                                "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
+                                "exists": "true"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
+EOF
+
+az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-resource-uncommon?api-version=2023-04-01" --body @- <<EOF
+{
+    "properties": {
+        "DisplayName": "Check no use of special resource types",
+        "Description": "Check if non-standard resources are being used.",
+        "metadata": {
+            "category": "Custom Policy - Check - Resource"
+        },
+        "Mode": "Indexed",
+        "PolicyType": "Custom",
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "notIn": [
+                            "microsoft.alertsmanagement/smartDetectorAlertRules",
+                            "microsoft.alertsmanagement/actionrules",
+                            "Microsoft.Compute/disks",
+                            "Microsoft.Compute/restorePointCollections",
+                            "Microsoft.Compute/virtualMachines",
+                            "Microsoft.Compute/virtualMachines/extensions",
+                            "microsoft.dashboard/grafana",
+                            "microsoft.insights/actiongroups",
+                            "microsoft.insights/actiongroupsMicrosoft.Dashboard/grafana",
+                            "microsoft.insights/activitylogalerts",
+                            "Microsoft.Insights/components",
+                            "Microsoft.Insights/dataCollectionEndpoints",
+                            "Microsoft.Insights/dataCollectionRules",
+                            "microsoft.insights/metricalerts",
+                            "microsoft.insights/scheduledqueryrules",
+                            "Microsoft.Maintenance/maintenanceConfigurations",
+                            "microsoft.insights/webtests",
+                            "Microsoft.KeyVault/vaults",
+                            "Microsoft.Maintenance/maintenanceConfigurations",
+                            "Microsoft.ManagedIdentity/userAssignedIdentities",
+                            "Microsoft.Network/applicationGateways",
+                            "Microsoft.Network/azureFirewalls",
+                            "Microsoft.Network/bastionHosts",
+                            "Microsoft.Network/firewallPolicies",
+                            "Microsoft.Network/networkInterfaces",
+                            "Microsoft.Network/networkSecurityGroups",
+                            "Microsoft.Network/networkWatchers",
+                            "Microsoft.Network/networkWatchers/flowLogs",
+                            "Microsoft.Network/privateDnsZones",
+                            "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                            "Microsoft.Network/privateEndpoints",
+                            "Microsoft.Network/publicIPAddresses",
+                            "Microsoft.Network/routeTables",
+                            "Microsoft.Network/virtualNetworks",
+                            "Microsoft.OperationalInsights/workspaces",
+                            "Microsoft.OperationsManagement/solutions",
+                            "Microsoft.Portal/dashboards",
+                            "Microsoft.RecoveryServices/vaults",
+                            "Microsoft.Security/automations",
+                            "Microsoft.Security/automationsMicrosoft.Compute/disks",
+                            "Microsoft.Sql/servers",
+                            "Microsoft.Sql/servers/databases",
+                            "Microsoft.SqlVirtualMachine/SqlVirtualMachines",
+                            "Microsoft.Storage/storageAccounts",
+                            "Microsoft.Web/serverFarms",
+                            "Microsoft.Web/sites",
+                            "Microsoft.Network/loadBalancers",
+                            "Microsoft.App/containerApps",
+                            "Microsoft.App/managedEnvironments",
+                            "Microsoft.ContainerRegistry/registries",
+                            "Microsoft.CognitiveServices/accounts",
+                            "Microsoft.DocumentDB/databaseAccounts",
+                            "Microsoft.Search/searchServices",
+                            "Microsoft.ContainerRegistry/registries/replications"
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "audit"
+            }
+        }
+    }
+}
+EOF
+
+az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-resource-location?api-version=2023-04-01" --body @- <<EOF
+{
+    "properties": {
+        "DisplayName": "Using only compliant regions for regulatory requirements",
+        "Description": "Check if using regions outside the specified ones. Used in cases where there are regulatory requirements for usage regions, like GDPR.",
+        "metadata": {
+            "category": "Custom Policy - Check - Resource"
+        },
+        "Mode": "Indexed",
+        "PolicyType": "Custom",
+        "policyRule": {
+            "if": {
+                "not": {
+                    "field": "location",
+                    "in": [
+                        "global",
+                        "eastus",
+                        "eastus2",
+                        "westus",
+                        "westus2",
+                        "centralus",
+                        "southcentralus",
+                        "northcentralus",
+                        "japanwest",
+                        "japaneast",
+                        "southeastasia",
+                        "eastasia",
+                        "westcentralus"
+                    ]
+                }
+            },
+            "then": {
+                "effect": "audit"
+            }
+        }
+    }
+}    
+EOF
+
+
+```
+
+## （参考）ARM テンプレートを使って定義する方法
+
 ```bash
 
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
@@ -333,7 +676,8 @@ cat > temp.json << EOF
                                     "Microsoft.ContainerRegistry/registries",
                                     "Microsoft.CognitiveServices/accounts",
                                     "Microsoft.DocumentDB/databaseAccounts",
-                                    "Microsoft.Search/searchServices"
+                                    "Microsoft.Search/searchServices",
+                                    "Microsoft.ContainerRegistry/registries/replications"
                                 ]
                             }
                         ]
@@ -389,7 +733,5 @@ EOF
 
 TEMP=(${TEMP_MG_TRG_ID//\// })
 az deployment mg create --location ${LOCATION_NAMES[0]} --name "custom-policies" --template-file temp.json --management-group-id "${TEMP[3]}"
-
-# ※（参考）westcentralus リージョンは、Canary リージョンに次いで最も早く変更がデプロイされるリージョン。このためミッションクリティカルシステムではこのリージョンにパイロットシステムを配置してチェックしておくと、変更の確認などが行える
 
 ```

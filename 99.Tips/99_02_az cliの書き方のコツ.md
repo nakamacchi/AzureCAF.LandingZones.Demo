@@ -77,6 +77,7 @@ fi
 
 - EOF マークを利用すると直接記述ができる（ファイルをわざわざ作らなくてよい）
 - EOF を 'EOF' と書くと変数展開が行われない（EOF と書くと変数展開が行われる）
+- body 内で日本語を記述したい場合には、コマンドプロンプトが UTF-8 対応している必要がある（既定の設定の場合、cmd + wsl2 bash + az cli では latin-1 エンコードになるため、日本語を含めることができません。）
 
 ```bash
 
@@ -91,6 +92,47 @@ az rest --method put --uri "${TEMP_COSMOSDB_ID}/sqlRoleAssignments/${TEMP_ROLE_A
 EOF
 
 ```
+
+## az rest コマンドで日本語を含む json を使いたい場合
+
+- body 内で日本語を記述したい場合には、下記のようにいったんテキストファイルに落としてから az rest コマンドに食わせる
+
+```bash
+cat <<EOF > temp.json
+{
+    "properties": {
+        "DisplayName": "サブネットにサービスエンドポイントが設定されていない",
+        "Description": "サブネットにサービスエンドポイントが設定されていないことを確認します。",
+        "metadata": {
+            "category": "Custom Policy - Check - Network"
+        },
+        "Mode": "Indexed",
+        "PolicyType": "Custom",
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Network/virtualNetworks/subnets"
+                    },
+                    {
+                        "field": "Microsoft.Network/virtualNetworks/subnets/serviceEndpoints[*].service",
+                        "exists": "true"
+                    }
+                ]
+            },
+            "then": {
+                "effect": "audit"
+            }
+        }
+
+    }
+}
+EOF
+az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-network-no-service-endpoint?api-version=2023-04-01" --body @temp.json
+
+'''
+
 
 ## リソースオブジェクトが存在するか否かを判断した上で処理を進める方法①
 
