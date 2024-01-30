@@ -1,4 +1,4 @@
-# ★ Update Management 有効化
+# ★ Azure Update Manager 有効化
 
 Azure 上の仮想マシンのセキュリティパッチ管理については、OS イメージに標準インストールされている Azure 仮想マシンのゲストエージェントに実装されており、特に追加のエージェントを入れることなく利用することができます。主にできることは以下の 3 つです。
 
@@ -10,14 +10,14 @@ Azure 上の仮想マシンのセキュリティパッチ管理については�
 
 ![picture 1](./images/649d54faecb6ec115f6b3b1e2a57d33ae478df54127d02c6ce5d66d4ff700c06.png)  
 
-本ステップでは、UMC の機能を有効化し、毎晩、定期的にセキュリティパッチ評価を行う（インストールは自動では行わない）ようにシステムを構成しています。
+本ステップでは、Azure Update Manager の機能を有効化し、毎晩、定期的にセキュリティパッチ評価を行う（インストールは自動では行わない）ようにシステムを構成しています。
 
 ```bash
 
 # 各 VM の構成設定を変更し、メンテナンス構成（メンテナンス時間など）を設定
 
 for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
-echo "Setting Update Management... ${TEMP_SUBSCRIPTION_ID}"
+echo "Setting Azure Update Manager... ${TEMP_SUBSCRIPTION_ID}"
 az account set -s "${TEMP_SUBSCRIPTION_ID}"
 
 for i in ${VDC_NUMBERS}; do

@@ -24,12 +24,14 @@ TEMP_RG_NAME="rg-spokef-${TEMP_LOCATION_PREFIX}"
 TEMP_SQL_SERVER_NAME="sql-spokef-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
 TEMP_SQL_DB_NAME="pubs"
 az sql server create --name $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME --location $TEMP_LOCATION_NAME --admin-user $ADMIN_USERNAME --admin-password $ADMIN_PASSWORD --enable-public-network false
-az sql db create --server $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME --name $TEMP_SQL_DB_NAME --edition Basic --capacity 5
+TEMP_SQLDB_OPTIONS=$( [[ "$FLAG_USE_WORKLOAD_AZ" = true ]] && echo "--compute-model Serverless --edition GeneralPurpose --family Gen5 --capacity 1 --zone-redundant true --backup-storage-redundancy Geo" || echo "--edition Basic --capacity 5" )
+az sql db create --server $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME --name $TEMP_SQL_DB_NAME $TEMP_SQLDB_OPTIONS
 
 # Azure Container Registry 作成
 # プライベートエンドポイント利用に Premium SKU が必要
 TEMP_ACR_NAME="acrspokef${UNIQUE_SUFFIX}${TEMP_LOCATION_PREFIX}"
-az acr create --name $TEMP_ACR_NAME --resource-group $TEMP_RG_NAME --sku Premium --public-network-enabled false
+TEMP_ACR_OPTIONS=$( [[ "$FLAG_USE_WORKLOAD_AZ" = true ]] && echo "--zone-redundancy enabled" || echo "" )
+az acr create --name $TEMP_ACR_NAME --resource-group $TEMP_RG_NAME --public-network-enabled false --sku Premium $TEMP_ACR_OPTIONS
 
 done # TEMP_LOCATION
 

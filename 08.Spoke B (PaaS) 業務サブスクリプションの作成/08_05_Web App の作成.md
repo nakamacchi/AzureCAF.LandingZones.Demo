@@ -30,7 +30,8 @@ TEMP_ASP_WIN_NAME="aspw-spokeb-${TEMP_LOCATION_PREFIX}"
 TEMP_RG_NAME="rg-spokeb-${TEMP_LOCATION_PREFIX}"
 
 # App Service Plan (Windows) の作成
-az appservice plan create --name "${TEMP_ASP_WIN_NAME}" --resource-group "$TEMP_RG_NAME" --location "${TEMP_LOCATION_NAME}" --sku P1V2 --number-of-workers 2
+TEMP_ASP_OPTIONS=$( [[ "$FLAG_USE_WORKLOAD_AZ" = true ]] && echo "--sku P1V2 --number-of-workers 3 --zone-redundant" || echo "--sku P1V2 --number-of-workers 1" )
+az appservice plan create --name "${TEMP_ASP_WIN_NAME}" --resource-group "$TEMP_RG_NAME" --location "${TEMP_LOCATION_NAME}" $TEMP_ASP_OPTIONS
 
 # Web App の作成
 # Web App 名はグローバルに一意である必要があるため UNIQUE_SUFFIX を付与する

@@ -34,14 +34,12 @@ CAE と CA、VNET への組み込みの関係性は下図の通りです。
 # CAE の作成
 
 # ワークロードプロファイル環境として作成する（UDR によるロックダウンはワークロードプロファイル環境でのみ可能）
-# ロックダウンでは MCR への経路開放が必要
+# ロックダウン環境では MCR への経路開放が必要
 # https://learn.microsoft.com/ja-jp/cli/azure/containerapp/env?view=azure-cli-latest#az-containerapp-env-create
 # https://learn.microsoft.com/ja-jp/cli/azure/containerapp/env/workload-profile?view=azure-cli-latest
-
-# 権限リークしている。Network 権限がなくても CAE を VNET join させられてしまう。
+# ※ CAE は権限リークしている。（Network 権限がなくても CAE を VNET join させることができてしまう。）
 
 # Azure Firewall への経路開放の追加
-
 # NW 構成管理チーム／③ 構成変更の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_nw_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
 az account set -s "${SUBSCRIPTION_ID_SPOKE_F}"
@@ -53,12 +51,12 @@ TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
 TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
   
 az network firewall policy rule-collection-group collection add-filter-collection \
-	--resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
-	--name "ACAEnv" --rule-type ApplicationRule --collection-priority 40600 --action Allow \
-	--rule-name "ACAEnv" \
-	--target-fqdns "mcr.microsoft.com" "*.data.mcr.microsoft.com" \
-	--source-addresses "*" --protocols Https=443 \
-        --subscription ${SUBSCRIPTION_ID_HUB}
+  --resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
+  --name "ACAEnv" --rule-type ApplicationRule --collection-priority 40600 --action Allow \
+  --rule-name "ACAEnv" \
+  --target-fqdns "mcr.microsoft.com" "*.data.mcr.microsoft.com" \
+  --source-addresses "*" --protocols Https=443 \
+  --subscription ${SUBSCRIPTION_ID_HUB}
 
 done #TEMP_LOCATION
 
@@ -79,8 +77,8 @@ TEMP_CAE_SUBNET_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourceGroups/${T
 
 # Subnet を ContainerAppsEnvironment に委任できるように設定
 az network vnet subnet update --ids "${TEMP_CAE_SUBNET_ID}" --delegations "Microsoft.App/environments"
-
-az containerapp env create --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --location ${TEMP_LOCATION_NAME} --infrastructure-subnet-resource-id "${TEMP_CAE_SUBNET_ID}" --internal-only true --logs-destination azure-monitor --enable-workload-profiles
+TEMP_CAE_OPTIONS=$( [[ "$FLAG_USE_WORKLOAD_AZ" = true ]] && echo "--zone-redundant" || echo "" )
+az containerapp env create --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --location ${TEMP_LOCATION_NAME} --infrastructure-subnet-resource-id "${TEMP_CAE_SUBNET_ID}" --internal-only true --logs-destination azure-monitor --enable-workload-profiles $TEMP_CAE_OPTIONS
 
 # 占有型マシンを追加する場合
 # az containerapp env workload-profile add --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE_NAME}" --workload-profile-name "wp-d4" --max-nodes 1 --min-nodes 1 --workload-profile-type "D4"
