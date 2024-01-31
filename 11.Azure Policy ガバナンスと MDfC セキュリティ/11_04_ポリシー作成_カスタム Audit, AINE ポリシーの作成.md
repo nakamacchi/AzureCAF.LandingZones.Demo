@@ -232,8 +232,7 @@ az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/
                             "Microsoft.Storage/storageAccounts",
                             "Microsoft.KeyVault/vaults",
                             "Microsoft.RecoveryServices/vaults",
-                            "Microsoft.OperationalInsights/workspaces",
-                            "Microsoft.EventGrid/systemTopics"
+                            "Microsoft.OperationalInsights/workspaces"
                         ]
                     }
                 ]
@@ -330,7 +329,8 @@ az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/
                             "Microsoft.CognitiveServices/accounts",
                             "Microsoft.DocumentDB/databaseAccounts",
                             "Microsoft.Search/searchServices",
-                            "Microsoft.ContainerRegistry/registries/replications"
+                            "Microsoft.ContainerRegistry/registries/replications",
+                            "Microsoft.EventGrid/systemTopics"
                         ]
                     }
                 ]
