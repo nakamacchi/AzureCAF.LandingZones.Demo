@@ -263,8 +263,8 @@ EOF
 az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-resource-uncommon?api-version=2023-04-01" --body @- <<EOF
 {
     "properties": {
-        "DisplayName": "Check no use of special resource types",
-        "Description": "Check if non-standard resources are being used.",
+        "DisplayName": "Check no use of uncommon resource types",
+        "Description": "Check if uncommon resources are being used.",
         "metadata": {
             "category": "Custom Policy - Check - Resource"
         },
