@@ -173,6 +173,7 @@ az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/
         }
     }
 }
+EOF
 
 az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyDefinitions/custom-policy-check-network-no-service-endpoint?api-version=2023-04-01" --body @- <<EOF
 {
@@ -231,7 +232,8 @@ az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/
                             "Microsoft.Storage/storageAccounts",
                             "Microsoft.KeyVault/vaults",
                             "Microsoft.RecoveryServices/vaults",
-                            "Microsoft.OperationalInsights/workspaces"
+                            "Microsoft.OperationalInsights/workspaces",
+                            "Microsoft.EventGrid/systemTopics"
                         ]
                     }
                 ]
@@ -677,7 +679,8 @@ cat > temp.json << EOF
                                     "Microsoft.CognitiveServices/accounts",
                                     "Microsoft.DocumentDB/databaseAccounts",
                                     "Microsoft.Search/searchServices",
-                                    "Microsoft.ContainerRegistry/registries/replications"
+                                    "Microsoft.ContainerRegistry/registries/replications",
+                                    "Microsoft.EventGrid/systemTopics"
                                 ]
                             }
                         ]
