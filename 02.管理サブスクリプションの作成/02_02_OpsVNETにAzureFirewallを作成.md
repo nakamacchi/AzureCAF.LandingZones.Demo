@@ -32,7 +32,7 @@ TEMP_FW_SKU="Standard" # DNS proxy 機能を利用するために Standard が�
 
 az network firewall policy create --name ${TEMP_FWP_NAME} --resource-group ${TEMP_RG_NAME} --sku ${TEMP_FW_SKU}
 
-TEMP_ZONE_REDUNDANCY=$( [ "$FLAG_USE_PLATFORM_AZ" = true ] && echo "--zone 1 2 3" )
+TEMP_ZONE_REDUNDANCY=$( [ "$FLAG_USE_PLATFORM_AZ" = true ] && echo "--zone 1 2 3" || echo "" )
 # パブリック IP、管理 IP を作成
 az network public-ip create --name ${TEMP_FW_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard ${TEMP_ZONE_REDUNDANCY}
 az network public-ip create --name ${TEMP_FW_MGMT_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard ${TEMP_ZONE_REDUNDANCY}
