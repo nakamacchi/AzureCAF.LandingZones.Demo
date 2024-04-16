@@ -42,6 +42,10 @@ TEMP_RG_NAME="rg-spokeb-${TEMP_LOCATION_PREFIX}"
 
 # SQL Server（論理サーバ）の作成
 az sql server create --name $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME --location $TEMP_LOCATION_NAME --admin-user $ADMIN_USERNAME --admin-password $ADMIN_PASSWORD --enable-public-network false --restrict-outbound-network-access true
+# TLS バージョン 1.2 を最小限に設定
+az sql server update --name ${TEMP_SQL_SERVER_NAME} --resource-group ${TEMP_RG_NAME} --minimal-tls-version 1.2
+# (参考) 現在の設定を確認
+# az sql server show --name ${TEMP_SQL_SERVER_NAME} --resource-group ${TEMP_RG_NAME} --query "minimalTlsVersion"
 
 # SQL Database の作成
 TEMP_SQLDB_OPTIONS=$( [[ "$FLAG_USE_WORKLOAD_AZ" = true ]] && echo "--compute-model Serverless --edition GeneralPurpose --family Gen5 --capacity 1 --zone-redundant true --backup-storage-redundancy Geo" || echo "--edition Basic --capacity 5" )
