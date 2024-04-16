@@ -27,6 +27,11 @@ az sql server create --name $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME
 TEMP_SQLDB_OPTIONS=$( [[ "$FLAG_USE_WORKLOAD_AZ" = true ]] && echo "--compute-model Serverless --edition GeneralPurpose --family Gen5 --capacity 1 --zone-redundant true --backup-storage-redundancy Geo" || echo "--edition Basic --capacity 5" )
 az sql db create --server $TEMP_SQL_SERVER_NAME --resource-group $TEMP_RG_NAME --name $TEMP_SQL_DB_NAME $TEMP_SQLDB_OPTIONS
 
+# TLS バージョン 1.2 を最小限に設定
+az sql server update --name ${TEMP_SQL_SERVER_NAME} --resource-group ${TEMP_RG_NAME} --minimal-tls-version 1.2
+# (参考) 現在の設定を確認
+# az sql server show --name ${TEMP_SQL_SERVER_NAME} --resource-group ${TEMP_RG_NAME} --query "minimalTlsVersion"
+
 # Azure Container Registry 作成
 # プライベートエンドポイント利用に Premium SKU が必要
 TEMP_ACR_NAME="acrspokef${UNIQUE_SUFFIX}${TEMP_LOCATION_PREFIX}"
