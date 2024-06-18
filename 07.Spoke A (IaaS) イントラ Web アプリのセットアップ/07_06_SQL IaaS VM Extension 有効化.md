@@ -30,13 +30,10 @@ if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIM
  
 az account set -s "${SUBSCRIPTION_ID_SPOKE_A}"
  
-# AMA に加えて、以下 3 つの Extension を入れる
-# ※ SQLIaaS の VA/ATP 機能は AMA に対応しているが、ベストプラクティスアセスメント機能が MMA にしか対応していない。これを使いたい場合には別途 MMA を追加する。
-# SQLIaaS : SqlIaasExtension (Microsoft.SqlServer.Management.SqlIaaSAgent)
-# SQLVA : VulnerabilityAssessment.Windows (Microsoft.Azure.AzureDefenderForSQL.VulnerabilityAssessment.Windows)
-# SQLATP : AdvancedThreatProtection.Windows (Microsoft.Azure.AzureDefenderForSQL.AdvancedThreatProtection.Windows)
- 
-# ① プロバイダと自動登録機能の有効化
+# AMA に加えて、以下の Extension を入れる
+# SQLATP : AdvancedThreatProtection.Windows (Microsoft.Azure.AzureDefenderForSQL.AdvancedThreatProtection.Windows) ※ v2.0 以上
+
+# プロバイダと自動登録機能の有効化
 # 下記により SQL IaaS VM 拡張機能の有効化と自動インストールが有効化される
  
 az provider register --namespace Microsoft.SqlVirtualMachine
@@ -47,10 +44,7 @@ do
   sleep 10
 done
  
-# ② Defender for SQL machines の有効化
-# LAWへのソリューションを追加し、SQLVA, SQLATP のサーバ側機能を有効化する
- 
-# ③ SQL IaaSエージェントのインストール
+# SQL IaaSエージェントのインストール
 # 自動プロビジョングは時間がかかるので、下記で自力インストールしてしまってもよい
 # OS と SQL の組み合わせによりモードに制限があるため注意する
 # Full モード → Windows のみ利用可能
@@ -75,62 +69,11 @@ TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
 az sql vm create --name ${TEMP_VM_NAME} --resource-group ${TEMP_RG_NAME} --location $TEMP_LOCATION_NAME --license-type PAYG --sql-mgmt-type Full --image-sku Developer
  
 # 上記の作業により、SqlIaasExtension がインストールされる
- 
-# ④ SQLVA, SQLATP のプロビジョニング
-az vm extension set --vm-name "${TEMP_VM_NAME}" --resource-group "${TEMP_RG_NAME}" --name "VulnerabilityAssessment.Windows" --publisher "Microsoft.Azure.AzureDefenderForSQL"
-az vm extension set --vm-name "${TEMP_VM_NAME}" --resource-group "${TEMP_RG_NAME}" --name "AdvancedThreatProtection.Windows" --publisher "Microsoft.Azure.AzureDefenderForSQL"
- 
-# ⑤ MMAのセットアップ （※ Windows のみ）
-# ベストプラクティスアセスメントツールは現状 AMA 非対応
-# このため MMA の追加セットアップが必要
-# ※ *.blob を解放しなくても動作するようだが、公式には *.blob 解放が必要なため、商用環境では AMA 対応を待つことを推奨
- 
-# LAW の共有キーを取得（一時的にアカウントとサブスクリプションを切り替えてキーを取得）
-az account set -s "${SUBSCRIPTION_ID_MGMT}"
-  TEMP_LAW_NAME="law-vdc-${TEMP_LOCATION_PREFIX}"
-  TEMP_LAW_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/microsoft.operationalinsights/workspaces/${TEMP_LAW_NAME}"
-  TEMP_RG_NAME="rg-vdc-${TEMP_LOCATION_PREFIX}"
-  TEMP_LAW_KEY=$(az monitor log-analytics workspace get-shared-keys --name ${TEMP_LAW_NAME} --resource-group ${TEMP_RG_NAME} --query primarySharedKey -o tsv)
-  TEMP_LAW_CUSTOMER_ID=$(az monitor log-analytics workspace show --workspace-name $TEMP_LAW_NAME --resource-group $TEMP_RG_NAME --query customerId -o tsv)
- 
-# 元に戻して作業を続行
-az account set -s "${SUBSCRIPTION_ID_SPOKE_A}"
- 
-TEMP_VM_NAME=vm-db-${TEMP_LOCATION_PREFIX}
-TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
- 
-# コマンドラインから展開するとうまくいかないので ARM テンプレートで展開
-# az vm extension set --vm-name "${TEMP_VM_NAME}" --resource-group "${TEMP_RG_NAME}" --name "MicrosoftMonitoringAgent" --publisher "Microsoft.EnterpriseCloud.Monitoring" --settings '{"workspaceId":"${TEMP_LAW_WS_ID}"}' --protected-settings '{"workspaceKey":"${TEMP_LAW_KEY}"}'
- 
-cat <<EOF > tmp.json
-{
-  "\$schema": " https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "resources": [
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "apiVersion": "2021-11-01",
-      "name": "${TEMP_VM_NAME}/Microsoft.Insights.LogAnalyticsAgent",
-      "location": "${TEMP_LOCATION_NAME}",
-      "properties": {
-        "publisher": "Microsoft.EnterpriseCloud.Monitoring",
-        "type": "MicrosoftMonitoringAgent",
-        "typeHandlerVersion": "1.0",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "workspaceId": "${TEMP_LAW_CUSTOMER_ID}"
-        },
-        "protectedSettings": {
-          "workspaceKey": "${TEMP_LAW_KEY}"
-        }
-      }
-    }
-  ]
-}
-EOF
-az deployment group create --name "${TEMP_VM_NAME}_Microsoft.Insights.LogAnalyticsAgent"  --resource-group "${TEMP_RG_NAME}" --template-file tmp.json
+# SQLATP のプロビジョニング
+az vm extension set --vm-name "${TEMP_VM_NAME}" --resource-group "${TEMP_RG_NAME}" --name "AdvancedThreatProtection.Windows" --publisher "Microsoft.Azure.AzureDefenderForSQL" --version "2.0"
  
 done
+ 
  
  
 # ⑥ ベストプラクティスアセスメントの実行 （※ Windows のみ）
