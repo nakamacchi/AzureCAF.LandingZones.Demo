@@ -24,26 +24,26 @@ Azure 環境で SQL Server を利用したい場合には、通常は PaaS 版 S
 具体的なインストールスクリプトや使い方は以下の通りです
 
 ```bash
- 
+
 # 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
- 
+
 az account set -s "${SUBSCRIPTION_ID_SPOKE_A}"
- 
+
 # AMA に加えて、以下の Extension を入れる
 # SQLATP : AdvancedThreatProtection.Windows (Microsoft.Azure.AzureDefenderForSQL.AdvancedThreatProtection.Windows) ※ v2.0 以上
 
 # プロバイダと自動登録機能の有効化
 # 下記により SQL IaaS VM 拡張機能の有効化と自動インストールが有効化される
- 
+
 az provider register --namespace Microsoft.SqlVirtualMachine
 az feature register --name BulkRegistration --namespace Microsoft.SqlVirtualMachine
 while [ $(az feature show --namespace Microsoft.SqlVirtualMachine --name BulkRegistration --query properties.state -o tsv) != "Registered" ]
 do
-  echo "$(az feature show --namespace Microsoft.SqlVirtualMachine --name BulkRegistration --query properties.state -o tsv) BulkRegistration..."
-  sleep 10
+echo "$(az feature show --namespace Microsoft.SqlVirtualMachine --name BulkRegistration --query properties.state -o tsv) BulkRegistration..."
+sleep 10
 done
- 
+
 # SQL IaaSエージェントのインストール
 # 自動プロビジョングは時間がかかるので、下記で自力インストールしてしまってもよい
 # OS と SQL の組み合わせによりモードに制限があるため注意する
@@ -51,41 +51,57 @@ done
 # NoAgent モード → SQL 2012 用
 # 基本的に Windows なら Full モード、Linux なら LightWeight モードでインストール
 # MDfSQLVM は Full モードでないと使えない
- 
+
 for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
 TEMP_VM_NAME=vm-db-${TEMP_LOCATION_PREFIX}
 TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
- 
+
 # Register Enterprise or Standard self-installed VM in full mode
 # az sql vm create --name <vm_name> --resource-group <resource_group_name> --location <vm_location> --license-type <license_type> --sql-mgmt-type Full
 # [--image-sku {Developer, Enterprise, Express, Standard, Web}]
 # [--license-type {AHUB, DR, PAYG}]
 # [--sql-mgmt-type {Full, LightWeight, NoAgent}]
 # Linux の場合は LightWeight のみ可
- 
+
 az sql vm create --name ${TEMP_VM_NAME} --resource-group ${TEMP_RG_NAME} --location $TEMP_LOCATION_NAME --license-type PAYG --sql-mgmt-type Full --image-sku Developer
- 
+
 # 上記の作業により、SqlIaasExtension がインストールされる
 # SQLATP のプロビジョニング
 az vm extension set --vm-name "${TEMP_VM_NAME}" --resource-group "${TEMP_RG_NAME}" --name "AdvancedThreatProtection.Windows" --publisher "Microsoft.Azure.AzureDefenderForSQL" --version "2.0"
- 
+
 done
- 
- 
- 
+
+# DCR 割り当て
+for i in ${VDC_NUMBERS}; do
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
+TEMP_DCR_SQL_WIN_NAME="dcr-law-vdc-${TEMP_LOCATION_PREFIX}-sql-win"
+TEMP_DCR_SQL_WIN_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Insights/dataCollectionRules/${TEMP_DCR_SQL_WIN_NAME}"
+
+TEMP_VM_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourceGroups/rg-spokea-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Compute/virtualMachines/vm-db-${TEMP_LOCATION_PREFIX}"
+
+echo "Setting DCR on ${TEMP_VM_ID}..."
+az monitor data-collection rule association create --name "${TEMP_DCR_SQL_WIN_NAME}-association" --rule-id ${TEMP_DCR_SQL_WIN_ID} --resource ${TEMP_VM_ID}
+
+az rest --method put --url "${TEMP_VM_ID}/providers/microsoft.insights/dataCollectionRuleAssociations/configurationAccessEndpoint?api-version=2021-04-01" --body "{ \"properties\": { \"dataCollectionEndpointId\": \"${TEMP_DCE_ID}\" } }"
+done
+
+done # TEMP_LOCATION_NAME
+
 # ⑥ ベストプラクティスアセスメントの実行 （※ Windows のみ）
 # ※ Full モードの SQL VM に対してしかスキャンできない (= Linux SQL IaaS VM は現状スキャンできない)
 # https://learn.microsoft.com/en-us/rest/api/sqlvm/2022-07-01-preview/sql-virtual-machines/start-assessment?tabs=HTTP
- 
+
 # ベストプラクティスアセスメントの実行には Microsoft.SqlVirtualMachine/sqlVirtualMachines/startAssessment/action 権限が必要
 # この権限はガバナンスチームは持っていないため、業務システム A のチームメンバーから実施
- 
+
 # 業務システム A チーム／② 平常作業の作業アカウントに切り替え
 if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_spokea_ops@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
- 
+
 for i in ${VDC_NUMBERS}; do
 TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
 TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
