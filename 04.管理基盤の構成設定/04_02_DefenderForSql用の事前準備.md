@@ -1,4 +1,28 @@
-# Defender for SQL 用の事前準備
+# Defender for SQL Server 用の事前準備
+
+Defender for SQL Server を利用するための準備を行います。
+
+- LAW に必要なスキーマ拡張を行います（ソリューションのインストール）
+- データ転送ルール (DCR) を作成します
+
+なお、スクリプト実行時に以下のようなエラーが発生した場合は、しばらく置いてからスクリプトを再実行してください。（原因は LAW のスキーマ拡張に時間がかかり、DCR 作成時にスキーマがないと判定されてしまったためです。しばらく置いておけばスキーマ拡張されますので、再度スクリプトを実行してください。）
+
+```bash
+
+(InvalidPayload) Data collection rule is invalid
+Code: InvalidPayload
+Message: Data collection rule is invalid
+Exception Details:      (InvalidOutputTable) Table for output stream 'Microsoft-DefenderForSqlScanEvents' is not available for destination 'LogAnalyticsDest'.
+        Code: InvalidOutputTable
+        Message: Table for output stream 'Microsoft-DefenderForSqlScanEvents' is not available for destination 'LogAnalyticsDest'.
+        Target: properties.dataFlows[0] (InvalidOutputTable) Table for output stream 'Microsoft-DefenderForSqlScanResults' is not available for destination 'LogAnalyticsDest'.
+        Code: InvalidOutputTable
+        Message: Table for output stream 'Microsoft-DefenderForSqlScanResults' is not available for destination 'LogAnalyticsDest'.
+        Target: properties.dataFlows[0] (InvalidOutputTable) Table for output stream 'Microsoft-SqlAtpStatus-DefenderForSql' is not available for destination 'LogAnalyticsDest'.
+        Code: InvalidOutputTable
+        Message: Table for output stream 'Microsoft-SqlAtpStatus-DefenderForSql' is not available for destination 'LogAnalyticsDest'.
+        Target: properties.dataFlows[0]
+```
 
 ```bash
 
