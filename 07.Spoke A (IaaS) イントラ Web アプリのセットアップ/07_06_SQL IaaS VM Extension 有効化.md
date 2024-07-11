@@ -26,8 +26,8 @@ Azure 環境で SQL Server を利用したい場合には、通常は PaaS 版 S
 ```bash
 
 # 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
-if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
-
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_gov_change"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password ${SP_PWDS[${TEMP_SP_NAME}]} --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+ 
 az account set -s "${SUBSCRIPTION_ID_SPOKE_A}"
 
 # AMA に加えて、以下の Extension を入れる
@@ -100,8 +100,8 @@ done # TEMP_LOCATION_NAME
 # この権限はガバナンスチームは持っていないため、業務システム A のチームメンバーから実施
 
 # 業務システム A チーム／② 平常作業の作業アカウントに切り替え
-if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_spokea_ops@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
-
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_spokea_ops"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password ${SP_PWDS[${TEMP_SP_NAME}]} --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_spokea_ops@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+ 
 for i in ${VDC_NUMBERS}; do
 TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
 TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
