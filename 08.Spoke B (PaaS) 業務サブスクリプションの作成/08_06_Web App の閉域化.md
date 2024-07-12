@@ -179,13 +179,19 @@ done # TEMP_LOCATION
 
 #####################################################################
 
+for i in ${VDC_NUMBERS}; do
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+TEMP_RG_NAME="rg-spokeb-${TEMP_LOCATION_PREFIX}"
+TEMP_WEBAPP_NAME="webapp-spokeb-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+
 # ワーカープロセスのリセット
 # ネットワーク関連の設定を変えたらアプリケーションをリセット（アプリケーションリスタートではなくプロセスリセットをしないと反映されないため）
 az webapp restart --name ${TEMP_WEBAPP_NAME} --resource-group ${TEMP_RG_NAME}
 
-done # TEMP_LOCATION
-
 # Ops VNET の vm-ops-* から、webapp-spokeb-*.azurewebsites.net が名前解決できることを確認
 echo "webapp-spokeb-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}.azurewebsites.net"
+
+done # TEMP_LOCATION
 
 ```
