@@ -8,10 +8,6 @@
   - 今回のサンプルでは認証を入れるとテストがしにくいため。
 - SQL DB へのアクセスに際しての Azure AD 認証
   - アプリケーション側での Azure AD 認証利用が困難なため。
-- CSB の適用除外
-  - IIS, SQL などのミドルウェアをセットアップすると CSB 標準からは外れる部分が出るため。CSB の中の一部の項目のみ適用除外とするのが正しいですが、細かい設定ができないため、ここでは CSB をまるごと適用除外としています。
-- Cloud Shell で利用するストレージに対するセキュリティ強化ポリシー
-  - 非常に便利な機能ですが、本番環境では Cloud Shell は利用しない方がよいでしょう。
 
 ```bash
 
@@ -98,70 +94,5 @@ done
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
-
-# ■ CSB の適用除外
-# ミドルウェア（IIS, SQL Server など）による設定変更が CSB ルールに抵触するため除外
-# Windows machines should meet requirements of the Azure compute security baseline
-# /providers/Microsoft.Authorization/policyDefinitions/72650e9f-97bc-4b2a-ab5f-9781a9fcecbc
-# windowsGuestConfigBaselinesMonitoring
- 
-TEMP_EXEMPTION_NAME="Exemption-CSB"
-cat > temp.json << EOF
-{
-  "properties": {
-    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
-    "policyDefinitionReferenceIds": [
-      "windowsGuestConfigBaselinesMonitoring"
-    ],
-    "exemptionCategory": "Waiver",
-    "displayName": "ミドルウェア (IIS, SQL) が CSB に抵触するため適用を免除 (Waiver)",
-    "description": "いったん CSB によるハードニングを行った上でミドルウェアをインストールしているため、他の項目については充足されている"
-  }
-}
-EOF
- 
-for i in ${VDC_NUMBERS}; do
-  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
- 
-TEMP_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourcegroups/rg-spokea-${TEMP_LOCATION_PREFIX}/providers/microsoft.compute/virtualmachines/vm-db-${TEMP_LOCATION_PREFIX}"
- 
-az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
- 
-TEMP_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourcegroups/rg-spokea-${TEMP_LOCATION_PREFIX}/providers/microsoft.compute/virtualmachines/vm-web-${TEMP_LOCATION_PREFIX}"
- 
-az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
-
-done
-
-
-# ■ Cloud Shell ストレージアカウントへのセキュリティ強化ルールの適用除外 (Waiver)
- 
-TEMP_EXEMPTION_NAME="Exemption-StorageAccountForCloudShell"
-cat > temp.json << EOF
-{
-  "properties": {
-    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
-    "policyDefinitionReferenceIds": [
-      "storageAccountsShouldRestrictNetworkAccessUsingVirtualNetworkRulesMonitoringEffect",
-      "storageAccountShouldUseAPrivateLinkConnectionMonitoringEffect",
-      "storageAccountsShouldPreventSharedKeyAccess"
-    ],
-    "exemptionCategory": "Waiver",
-    "displayName": "Cloud Shell ストレージアカウントへのセキュリティ強化ルールの適用除外 (Waiver)",
-    "description": "PoC 環境のため"
-  }
-}
-EOF
-
-for TEMP_SUBSCRIPTION_ID in $SUBSCRIPTION_IDS; do
-az account set -s $TEMP_SUBSCRIPTION_ID
-for TEMP_RG_NAME in $(az group list --query "[?starts_with(name,'cloud-shell-storage-')].name" -o tsv); do
-for TEMP_RESOURCE_ID in $(az storage account list --resource-group $TEMP_RG_NAME --query "[].id" -o tsv); do
-echo $TEMP_RESOURCE_ID
-az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
-
-done #TEMP_STORAGE_ID
-done #TEMP_RG_NAME
-done #TEMP_SUBSCRIPTION_ID
 
 ```

@@ -3,13 +3,10 @@
 論理的に問題が起こりえない状況と考えられるために、**当該ルールを適用する必要がない**、と判断される項目について、適用除外処理 (Exemption - Mitigated) を行います。
 
 - フローログ保存用のストレージに対するネットワークセキュリティ確保
-- ADE 用の KeyVault に対するネットワークセキュリティ確保
-- エージェントの自動プロビジョニング機能の利用の適用
 - Application Gateway v2 に割り当てられている Subnet への NSG 適用ルールの除外
 - WAF の背後にある Web サーバへのアクセスでは HTTPS 通信を除外
 - Private Endpoint サブネットへの UDR 適用の除外
 - Application Gateway v2 にシステム的に割り当てられた NSG の診断ログ出力設定を除外
-- ADE が適用されている VM に対する Host Encryption の適用を除外
 
 ```bash
 
@@ -51,58 +48,6 @@ TEMP_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/${TEMP_R
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
  
-# ■ ADE 用の KeyVault に対するネットワークセキュリティ確保の適用除外 (Mitigated)
-# 内部利用のため、プライベートエンドポイントの作成は不要
-# Azure Key Vaults should use private link
-# /providers/Microsoft.Authorization/policyDefinitions/a6abeaec-4d90-4a02-805f-6b26c4d3fbe9
-# privateEndpointShouldBeConfiguredForKeyVaultMonitoringEffect
-
-#TEMP_RESOURCE_IDS[1]="/subscriptions/4104fe87-a508-4913-813c-0a23748cd402/resourcegroups/rg-test/providers/microsoft.keyvault/vaults/kv-test-spokea"
-#TEMP_RESOURCE_IDS[2]="/subscriptions/903c6183-3adc-4577-9114-b3fef417ff28/resourcegroups/rg-ops-eus/providers/microsoft.keyvault/vaults/kv-ops-ade-20299-eus"
-
-TEMP_EXEMPTION_NAME="Exemption-ADEKeyVault"
-cat > temp.json << EOF
-{
-  "properties": {
-    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
-    "policyDefinitionReferenceIds": [
-      "privateEndpointShouldBeConfiguredForKeyVaultMonitoringEffect"
-    ],
-    "exemptionCategory": "Mitigated",
-    "displayName": "ADE 用の KeyVault であるため適用を除外 (Mitigated)",
-    "description": "ADE 用の KeyVault であるためプライベートエンドポイントの作成は不要"
-  }
-}
-EOF
-
-TEMP_RESOURCE_IDS=()
-j=0
-for i in ${VDC_NUMBERS}; do
-TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
-
-TEMP_RG_NAME="rg-spokea-${TEMP_LOCATION_PREFIX}"
-TEMP_ADE_KV_NAME="kv-spokea-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
-TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
-
-j=`expr $j + 1`
-
-TEMP_RG_NAME="rg-ops-${TEMP_LOCATION_PREFIX}"
-TEMP_ADE_KV_NAME="kv-ops-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
-TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
-j=`expr $j + 1`
-
-TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
-TEMP_ADE_KV_NAME="kv-hub-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
-TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_HUB}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.keyvault/vaults/${TEMP_ADE_KV_NAME}"
-j=`expr $j + 1`
-
-done
-
-for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
-az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
-done
-
-
 # ■ Application Gateway v2 に割り当てられている Subnet には NSG が付与できないため NSG 適用ルールを除外 (Mitigated)
 # Subnets should be associated with a Network Security Group
 # e71308d3-144b-4262-b144-efdc3cc90517
@@ -241,41 +186,6 @@ fi
 
 done
  
-for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
-az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
-done
-
-# ■ ADE が適用されている VM に対する Host Encryption の適用を除外(Mitigated)
-
-TEMP_EXEMPTION_NAME="Exemption-EncryptionAtHostLevelWithADE"
-cat > temp.json << EOF
-{
-  "properties": {
-    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
-    "policyDefinitionReferenceIds": [
-      "virtualMachinesAndVirtualMachineScaleSetsShouldHaveEncryptionAtHostEnabled"
-    ],
-    "exemptionCategory": "Mitigated",
-    "displayName": "ADE が適用されている VM に対して EncryptionAtHost の適用を除外 (Mitigated)",
-    "description": "ADE が適用されている場合は EncryptionAtHost の適用は不要"
-  }
-}
-EOF
- 
-TEMP_RESOURCE_IDS=()
-j=0
-for TEMP_SUBSCRIPTION_ID in $SUBSCRIPTION_IDS; do
-az account set -s $TEMP_SUBSCRIPTION_ID
-for TEMP_VM_ID in $(az vm list --query [].id -o tsv); do
-TEMP_ENC_STATE=$(az vm encryption show --ids $TEMP_VM_ID --query "disks[0].statuses[0].code" -o tsv)
-if [[ $TEMP_ENC_STATE == "EncryptionState/encrypted" ]]; then
-  echo $TEMP_VM_ID $TEMP_ENC_STATE
-  TEMP_RESOURCE_IDS[j]=$TEMP_VM_ID
-  j=`expr $j + 1`
-fi
-done #TEMP_VM_ID
-done #TEMP_SUBSCRIPTION_ID
-
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
