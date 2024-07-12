@@ -1,5 +1,7 @@
 # ★ [Windows OS] ゲスト構成証明
 
+ゲスト構成証明（Guest Attestation）とは、ホストシステムが仮想マシンやコンテナなどのゲストシステムの状態を検証し、その信頼性を確認するものです。ゲストシステムの起動プロセス、OS の状態などを元に、不正に改ざんされていないことを確認します。典型的には Confidential Computing（機密コンピューティング）において、機密環境が適切に構成されていることを確認する目的で利用されますが、通常の VM でも Trusted Launch が正しく機能していることなどの確認に用いることができます。詳細は[こちら](https://learn.microsoft.com/ja-jp/azure/virtual-machines/trusted-launch#vtpm)を参照してください。
+
 ```bash
 
 for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
