@@ -8,6 +8,8 @@ GC CSB を適用し、Windows OS をハードニングします。
 - CSB ルールによるハードニングは一発でうまくいかない場合があります。その場合には本スクリプトをもう一度実行してみてください。
 - CSB によるハードニング処理とその結果報告には、少なくとも 10～30 分程度かかります。適用結果は Azure ポータルの "Guest Assginment" （ゲスト割り当て）のページから確認することができます。
 
+※ 2024/07 時点では Guest Configuration エージェントに不具合があり、このままでは CSB がうまく動作しません。本ページの後半に Workaround がありますのでご確認ください。
+
 ```bash
 
 for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
@@ -89,3 +91,31 @@ done # TEMP_LOCATION_NAME
 done # TEMP_SUBSCRIPTION_ID
 
 ```
+
+## 2024/07 注記 Guest Configuration モジュールの不具合について
+
+2024/07 時点では Guest Configuration モジュールの不具合により、Azure Firewall を経由した agentserviceapi.guestconfiguration.azure.com への通信がうまく通りません。結果として、下図のようにいつまで経っても状態が Pending から変更されません。
+
+![picture 0](./images/0186b9ffe0f37ce6a6f3a5e69164b7a625d832aee491f29548e185a890952be7.png)  
+
+この不具合は今後修正予定ですが、直近では以下の手順により対応してください。
+
+- vm-ops などのマシンに入り、nslookup agentserviceapi.guestconfiguration.azure.com を実行し、IP アドレスを確認（※ VM リージョンごとに解決される IP アドレスが異なるため、実機で確認してください。）
+- VM が所属している Subnet に紐づけられた UDR に対してルートを追加し、得られた IP アドレスの Next Hop を Internet として設定してください。
+
+```bash
+
+C:\Users\azrefadmin>nslookup agentserviceapi.guestconfiguration.azure.com
+Server:  UnKnown
+Address:  168.63.129.16
+
+Non-authoritative answer:
+Name:    jpe-gas-cses-1b.japaneast.cloudapp.azure.com
+Address:  40.115.144.3
+Aliases:  agentserviceapi.guestconfiguration.azure.com
+          agentserviceapi.privatelink.guestconfiguration.azure.com
+          agentserviceapi.trafficmanager.net
+
+```
+
+![picture 1](./images/b7b3fa7e6dabf1658c5b0c3bb48063088cecb726bb4a0941231b31e822fa47d3.png)  
