@@ -76,6 +76,13 @@ az network firewall policy rule-collection-group collection rule add \
 --target-fqdns "dl-cdn.alpinelinux.org" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
+az network firewall policy rule-collection-group collection rule add \
+--resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
+--collection-name "ResourcesForContainerBuild" --rule-type ApplicationRule \
+--name "az cli download" \
+--target-fqdns "azurecliprod.blob.core.windows.net" \
+--source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
+
 done # TEMP_LOCATION
 
 ```

@@ -20,13 +20,9 @@ EOF
     - Edge ブラウザを立ち上げて、以下からダウンロード
     - https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms
     - ダウンロード後、SSMS-Setup-ENU.exe を vm-ops 端末上で実行して SSMS をインストールする
-- サンプルアプリをダウンロード
+- データベースのサンプルスクリプトをダウンロード
   - 以下をダウンロード
-    - https://download.microsoft.com/download/a/c/8/ac880230-c893-49f3-b32d-3e70e8ac6f22/2021_05_31_FgCF_IaaS_IsolatedVNET_ReferenceArchitecture_v0.11_docs.zip
-  - zip を解凍（パスワードは mskk）
-    - 利用するのは以下のファイル（文字化けしていますが心の目で見てください）
-      - サンプルアプリ > pubs_azure_timestampつき.txt
-    - このファイルを zip ファイル内から取り出しておく
+    - https://github.com/nakamacchi/AzRefArc.SqlDb/raw/main/pubs_azure_with_timestamp.sql
 
 ## SQL Database のセットアップ
 
@@ -36,7 +32,15 @@ EOF
   - Login : azrefadmin
   - Password : p&ssw0rdp&ssw0rd
 - pubs データベースに入った後、以下のファイルの SQL 文を実行してテーブルとデータを作成
-  - pubs_azure_timestampつき.txt
+  - pubs_azure_with_timestamp.sql
+
+DB 作成後、追加で以下の T-SQL を実行し、テーブルを作成してください。
+
+```bash
+
+CREATE TABLE [dbo].[DataProtectionKeys] ( [ID][int] IDENTITY(1, 1) NOT NULL PRIMARY KEY, [FriendlyName] [varchar] (64) NULL, [Xml][text] NULL)
+
+```
 
 ![picture 1](./images/43283d9fbe6f66cb81baae293bb8a79464611e51e526dca2a2c4883b9def2d01.png)  
 

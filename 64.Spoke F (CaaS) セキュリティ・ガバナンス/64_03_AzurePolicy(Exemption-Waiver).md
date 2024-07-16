@@ -72,7 +72,7 @@ EOF
  
 for i in ${VDC_NUMBERS}; do
 TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
-TEMP_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/rg-spokefmtn-${TEMP_LOCATION_PREFIX}/providers/microsoft.compute/virtualmachines/vm-mnt-${TEMP_LOCATION_PREFIX}"
+TEMP_RESOURCE_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/rg-spokefmtn-${TEMP_LOCATION_PREFIX}/providers/microsoft.compute/virtualmachines/vm-mtn-${TEMP_LOCATION_PREFIX}"
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
 

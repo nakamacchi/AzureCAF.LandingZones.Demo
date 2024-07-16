@@ -62,8 +62,7 @@ done #TEMP_LOCATION
 
 
 # 業務システム F チーム／① 初期構築の作業アカウントに切り替え
-if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_spokef_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
-az account set -s "${SUBSCRIPTION_ID_SPOKE_F}"
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_spokef_dev"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password ${SP_PWDS[${TEMP_SP_NAME}]} --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_spokef_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
  
 for i in ${VDC_NUMBERS}; do
 TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
@@ -86,11 +85,11 @@ az containerapp env create --resource-group "${TEMP_RG_NAME}" --name "${TEMP_CAE
 done # TEMP_LOCATION
 
 # ==============================
-# CA の作成
+# サンプル Container App の作成
 
 # 業務システム F チーム／① 初期構築の作業アカウントに切り替え
-if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_spokef_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
- 
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_spokef_dev"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password ${SP_PWDS[${TEMP_SP_NAME}]} --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_spokef_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+
 # Spoke F サブスクリプションで作業
 az account set -s "${SUBSCRIPTION_ID_SPOKE_F}"
  
@@ -102,7 +101,7 @@ TEMP_RG_NAME="rg-spokef-${TEMP_LOCATION_PREFIX}"
 TEMP_CAE_NAME="cae-spokef-${TEMP_LOCATION_PREFIX}"
 TEMP_VNET_NAME="vnet-spokef-${TEMP_LOCATION_PREFIX}"
 
-TEMP_CA_NAME="ca-spokef-${TEMP_LOCATION_PREFIX}"
+TEMP_CA_NAME="ca-spokef-helloworld-${TEMP_LOCATION_PREFIX}"
 
 # --ingress external にすると、VNET 内に対して公開を行う
 # （--ingress internal にすると、ingress サービスが構成されず、k8s 内からしかアクセスできなくなる）
@@ -110,10 +109,12 @@ az containerapp create \
   --resource-group "${TEMP_RG_NAME}" \
   --name "${TEMP_CA_NAME}" \
   --target-port 80 \
+  --container-name "${TEMP_CA_NAME}" \
   --ingress external \
   --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest \
   --environment "${TEMP_CAE_NAME}" \
   --workload-profile-name "Consumption"
+  --system-assigned
 
 done # TEMP_LOCATION
 

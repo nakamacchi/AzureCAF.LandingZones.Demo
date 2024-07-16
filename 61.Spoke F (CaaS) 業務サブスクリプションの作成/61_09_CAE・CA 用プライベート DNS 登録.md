@@ -9,9 +9,9 @@ CAE・CA では、**プライベートエンドポイントの仕組みを利用
 まず、CAE・CA では、以下のような形で FQDN 名と IP アドレスが決まります。
 
 - CA を external 設定（クラスタ外へ公開する設定）で作成すると、以下のような FQDN でクラスタ外部からアクセスできるようになります。
-  - https://ca-spokef-eus.niceforest-00c9b3e2.eastus.azurecontainerapps.io
+  - https://ca-spokef-helloworld-eus.niceforest-00c9b3e2.eastus.azurecontainerapps.io
 - この FQDN は、以下のようになっています。
-  - コンテナアプリの名前 "ca-spokef-eus" が FQDN の先頭に付きます。（※ （参考）k8s リビジョン別の FQDN も用意されます）
+  - コンテナアプリの名前 "ca-spokef-helloworld-eus" が FQDN の先頭に付きます。（※ （参考）k8s リビジョン別の FQDN も用意されます）
   - その後ろの部分（この例では .niceforest-00c9b3e2.eastus.azurecontainerapps.io）は、CAE（k8s クラスタ）に対して一意に決定される名前になっています。
 - 同一の CAE 上にホストされるすべての CA は、同一の IP アドレスを持ちます。
   - 上記の例の場合、*.niceforest-00c9b3e2.eastus.azurecontainerapps.io はすべて同一の IP アドレスになります。（一つの IP アドレス上に、複数の CA が共存している形で IP アドレスが構成されます。）
@@ -35,7 +35,8 @@ CAE・CA では、**プライベートエンドポイントの仕組みを利用
 # CAE DNS 登録
 
 # 業務システム F チーム／① 初期構築の作業アカウントに切り替え
-if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_spokef_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_spokef_dev"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password ${SP_PWDS[${TEMP_SP_NAME}]} --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_spokef_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+
  
 # Spoke F サブスクリプションで作業
 az account set -s "${SUBSCRIPTION_ID_SPOKE_F}"
