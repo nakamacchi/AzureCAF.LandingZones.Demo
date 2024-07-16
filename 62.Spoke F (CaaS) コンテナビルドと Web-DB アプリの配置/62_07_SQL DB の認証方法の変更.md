@@ -10,6 +10,7 @@
 
 - SQL 論理サーバのシステム割り当て Managed ID の有効化と Directory Readers ロールの割り当て
 - Container Apps のシステム割り当て Managed ID への SQL DB アクセス権限の付与
+- Container Apps 用の Azure Firewall ルールの構成
 - Container Apps の接続文字列の切り替え
 
 以下に手順を示します。
@@ -182,6 +183,40 @@ vm-mtn-XXX へログインし、SQL Server Management Studio へ管理者権限�
 
 ![picture 4](./images/50e85e2a4fab28ea786598e4063ca28fceaedd84a6f1c7d616da81598906e1b1.png)  
 
+## Container Apps 用の Azure Firewall ルールの構成
+
+Managed ID によるリソースアクセスを行う際のトークンを取得できるように、Azure Firewall ルールを構成します。
+
+```bash
+
+# NW 構成管理チーム／③ 構成変更の作業アカウントに切り替え
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_nw_change"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password ${SP_PWDS[${TEMP_SP_NAME}]} --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_nw_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+
+# ハブサブスクリプションに切り替え
+az account set -s "${SUBSCRIPTION_ID_HUB}"
+
+for i in ${VDC_NUMBERS}; do
+TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+
+# 操作する Firewall Policy
+TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
+TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
+# 通信元
+TEMP_IP_PREFIX=${IP_SPOKE_F_PREFIXS[$i]}
+TEMP_SUBNET_CA="${TEMP_IP_PREFIX}.2.0/24"
+
+az network firewall policy rule-collection-group collection add-filter-collection \
+--resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
+--name "ResourcesForContainerApps" --rule-type ApplicationRule --collection-priority 50600 --action Allow \
+--rule-name "EntraID" \
+--target-fqdns "*.identity.azure.net" "*.login.microsoft.com" \
+--source-addresses ${TEMP_SUBNET_CA} --protocols Https=443
+
+done # TEMP_LOCATION
+
+```
+
 ## Container Apps の接続文字列の切り替え
 
 最後に、Container Apps の接続文字列を切り替え、Managed ID を使った認証方式に切り替えます。
@@ -221,3 +256,4 @@ done # TEMP_APP_NAME
 ```
 
 以上が完了したら、vm-usr-XXX などから Container Apps の稼働を確認してください。
+
