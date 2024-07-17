@@ -33,6 +33,26 @@ az sql server update --name ${TEMP_SQL_SERVER_NAME} --resource-group ${TEMP_RG_N
 # (参考) 現在の設定を確認
 # az sql server show --name ${TEMP_SQL_SERVER_NAME} --resource-group ${TEMP_RG_NAME} --query "minimalTlsVersion"
 
+# Defender for Cloud 脆弱性アセスメントの有効化
+# https://learn.microsoft.com/en-us/azure/defender-for-cloud/sql-azure-vulnerability-assessment-enable
+az rest --method PUT --uri "/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/${TEMP_RG_NAME}/providers/microsoft.sql/servers/${TEMP_SQL_SERVER_NAME}/SecurityAlertPolicies/Default?api-version=2017-03-01-preview" --body @- <<EOF
+{
+  "properties": {
+    "disabledAlerts": [
+      ""
+    ],
+    "emailAccountAdmins": false,
+    "emailAddresses": [
+      ""
+    ],
+    "retentionDays": 0,
+    "state": "Enabled",
+    "storageAccountAccessKey": "",
+    "storageEndpoint": ""
+  },
+}
+EOF
+
 # Azure Container Registry 作成
 # プライベートエンドポイント利用に Premium SKU が必要
 TEMP_ACR_NAME="acrspokef${UNIQUE_SUFFIX}${TEMP_LOCATION_PREFIX}"
