@@ -2,8 +2,10 @@
 
 Azure Policy の違反項目のうち、実質的に違反を起こしていない（ポリシーの意図は満たされている）ものについて、適用を除外します。
 
-- ADE 用の KeyVault に対するネットワークセキュリティ確保
-- ADE 適用済みの VM に対して DiskEncryptionAtHost の適用は不要
+- SQL databases should have vulnerability findings resolved (Policy ID feedbf84-6b99-488c-acc2-71c829aa5ffc, MDfC ID 82e20e14-edc5-4373-bfc4-f13121257c37)
+  - SQL DB に対する構成脆弱性を確認すると以下 3 つの項目が報告されますが、いずれも問題はありません。
+    - VA2130 Track all users with access to the database : MID 2 つにアクセス権限を与えていますが、いずれも正しい付与であり、問題はありません。
+    - VA2109 Minimal set of principals should be members of fixed low impact database roles : 前述の MID に対して pubs DB の db_datareader/writer ロールを割り当てていますが、いずれも適切なアクセス権限付与であり、問題はありません。
 
 ```bash
 
@@ -14,69 +16,33 @@ if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_gov_change
 TEMP_MG_TRG_ID=$(az account management-group list --query "[?displayName=='Tenant Root Group'].id" -o tsv)
 TEMP_ASSIGNMENT_ID=$(az policy assignment list --scope $TEMP_MG_TRG_ID --query "[? displayName == 'Microsoft Cloud Security Benchmark'].id" -o tsv)
 
-# ■ ADE 用の KeyVault に対するネットワークセキュリティ確保の適用除外 (Mitigated)
-# 内部利用のため、プライベートエンドポイントの作成は不要
-# Azure Key Vaults should use private link
-# /providers/Microsoft.Authorization/policyDefinitions/a6abeaec-4d90-4a02-805f-6b26c4d3fbe9
-# privateEndpointShouldBeConfiguredForKeyVaultMonitoringEffect
+# ■ 報告されている SQL DB の構成脆弱性は問題がないため、Mitigated 扱いにする
+# SQL databases should have vulnerability findings resolved
+# /providers/Microsoft.Authorization/policyDefinitions/feedbf84-6b99-488c-acc2-71c829aa5ffc
+# sqlDbVulnerabilityAssesmentMonitoring
 
-TEMP_EXEMPTION_NAME="Exemption-ADEKeyVault"
+TEMP_EXEMPTION_NAME="Exemption-SQLDBVulnerabilityAssessment"
 cat > temp.json << EOF
 {
   "properties": {
     "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
     "policyDefinitionReferenceIds": [
-      "privateEndpointShouldBeConfiguredForKeyVaultMonitoringEffect"
+      "sqlDbVulnerabilityAssesmentMonitoring"
     ],
     "exemptionCategory": "Mitigated",
-    "displayName": "ADE 用の KeyVault であるため適用を除外 (Mitigated)",
-    "description": "ADE 用の KeyVault であるためプライベートエンドポイントの作成は不要"
-  }
-}
-EOF
-
-TEMP_RESOURCE_IDS=()
-j=0
-for i in ${VDC_NUMBERS}; do
-TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
-TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/rg-spokefmtn-${TEMP_LOCATION_PREFIX}/providers/microsoft.keyvault/vaults/kv-spkfmtn-ade-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
-j=`expr $j + 1`
-done
-
-for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
-az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
-done
-
-# ■ ADE が適用されている VM に対する Host Encryption の適用を除外(Mitigated)
-
-TEMP_EXEMPTION_NAME="Exemption-EncryptionAtHostLevelWithADE"
-cat > temp.json << EOF
-{
-  "properties": {
-    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
-    "policyDefinitionReferenceIds": [
-      "virtualMachinesAndVirtualMachineScaleSetsShouldHaveEncryptionAtHostEnabled"
-    ],
-    "exemptionCategory": "Mitigated",
-    "displayName": "ADE が適用されている VM に対して EncryptionAtHost の適用を除外 (Mitigated)",
-    "description": "ADE が適用されている場合は EncryptionAtHost の適用は不要"
+    "displayName": "SQL DB の構成脆弱性排除の適用免除",
+    "description": "報告されている脆弱性に問題がない"
   }
 }
 EOF
  
 TEMP_RESOURCE_IDS=()
 j=0
-for TEMP_SUBSCRIPTION_ID in ${SUBSCRIPTION_ID_SPOKE_F}; do
-az account set -s $TEMP_SUBSCRIPTION_ID
-for TEMP_VM_ID in $(az vm list --query [].id -o tsv); do
-TEMP_ENC_STATE=$(az vm encryption show --ids $TEMP_VM_ID --query "disks[0].statuses[0].code" -o tsv)
-if [[ $TEMP_ENC_STATE == "EncryptionState/encrypted" ]]; then
-  echo $TEMP_VM_ID $TEMP_ENC_STATE
-  TEMP_RESOURCE_IDS[j]=$TEMP_VM_ID
-  j=`expr $j + 1`
-fi
-done #TEMP_VM_ID
-done #TEMP_SUBSCRIPTION_ID
+for i in ${VDC_NUMBERS}; do
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/rg-spokef-${TEMP_LOCATION_PREFIX}/providers/microsoft.sql/servers/sql-spokef-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+j=`expr $j + 1`
+done
 
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
