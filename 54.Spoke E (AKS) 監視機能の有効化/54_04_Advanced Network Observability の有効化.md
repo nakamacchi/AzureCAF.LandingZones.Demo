@@ -1,6 +1,14 @@
 # Advanced Network Observability の有効化
 
-有効化には k8s 1.29 以上が必要、（2024/07 時点の既定では 1.28 クラスタができるためアップグレードが必要）
+- 有効化には k8s 1.29 以上が必要、（2024/07 時点の既定では 1.28 クラスタができるためアップグレードが必要）
+- https://learn.microsoft.com/en-us/azure/aks/advanced-network-observability-cli?tabs=non-cilium
+
+```bash
+# Install the aks-preview extension
+az extension add --name aks-preview
+# Update the extension to make sure you have the latest version installed
+az extension update --name aks-preview
+```
 
 ```bash
 
@@ -11,7 +19,7 @@ az account set -s "${SUBSCRIPTION_ID_SPOKE_E}"
 # Preview 機能の有効化
 TEMP_TARGET_SUBSCRIPTION_IDS=$SUBSCRIPTION_ID_SPOKE_E
 
-TEMP_RP_NAMES=""
+TEMP_RP_NAMES="Microsoft.ContainerService"
 TEMP_FEATURE_NAMES="\
 Microsoft.ContainerService,AdvancedNetworkingPreview \
 "
@@ -69,8 +77,8 @@ done #TEMP_SUBSCRIPTION_ID
 
 ```bash
 
-# 業務システム E チーム／① 初期構築の作業アカウントに切り替え
-if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_spokee_dev"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password ${SP_PWDS[${TEMP_SP_NAME}]} --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_spokee_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+# 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_gov_change"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password ${SP_PWDS[${TEMP_SP_NAME}]} --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
 az account set -s "${SUBSCRIPTION_ID_SPOKE_E}"
 
 for i in ${VDC_NUMBERS}; do
