@@ -8,3 +8,5 @@ Azure で Kubernetes (k8s) を利用する場合、大別して以下の選択�
 - ARO (Azure Redhat OpenShift) : Redhat OpenShift でコンテナを稼働させたい場合に利用
 
 ここでは AKS を利用した Web DB システムについて解説します。
+
+![picture 1](./images/AKS_ReferenceArchitecture.png)  
