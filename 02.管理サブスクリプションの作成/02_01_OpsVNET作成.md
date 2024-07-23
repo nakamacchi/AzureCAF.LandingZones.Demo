@@ -24,9 +24,9 @@
 
 まずは以下のスクリプトで Ops VNET と Azure Bastion を作成します。
 
-## Bastion の SKU 選択
+## （参考）Bastion の SKU 選択
 
-ここでは Standard SKU を利用しています。主な違いは[以下](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings)の通りです。
+ここでは Standard SKU を利用しています。主な違いは[以下](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings)の通りです。規制業界における本番環境ではセッションレコーディング及び Private-only 機能が利用できる Premium SKU の利用もご検討ください。
 
 - Basic SKU 以上のみ
   - VNET Peering を介した接続
@@ -36,6 +36,9 @@
   - ファイルのアップロード・ダウンロード
   - Web クライアントでのコピペ無効化
   - 共有リンク
+- Premium SKU のみ
+  - セッションレコーディング ([参考](https://www.kentsu.website/ja/posts/2024/bastion_recording/))
+  - Private-Only Bastion（パブリックアクセスできない Bastion の作成）
 
 ```bash
 
