@@ -22,7 +22,7 @@ EOF
     - ダウンロード後、SSMS-Setup-ENU.exe を vm-ops 端末上で実行して SSMS をインストールする
 - データベースのサンプルスクリプトをダウンロード
   - 以下をダウンロード
-    - https://github.com/nakamacchi/AzRefArc.SqlDb/raw/main/pubs_azure_with_timestamp.sql
+    - https://github.com/nakamacchi/AzRefArc.SqlDb/blob/main/pubs_azure_with_timestamp.sql
 
 ## SQL Database のセットアップ
 
@@ -34,7 +34,7 @@ EOF
 - pubs データベースに入った後、以下のファイルの SQL 文を実行してテーブルとデータを作成
   - pubs_azure_with_timestamp.sql
 
-DB 作成後、追加で以下の T-SQL を実行し、テーブルを作成してください。
+**DB 作成後、追加で以下の T-SQL を実行し、テーブルを作成してください。** （Blazor アプリがインスタンス間で暗号化鍵を共有するために利用するテーブルです）
 
 ```bash
 
