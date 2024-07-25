@@ -1,10 +1,9 @@
 # kubectl の入手
 
 - Kubectl インストール
-  - # 以下はうまく動かないので…
-  - # curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-  - # こちらを利用（storage.googleapis.com からダウンロードすることになる）
-
+  - k8s.io サイトから入手する方法もありますが、az cli をインストールしている場合には以下のコマンドでダウンロードができます。
+  - この場合の入手元は dl.k8s.io ではなく、storage.googleapis.com からになります。
+  
 ```bash
 
 sudo az aks install-cli
