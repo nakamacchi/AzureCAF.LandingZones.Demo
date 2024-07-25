@@ -27,7 +27,9 @@ TEMP_RECORDSET_NAME=$(echo $TEMP_PRIVATE_FQDN | cut -d'.' -f1)
 TEMP_PRIVATE_DNS_ZONE=$(echo $TEMP_PRIVATE_FQDN | cut -d'.' -f2-)
 
 # プライベートエンドポイントのネットワークインターフェイス ID の取得
-TEMP_NIC_ID=$(az network private-endpoint list --resource-group "MC_${TEMP_RG_NAME}_${TEMP_AKS_CLUSTER_NAME}_japaneast" --query "[0].networkInterfaces[0].id" -o tsv)
+TEMP_MC_RG_NAME=$(az aks show --resource-group ${TEMP_RG_NAME} --name ${TEMP_AKS_CLUSTER_NAME} --query "nodeResourceGroup" -o tsv)
+
+TEMP_NIC_ID=$(az network private-endpoint list --resource-group "${TEMP_MC_RG_NAME}" --query "[0].networkInterfaces[0].id" -o tsv)
 # ネットワークインターフェイスの詳細情報の取得
 TEMP_NIC_INFO=$(az network nic show --ids $TEMP_NIC_ID)
 # プライベート IP アドレスの取得
