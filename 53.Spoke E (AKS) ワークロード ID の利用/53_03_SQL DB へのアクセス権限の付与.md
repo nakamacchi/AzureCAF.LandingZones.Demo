@@ -32,6 +32,10 @@ az sql server ad-admin create \
     --server ${TEMP_SQL_SERVER_NAME} \
     --display-name "vm-mtn-${TEMP_LOCATION_PREFIX}" \
     --object-id ${TEMP_IDENTITY_ID}
+
+# SQL DB の認証を Entra ID 認証に限定する
+az sql server ad-only-auth enable --resource-group ${TEMP_RG_NAME} --name ${TEMP_SQL_SERVER_NAME}
+
 done #i
 
 ```
