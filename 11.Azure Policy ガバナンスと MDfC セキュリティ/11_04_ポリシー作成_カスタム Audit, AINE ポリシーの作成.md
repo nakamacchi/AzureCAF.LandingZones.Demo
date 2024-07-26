@@ -331,9 +331,9 @@ az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/
                             "Microsoft.Search/searchServices",
                             "Microsoft.ContainerRegistry/registries/replications",
                             "Microsoft.EventGrid/systemTopics",
-                            "microsoft.compute/virtualmachinescalesets",
-                            "microsoft.alertsmanagement/prometheusrulegroups",
-                            "microsoft.containerservice/managedclusters"
+                            "Microsoft.Compute/virtualMachineScaleSets",
+                            "Microsoft.AlertsManagement/prometheusRuleGroups",
+                            "Microsoft.ContainerService/managedClusters"
                         ]
                     }
                 ]
