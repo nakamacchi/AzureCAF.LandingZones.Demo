@@ -330,7 +330,10 @@ az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/
                             "Microsoft.DocumentDB/databaseAccounts",
                             "Microsoft.Search/searchServices",
                             "Microsoft.ContainerRegistry/registries/replications",
-                            "Microsoft.EventGrid/systemTopics"
+                            "Microsoft.EventGrid/systemTopics",
+                            "microsoft.compute/virtualmachinescalesets",
+                            "microsoft.alertsmanagement/prometheusrulegroups",
+                            "microsoft.containerservice/managedclusters"
                         ]
                     }
                 ]
@@ -370,7 +373,10 @@ az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/
                         "japaneast",
                         "southeastasia",
                         "eastasia",
-                        "westcentralus"
+                        "westcentralus",
+                        "australiaeast",
+                        "${LOCATION_NAMES[0]}",
+                        "${LOCATION_NAMES[1]}"
                     ]
                 }
             },
