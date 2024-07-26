@@ -2,19 +2,38 @@
 
 ポリシー違反項目に対して、リソース側を正しく是正します。
 
-- 本サンプルでは構築スクリプト側をすでに修正してあるため、リソース作成後に是正すべき構成違反（ポリシー違反項目）はありません。
-- 一方、以下のようなポリシー違反が発生する場合があります。これらに関しては、適切な対処が必要です。
+## CSB 違反
+
+- vm-mtn-xxx には CSB を適用しましたが、その後にソフトウェアなどをインストールすると、CSB 準拠状態が崩れることがあります。
+- WSL2 のインストールにより、下記の CSB 項目が non-compliant になりますので、改めて是正して compliant 状態に戻します。
+  - Windows Server must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF)-generated routes.
+    - SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\EnableICMPRedirect を 0 にすることで解決できる
+    - PowerShell の場合は Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "EnableICMPRedirect" -Value 0
+
+```bash
+
+# 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_gov_change"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password "${SP_PWDS[${TEMP_SP_NAME}]}" --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_gov_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+
+TEMP_VM_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourceGroups/RG-SPOKEFMTN-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Compute/virtualMachines/VM-MTN-${TEMP_LOCATION_PREFIX}"
+
+az rest --method post --url "https://management.azure.com${TEMP_VM_ID}/runCommand?api-version=2023-03-01" --body "{\"commandId\":\"RunPowerShellScript\",\"script\":[\"Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters' -Name 'EnableICMPRedirect' -Value 0\"]}"
+
+```
+
+## VM へのセキュリティパッチ適用
+
+- VM やイメージを作成した後しばらくすると、以下のようなポリシー違反が発生する場合があります。これらに関しては、適切な対処が必要です。
   - VM にセキュリティパッチが適用されていない
     - System updates should be installed on your machines (powered by Azure Update Manager)
   - ACR 内のイメージや AKS で実行されているコンテナイメージの中に、脆弱性のあるライブラリが存在する
     - Azure running container images should have vulnerabilities resolved
     - [Preview] Container images in Azure registry should have vulnerability findings resolved
     - Azure registry container images should have vulnerabilities resolved
-
-## VM へのセキュリティパッチ適用
-
-- 以下のスクリプトを実行し、VM へセキュリティパッチを適用します。
-- 下記ではすべてのサブスクリプションを対象に、セキュリティパッチのアセスメントとインストールを実行します。実際の運用ではスクリプトを適宜修正して利用してください。
+- 後者に関しては、イメージの再作成と展開が必要です。
+- 前者に関しては、セキュリティパッチのアセスメントとインストールを行ってください。
+  - Azure Update Manager から手作業で行うか、コマンドラインからの指示だしで行います。
+  - 下記ではすべてのサブスクリプションを対象に、セキュリティパッチのアセスメントとインストールを実行します。実際の運用ではスクリプトを適宜修正して利用してください。
 
 ```bash
 
