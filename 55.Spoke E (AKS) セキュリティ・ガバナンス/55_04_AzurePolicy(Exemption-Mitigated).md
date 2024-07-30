@@ -7,6 +7,11 @@ Azure Policy の違反項目のうち、実質的に違反を起こしていな�
     - VA2130 Track all users with access to the database : MID 2 つにアクセス権限を与えていますが、いずれも正しい付与であり、問題はありません。
     - VA2109 Minimal set of principals should be members of fixed low impact database roles : 前述の MID に対して pubs DB の db_datareader/writer ロールを割り当てていますが、いずれも適切なアクセス権限付与であり、問題はありません。
 
+- Vulnerabilities in container security configurations should be remediated (e8cbc669-f12d-49eb-93e7-9273119e9933) (containerBenchmarkMonitoring)
+- Vulnerabilities in security configuration on your virtual machine scale sets should be remediated (3c735d8a-a4ba-4a3a-b7cf-db7754cf57f4) (vmssOsVulnerabilitiesMonitoring)
+  - これらのポリシーは AKS の VMSS に対しても評価されますが、MDE から情報が通知されないため、Azure Policy としては Non-Compliant 扱いになってしまいます。
+  - これらの項目は AKS 基盤側で制御されているため、Mitigated 扱いにします。
+
 ```bash
 
 # 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
@@ -43,6 +48,42 @@ TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_E}/resourcegroups/rg-spokee-${TEMP_LOCATION_PREFIX}/providers/microsoft.sql/servers/sql-spokee-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
 j=`expr $j + 1`
 done
+
+for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
+az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
+done
+
+# AKS ノードプールに対する以下のセキュリティ評価を無効化
+# Vulnerabilities in container security configurations should be remediated (e8cbc669-f12d-49eb-93e7-9273119e9933) (containerBenchmarkMonitoring)
+# Vulnerabilities in security configuration on your virtual machine scale sets should be remediated (3c735d8a-a4ba-4a3a-b7cf-db7754cf57f4) (vmssOsVulnerabilitiesMonitoring)
+
+TEMP_EXEMPTION_NAME="Exemption-AKSvmss"
+cat > temp.json << EOF
+{
+  "properties": {
+    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
+    "policyDefinitionReferenceIds": [
+      "containerBenchmarkMonitoring",
+      "vmssOsVulnerabilitiesMonitoring"
+    ],
+    "exemptionCategory": "Mitigated",
+    "displayName": "AKS VMSS に対する脆弱性評価の適用免除",
+    "description": "MDE からデータが報告されないため"
+  }
+}
+EOF
+
+TEMP_RESOURCE_IDS=()
+j=0
+for i in ${VDC_NUMBERS}; do
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+TEMP_RG_NAME="rg-spokee-${TEMP_LOCATION_PREFIX}"
+TEMP_AKS_CLUSTER_NAME="aks-spokee-${TEMP_LOCATION_PREFIX}"
+TEMP_NODE_RG_NAME=$(az aks show --name ${TEMP_AKS_CLUSTER_NAME} --resource-group ${TEMP_RG_NAME} --subscription ${SUBSCRIPTION_ID_SPOKE_E} --query nodeResourceGroup -o tsv)
+
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_E}/resourcegroups/${TEMP_NODE_RG_NAME}"
+j=`expr $j + 1`
+done #i
 
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
