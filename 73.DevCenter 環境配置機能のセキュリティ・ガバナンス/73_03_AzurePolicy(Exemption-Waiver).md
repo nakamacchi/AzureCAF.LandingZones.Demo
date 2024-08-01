@@ -11,7 +11,7 @@ if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_gov_change
 
 # ■ 以下は全体に共通
 TEMP_MG_TRG_ID=$(az account management-group list --query "[?displayName=='Tenant Root Group'].id" -o tsv)
-TEMP_ASSIGNMENT_ID=$(az policy assignment list --scope $TEMP_MG_TRG_ID --query "[? displayName == 'Azure Security Benchmark'].id" -o tsv)
+TEMP_ASSIGNMENT_ID=$(az policy assignment list --scope $TEMP_MG_TRG_ID --query "[? displayName == 'Microsoft Cloud Security Benchmark'].id" -o tsv)
 
 # ■ DevCenter 用の KeyVault に対するネットワークファイアウォール機能の有効化（※ 現状未サポートのため） (Waiver)
 # Azure Key Vault should have firewall enabled
