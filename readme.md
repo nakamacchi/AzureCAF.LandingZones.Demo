@@ -75,7 +75,7 @@
 | 業務 | subscription-spoke-b | 業務システムサンプル B（PaaS Web-DB アプリ） |
 | 業務 | subscription-spoke-c | (未定) |
 | 業務 | subscription-spoke-d | 業務システムサンプル D（AOAI 社内文書検索） |
-| 業務 | subscription-spoke-e | (未定) |
+| 業務 | subscription-spoke-e | 業務システムサンプル E (AKS Web-DB アプリ) |
 | 業務 | subscription-spoke-f | 業務システムサンプル F（CaaS Web-DB アプリ） |
 | 開発 | subscription-dev1 | 開発環境（管理用） (DevCenter, DevBox) |
 | 開発 | subscription-dev2 | 開発環境（サンドボックス） (Deployment Environment) |
@@ -92,6 +92,8 @@
 
 - どうしても自力で動かしてみたい方は、末尾をご確認ください。
 - ビデオ撮影の際、マンション工事が入っており、一部、工事音が入っているところがあります（マイクの収音性能が高いため、稀に子供の声も入ってしまっています…orz）。申し訳ありませんが、ご容赦いただければ幸いです。
+
+※ 古いバージョンでビデオ作成・録画をしているため、最新のスクリプトと一部異なるところがあります。相違点については各ページの解説を確認してください。
 
 | ビデオ | ビデオ時間 | 作業時間目安 | リンク |
 | :-- | :-- | :-- | :-- |
