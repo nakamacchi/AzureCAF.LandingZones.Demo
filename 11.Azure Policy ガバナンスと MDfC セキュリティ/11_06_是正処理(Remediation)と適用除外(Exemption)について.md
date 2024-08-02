@@ -67,7 +67,7 @@ MDfC 推奨事項と Azure Policy は密接に関係していますが、近年�
 
 その結果として、現在の Azure Policy 及び MDfC 推奨事項は、セキュリティ項目によって異なる、さまざまな方法で動作する形となりました。それを示したのが下図になります。
 
-![picture 0](./images/fe2c026c0caf9b11ec96dabd6756e3c6bc6ba46c057fa2962e287e182a897060.png)  
+![picture 0](./images/202408_AzurePolicyAndMdfc.png)  
 
 - まず、構成チェックを「実際に」行っているのがどちらであるかにより、大きく 2 つに大別することができる。
   - Azure Policy エンジンが中心となって構成チェックを行っているもの。（上図の #1～#3）
