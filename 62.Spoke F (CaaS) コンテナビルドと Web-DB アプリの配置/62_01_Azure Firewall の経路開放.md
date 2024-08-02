@@ -29,56 +29,56 @@ TEMP_SUBNET_DEFAULT="${TEMP_IP_PREFIX}.128.0/24"
 
 az network firewall policy rule-collection-group collection add-filter-collection \
 --resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
---name "ResourcesForSpokeFMaintanance" --rule-type ApplicationRule --collection-priority 50600 --action Allow \
+--name "Spoke F ACA" --rule-type ApplicationRule --collection-priority 50600 --action Allow \
 --rule-name "GitHub" \
 --target-fqdns "github.com" "*.githubusercontent.com" "*.github.com" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForSpokeFMaintanance" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "WslStore" \
 --target-fqdns "wslstorestorage.blob.core.windows.net" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForSpokeFMaintanance" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "Docker" \
 --target-fqdns "download.docker.com" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForSpokeFMaintanance" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "MCR" \
 --target-fqdns "mcr.microsoft.com" "*.data.mcr.microsoft.com" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForSpokeFMaintanance" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "NuGet" \
 --target-fqdns "api.nuget.org" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForSpokeFMaintanance" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "Microsoft Download" \
 --target-fqdns "aka.ms" "go.microsoft.com" "download.microsoft.com" "learn.microsoft.com" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForSpokeFMaintanance" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "Alpine Linux Download" \
 --target-fqdns "dl-cdn.alpinelinux.org" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForSpokeFMaintanance" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "az cli download" \
 --target-fqdns "azurecliprod.blob.core.windows.net" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443

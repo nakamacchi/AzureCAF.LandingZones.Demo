@@ -25,7 +25,7 @@ TEMP_SUBNET_DEFAULT="${TEMP_IP_PREFIX}.128.0/24"
 
 az network firewall policy rule-collection-group collection add-filter-collection \
 --resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
---name "ResourcesForSpokeDMaintenance" --rule-type ApplicationRule --collection-priority 50400 --action Allow \
+--name "Spoke D AOAI" --rule-type ApplicationRule --collection-priority 50400 --action Allow \
 --rule-name "All Web Sites" \
 --target-fqdns "*" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443 Http=80

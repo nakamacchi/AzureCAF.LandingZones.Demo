@@ -60,10 +60,13 @@
   - 仮想マシンの完全なセキュア化（MDE, GC, AMA, DA, ASA, CTA 全部入り）
   - Azure Policy, MDfC スコアを 100% にする
   - 運用監視（集約アラートと個別アラート）
-- 現在はさらに上記を拡張し、以下も追加サンプルとして掲載しています。
+- 現在はさらに上記を拡張し、以下も追加サンプルとして掲載しています。（[更新履歴ページ](./history.md)もご確認ください。）
   - AOAI 社内文書検索（Azure OpenAI Service リファレンスアーキテクチャのエンプラ対応版）（フォルダ番号 41～44）
+  - CaaS Web-DB アプリ (Azure Kubernetes Services)（フォルダ番号 51～56）
   - CaaS Web-DB アプリ (Azure Container Apps)（フォルダ番号 61～65）
   - DevCenter Deployment Environment によるセルフサービス型サンドボックス環境（フォルダ番号 71～74）
+
+![picture 0](images/d290746098200fbb934005eafa8c6230fe96314585daa0cb4cf238baa9ff282f.png)  
 
 各サブスクリプションの位置付けは以下のとおりです。基本サンプルとして上4つ、拡張・追加サンプルとして下6つを用意しています。
 
