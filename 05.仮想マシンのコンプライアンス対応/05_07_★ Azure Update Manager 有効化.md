@@ -6,7 +6,7 @@ Azure 上の仮想マシンのセキュリティパッチ管理については�
 - ② パッチの適用 （手動／スケジュール）
 - ③ パッチの適用状況の分析
 
-これらの機能は、UMC (Update Management Center) と呼ばれるコンソールから利用することかできます。
+これらの機能は、Azure Update Manager (開発中の名称は UMC, Update Management Center) と呼ばれるコンソールから利用することかできます。
 
 ![picture 1](./images/649d54faecb6ec115f6b3b1e2a57d33ae478df54127d02c6ce5d66d4ff700c06.png)  
 

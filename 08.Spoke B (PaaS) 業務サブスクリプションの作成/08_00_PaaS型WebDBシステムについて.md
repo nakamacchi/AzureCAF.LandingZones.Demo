@@ -21,7 +21,7 @@
   - ![picture 2](./images/96705459fd984e91c83fe33d1e81a10d8bd882c6dbf40d9b70136f23094a2d87.png)  
 - DB サーバ
   - SQL Database 以外の選択肢として、マネージドサービスとしての MySQL, MariaDBm, PostgreSQL があります。
-  - Oracle に関しては、OCI (Oracle Cloud Infrastructure) との専用線接続サービスを利用することができます。
+  - Oracle に関しては、OracleDB @ Azure（ODDA）と呼ばれるマネージドサービスが利用できます（簡単に言えば、Azure データセンタ環境内にホストした Exadata を利用できます）。また、OCI (Oracle Cloud Infrastructure) との専用線接続サービスを利用することができます。
   - 詳細は [こちら](https://github.com/Azure/jp-techdocs) の "DB サービスの使い分け"(tfukuha) を参照してください。
 
 本セクションでは、この Web App (App Service) と SQL Databsae を利用して、前セクションと同様の Web-DB システムを構築します。

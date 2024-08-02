@@ -27,7 +27,7 @@
 # このため DC 全体の Network Contributor ロールでの作業を行う
  
 # NW 構成管理チーム／③ 構成変更の作業アカウントに切り替え
-if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_nw_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_nw_change"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password "${SP_PWDS[${TEMP_SP_NAME}]}" --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_nw_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
  
 # Spoke A サブスクリプションで作業
 az account set -s "${SUBSCRIPTION_ID_SPOKE_A}"

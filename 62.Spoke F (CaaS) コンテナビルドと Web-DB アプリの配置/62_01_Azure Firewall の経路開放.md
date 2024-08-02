@@ -11,7 +11,7 @@
 ```bash
 
 # NW 構成管理チーム／③ 構成変更の作業アカウントに切り替え
-if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_nw_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_nw_change"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password "${SP_PWDS[${TEMP_SP_NAME}]}" --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_nw_change@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
 
 # ハブサブスクリプションに切り替え
 az account set -s "${SUBSCRIPTION_ID_MGMT}"
@@ -29,51 +29,58 @@ TEMP_SUBNET_DEFAULT="${TEMP_IP_PREFIX}.128.0/24"
 
 az network firewall policy rule-collection-group collection add-filter-collection \
 --resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
---name "ResourcesForContainerBuild" --rule-type ApplicationRule --collection-priority 50600 --action Allow \
+--name "Spoke F ACA" --rule-type ApplicationRule --collection-priority 50600 --action Allow \
 --rule-name "GitHub" \
 --target-fqdns "github.com" "*.githubusercontent.com" "*.github.com" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForContainerBuild" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "WslStore" \
 --target-fqdns "wslstorestorage.blob.core.windows.net" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForContainerBuild" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "Docker" \
 --target-fqdns "download.docker.com" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForContainerBuild" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "MCR" \
 --target-fqdns "mcr.microsoft.com" "*.data.mcr.microsoft.com" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForContainerBuild" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "NuGet" \
 --target-fqdns "api.nuget.org" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForContainerBuild" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "Microsoft Download" \
 --target-fqdns "aka.ms" "go.microsoft.com" "download.microsoft.com" "learn.microsoft.com" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 az network firewall policy rule-collection-group collection rule add \
 --resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
---collection-name "ResourcesForContainerBuild" --rule-type ApplicationRule \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
 --name "Alpine Linux Download" \
 --target-fqdns "dl-cdn.alpinelinux.org" \
+--source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
+
+az network firewall policy rule-collection-group collection rule add \
+--resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
+--collection-name "Spoke F ACA" --rule-type ApplicationRule \
+--name "az cli download" \
+--target-fqdns "azurecliprod.blob.core.windows.net" \
 --source-addresses ${TEMP_SUBNET_DEFAULT} --protocols Https=443
 
 done # TEMP_LOCATION

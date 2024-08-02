@@ -293,4 +293,13 @@ done
 
 ```
 
+## 送信時に JSON 関連のエラーが出る場合
 
+- データ送信時に "Unsupported Media Type({"error":{"code":"UnsupportedMediaType","message":"The content media type '<null>' is not supported. Only 'application/json' is supported."}})" のようなエラーが出る場合、JSON データに誤りが含まれており、JSON データとしてデータが送信されていないことがある。
+- この場合には、--headers 'Content-Type=application/json' を指定して実行することで、詳細なエラーが得られる場合がある
+
+```bash
+
+az rest --method PUT --uri "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policyAssignments/mcsb?api-version=2024-04-01" --headers 'Content-Type=application/json' --body @temp.json
+
+```

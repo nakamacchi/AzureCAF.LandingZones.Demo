@@ -24,9 +24,9 @@
 
 まずは以下のスクリプトで Ops VNET と Azure Bastion を作成します。
 
-## Bastion の SKU 選択
+## （参考）Bastion の SKU 選択
 
-ここでは Standard SKU を利用しています。主な違いは[以下](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings)の通りです。
+ここでは Standard SKU を利用しています。主な違いは[以下](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings)の通りです。規制業界における本番環境ではセッションレコーディング及び Private-only 機能が利用できる Premium SKU の利用もご検討ください。
 
 - Basic SKU 以上のみ
   - VNET Peering を介した接続
@@ -36,11 +36,14 @@
   - ファイルのアップロード・ダウンロード
   - Web クライアントでのコピペ無効化
   - 共有リンク
+- Premium SKU のみ
+  - セッションレコーディング ([参考](https://www.kentsu.website/ja/posts/2024/bastion_recording/))
+  - Private-Only Bastion（パブリックアクセスできない Bastion の作成）
 
 ```bash
 
 # 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
-if ${FLAG_USE_SOD} ; then az account clear ; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}" ; fi
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_plat_dev"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password "${SP_PWDS[${TEMP_SP_NAME}]}" --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
  
 # 運用管理基盤の作成
 az account set -s "${SUBSCRIPTION_ID_MGMT}"

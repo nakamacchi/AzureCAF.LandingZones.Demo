@@ -60,10 +60,13 @@
   - 仮想マシンの完全なセキュア化（MDE, GC, AMA, DA, ASA, CTA 全部入り）
   - Azure Policy, MDfC スコアを 100% にする
   - 運用監視（集約アラートと個別アラート）
-- 現在はさらに上記を拡張し、以下も追加サンプルとして掲載しています。
+- 現在はさらに上記を拡張し、以下も追加サンプルとして掲載しています。（[更新履歴ページ](./history.md)もご確認ください。）
   - AOAI 社内文書検索（Azure OpenAI Service リファレンスアーキテクチャのエンプラ対応版）（フォルダ番号 41～44）
+  - CaaS Web-DB アプリ (Azure Kubernetes Services)（フォルダ番号 51～56）
   - CaaS Web-DB アプリ (Azure Container Apps)（フォルダ番号 61～65）
   - DevCenter Deployment Environment によるセルフサービス型サンドボックス環境（フォルダ番号 71～74）
+
+![picture 0](images/d290746098200fbb934005eafa8c6230fe96314585daa0cb4cf238baa9ff282f.png)  
 
 各サブスクリプションの位置付けは以下のとおりです。基本サンプルとして上4つ、拡張・追加サンプルとして下6つを用意しています。
 
@@ -75,7 +78,7 @@
 | 業務 | subscription-spoke-b | 業務システムサンプル B（PaaS Web-DB アプリ） |
 | 業務 | subscription-spoke-c | (未定) |
 | 業務 | subscription-spoke-d | 業務システムサンプル D（AOAI 社内文書検索） |
-| 業務 | subscription-spoke-e | (未定) |
+| 業務 | subscription-spoke-e | 業務システムサンプル E (AKS Web-DB アプリ) |
 | 業務 | subscription-spoke-f | 業務システムサンプル F（CaaS Web-DB アプリ） |
 | 開発 | subscription-dev1 | 開発環境（管理用） (DevCenter, DevBox) |
 | 開発 | subscription-dev2 | 開発環境（サンドボックス） (Deployment Environment) |
@@ -92,6 +95,8 @@
 
 - どうしても自力で動かしてみたい方は、末尾をご確認ください。
 - ビデオ撮影の際、マンション工事が入っており、一部、工事音が入っているところがあります（マイクの収音性能が高いため、稀に子供の声も入ってしまっています…orz）。申し訳ありませんが、ご容赦いただければ幸いです。
+
+※ 古いバージョンでビデオ作成・録画をしているため、最新のスクリプトと一部異なるところがあります。相違点については各ページの解説を確認してください。
 
 | ビデオ | ビデオ時間 | 作業時間目安 | リンク |
 | :-- | :-- | :-- | :-- |
