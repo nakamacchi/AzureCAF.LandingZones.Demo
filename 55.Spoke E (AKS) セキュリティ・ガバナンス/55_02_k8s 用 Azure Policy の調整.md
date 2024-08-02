@@ -148,8 +148,8 @@ TEMP_SCOPE="/subscriptions/${SUBSCRIPTION_ID_SPOKE_E}"
 az rest --method PUT --uri "${TEMP_SCOPE}/providers/Microsoft.Authorization/policyAssignments/custom-check-spe?api-version=2023-04-01" --body @- <<EOF
 {
     "properties": {
-        "displayName": "Check for Spoke E",
-        "description": "Spoke E を Audit/AINE カスタムポリシーで検査します。",
+        "displayName": "Check for Spoke E AKS",
+        "description": "Spoke E の AKS を Audit/AINE カスタムポリシーで検査します。",
         "scope": "${TEMP_SCOPE}",
         "policyDefinitionId": "${TEMP_MG_TRG_ID}/providers/Microsoft.Authorization/policySetDefinitions/custom-initiative-spoke-e"
     }
