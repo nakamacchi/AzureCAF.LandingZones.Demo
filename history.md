@@ -1,5 +1,7 @@
 # 主な更新ポイントについて
 
+※ 2024/08 の更新以前のコンテンツを参照・確認したい場合には、[こちら](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo/tree/6a63ddf8df4ce20d9de05d3b29a90ce96e5694ae)をご確認ください。
+
 ## 2024/08 更新
 
 - 主な変更点
