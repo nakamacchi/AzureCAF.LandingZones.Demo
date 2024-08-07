@@ -81,6 +81,7 @@ TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
 
 TEMP_DCR_SQL_WIN_NAME="dcr-law-vdc-${TEMP_LOCATION_PREFIX}-sql-win"
 TEMP_DCR_SQL_WIN_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Insights/dataCollectionRules/${TEMP_DCR_SQL_WIN_NAME}"
+TEMP_DCE_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourcegroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/microsoft.insights/datacollectionendpoints/dce-vdc-${TEMP_LOCATION_PREFIX}"
 
 TEMP_VM_ID="/subscriptions/${SUBSCRIPTION_ID_SPOKE_A}/resourceGroups/rg-spokea-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Compute/virtualMachines/vm-db-${TEMP_LOCATION_PREFIX}"
 
