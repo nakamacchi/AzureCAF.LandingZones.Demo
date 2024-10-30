@@ -1,10 +1,29 @@
 # （参考）Bastion Premium によるセッション録画
 
+運用管理 VNET 上の Bastion は標準的な Standard SKU で作成しましたが、上位 SKU の Premium で作成すると、画面の強制録画機能を利用することができます。 ([参考](https://www.kentsu.website/ja/posts/2024/bastion_recording/))
+
+## 画面の強制録画機能の有効化
+
+以下の作業により、画面の強制録画機能を有効化します。
+
+- Premium SKU への変更
+- 録画データを保存するための Blob ストレージの作成
+- Blob ストレージの CORS 機能の有効化
+- Bastion が Blob ストレージへアクセスするための SAS キーの作成
+- 取得した SAS キーの Bastion への設定
+
+有効化が済んだら、Bastion 経由で何らかの VM にログインして操作・ログオフします。その後、Azure Portal の Bastion の "Session Recordings" セクションに行くと、録画したものを参照することができます。
+
 ```bash
+
+# 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_plat_dev"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password "${SP_PWDS[${TEMP_SP_NAME}]}" --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+ 
 # 運用管理基盤の作成
 az account set -s "${SUBSCRIPTION_ID_MGMT}"
+ 
+for i in ${VDC_NUMBERS}; do
 
-i=0
 TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
 TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
 
@@ -13,10 +32,7 @@ TEMP_BASTION_NAME="bst-ops-${TEMP_LOCATION_PREFIX}"
 TEMP_BASTION_PIP_NAME="${TEMP_BASTION_NAME}-pip"
 TEMP_VNET_NAME="vnet-ops-${TEMP_LOCATION_PREFIX}"
 
-az rest --method GET --uri "/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Network/bastionHosts/${TEMP_BASTION_NAME}?api-version=2023-09-01"
-
-#cat <<EOF
-
+# az rest --method GET --uri "/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Network/bastionHosts/${TEMP_BASTION_NAME}?api-version=2023-09-01"
 az rest --method PUT --uri "/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/${TEMP_RG_NAME}/providers/Microsoft.Network/bastionHosts/${TEMP_BASTION_NAME}?api-version=2023-09-01" --body @- <<EOF
 {
       "location": "${TEMP_LOCATION_NAME}",
@@ -82,7 +98,6 @@ TEMP_START_DATE=`date -u -d "30 minutes ago" '+%Y-%m-%dT%H:%MZ'`
 TEMP_END_DATE=`date -u -d "5 years" '+%Y-%m-%dT%H:%MZ'`
 TEMP_SAS_KEY=$(az storage container generate-sas --name "${TEMP_STORAGE_CONTAINER_NAME}" --account-name "${TEMP_STORAGE_NAME}" --account-key "${TEMP_STORAGE_KEY}" --start "${TEMP_START_DATE}" --expiry "${TEMP_END_DATE}" --permissions rcwl --https-only -o tsv)
 TEMP_SAS_URL="https://${TEMP_STORAGE_NAME}.blob.core.windows.net/${TEMP_STORAGE_CONTAINER_NAME}?${TEMP_SAS_KEY}"
-echo ${TEMP_SAS_URL}
 
 # Bastion に設定
 az rest --method POST --uri "${TEMP_RES_ID}/setsessionrecordingsasurl?api-version=2023-09-01" --body @- <<EOF
@@ -91,14 +106,33 @@ az rest --method POST --uri "${TEMP_RES_ID}/setsessionrecordingsasurl?api-versio
 }
 EOF
 
+done # TEMP_LOCATION
+
 ```
 
-```bash
-# Private Endpoint 化
+## Blob ストレージの閉域化
 
+ここまでの構成では録画データに対してパブリックエンドポイント経由でアクセスすることになりますが、Blob ストレージを閉域化したい場合には、さらに以下の作業を行います。
+
+- ストレージアカウントのパブリックアクセスを禁止
+- ストレージアカウントのプライベートエンドポイントを vnet-ops-XXX に作成
+- vnet-ops-XXX 上でストレージアカウントのプライベートエンドポイントの DNS 名前解決ができるように構成
+
+以上の作業により、録画データをインターネットから参照することができなくなります。（vm-ops-xxx 端末などからポータルサイトにアクセスして参照してください。）
+
+※ 本サンプルでは実装しませんが、Premium SKU であれば、Bastion へのインターネットからのアクセスを禁止することもできます。この方法を採った場合には、Express Route Private Peering や VPN などで vnet-ops-XXX に入り、そこから Bastion にアクセスしてください。
+
+```bash
+
+# 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
+if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_plat_dev"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password "${SP_PWDS[${TEMP_SP_NAME}]}" --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
+ 
+# 運用管理基盤の作成
+az account set -s "${SUBSCRIPTION_ID_MGMT}"
+ 
+# Private Endpoint 化
 TEMP_RG_NAME="rg-ops-${TEMP_LOCATION_PREFIX}"
 TEMP_STORAGE_NAME="stbstops${TEMP_LOCATION_PREFIX}${UNIQUE_SUFFIX}"
-
 az storage account update --name "${TEMP_STORAGE_NAME}" --resource-group "${TEMP_RG_NAME}" --subscription "${SUBSCRIPTION_ID_MGMT}" --public-network-access Disabled
 
 ############################################
@@ -156,27 +190,7 @@ fi
 # Private DNS Zone Group 作成
 az network private-endpoint dns-zone-group create --endpoint-name ${TEMP_PE_NAME} --name "pdzg-${TEMP_PE_NAME}" --private-dns-zone $TEMP_PRIVATE_DNS_ZONE_ID --resource-group ${TEMP_PE_RG_NAME} --zone-name "${TEMP_REQUIRED_ZONE_NAME}"
 
-done # TEMP_REQUIRED_ZONE_NAME
-done # TEMP_RESOURCE_ID
-done # TEMP_LOCATION
-
-```
-
-```bash
-# Private DNS Zone 登録
-
-# 共通基盤管理チーム／① 初期構築時の作業アカウントに切り替え
-if ${FLAG_USE_SOD}; then if ${FLAG_USE_SOD_SP}; then TEMP_SP_NAME="sp_plat_dev"; az login --service-principal --username ${SP_APP_IDS[${TEMP_SP_NAME}]} --password "${SP_PWDS[${TEMP_SP_NAME}]}" --tenant ${PRIMARY_DOMAIN_NAME} --allow-no-subscriptions; else az account clear; az login -u "user_plat_dev@${PRIMARY_DOMAIN_NAME}" -p "${ADMIN_PASSWORD}"; fi; fi
- 
 TEMP_PRIVATE_DNS_ZONE_NAMES="privatelink.blob.core.windows.net"
-# なおここではサンプルとして事前にゾーン作成しているが、プライベートエンドポイント作成時に必要なものを適宜追加していく方法でもよい
-
-for i in ${VDC_NUMBERS}; do
-TEMP_LOCATION_NAME=${LOCATION_NAMES[$i]}
-TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
-
-# 管理サブスクリプションに切り替え
-az account set -s "${SUBSCRIPTION_ID_MGMT}"
 # Ops 側
 TEMP_RG_NAME="rg-ops-${TEMP_LOCATION_PREFIX}"
 for TEMP_PRIVATE_DNS_ZONE_NAME in ${TEMP_PRIVATE_DNS_ZONE_NAMES}; do
@@ -188,6 +202,5 @@ az network private-dns link vnet create --resource-group $TEMP_RG_NAME --zone-na
 done # TEMP_PRIVATE_DNS_ZONE_NAME
 
 done # TEMP_LOCATION
-
 
 ```
