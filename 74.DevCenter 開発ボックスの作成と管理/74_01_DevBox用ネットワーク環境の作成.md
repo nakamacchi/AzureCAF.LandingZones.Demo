@@ -39,14 +39,26 @@ TEMP_VNET_NAME="vnet-devhub-${TEMP_LOCATION_PREFIX}"
 TEMP_VNET_ADDRESS="${TEMP_IP_PREFIX}.0.0/16"
 TEMP_NSG_NAME="${TEMP_VNET_NAME}-nsg"
 TEMP_UDR_NAME="${TEMP_VNET_NAME}-udr"
+TEMP_SUBNET_DEFAULT="${TEMP_IP_PREFIX}.0.0/24"
+TEMP_SUBNET_PE="${TEMP_IP_PREFIX}.250.0/24"
 TEMP_SUBNET_FW="${TEMP_IP_PREFIX}.251.0/25"
 TEMP_SUBNET_FWMGMT="${TEMP_IP_PREFIX}.251.128/25"
+TEMP_SUBNET_BASTION="${TEMP_IP_PREFIX}.252.0/24"
+TEMP_SUBNET_PROXY="${TEMP_IP_PREFIX}.254.0/24"
 
 az group create --name ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME}
+
+az network nsg create --name ${TEMP_NSG_NAME} --resource-group ${TEMP_RG_NAME}
+az network route-table create --resource-group ${TEMP_RG_NAME} --name ${TEMP_UDR_NAME}
+
 az network vnet create --resource-group ${TEMP_RG_NAME} --name ${TEMP_VNET_NAME} --address-prefixes ${TEMP_VNET_ADDRESS}
 
+az network vnet subnet create --name "DefaultSubnet" --address-prefix ${TEMP_SUBNET_DEFAULT} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
 az network vnet subnet create --name "AzureFirewallSubnet" --address-prefix ${TEMP_SUBNET_FW} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME}
 az network vnet subnet create --name "AzureFirewallManagementSubnet" --address-prefix ${TEMP_SUBNET_FWMGMT} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME}
+az network vnet subnet create --name "PrivateEndpointSubnet" --address-prefix ${TEMP_SUBNET_PE} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME}
+az network vnet subnet create --name "AzureBastionSubnet" --address-prefix ${TEMP_SUBNET_BASTION} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME}
+az network vnet subnet create --name "ProxySubnet" --address-prefix ${TEMP_SUBNET_PROXY} --resource-group ${TEMP_RG_NAME} --vnet-name ${TEMP_VNET_NAME} --nsg ${TEMP_NSG_NAME} --route-table ${TEMP_UDR_NAME}
 
 # DevBox 用 Spoke の作成
 TEMP_IP_PREFIX=${TEMP_IP_DEV1_DEVBOX_PREFIX}
@@ -111,7 +123,8 @@ TEMP_FWP_NAME="${TEMP_FW_NAME}-fwp"
 TEMP_FW_SKU="Standard" # DNS proxy 機能を利用するため Standard が必要
 
 # Firewall Policy 作成
-az network firewall policy create --name ${TEMP_FWP_NAME} --resource-group ${TEMP_RG_NAME} --sku Standard
+TEMP_PARENT_FWP_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/firewallPolicies/fwp-vdc-${TEMP_LOCATION_PREFIX}"
+az network firewall policy create --name ${TEMP_FWP_NAME} --resource-group ${TEMP_RG_NAME} --sku Standard --base-policy ${TEMP_PARENT_FWP_ID}
 
 # パブリック IP、管理 IP を作成
 az network public-ip create --name ${TEMP_FW_PIP_NAME} --resource-group ${TEMP_RG_NAME} --location ${TEMP_LOCATION_NAME} --allocation-method static --sku standard
@@ -170,6 +183,7 @@ done
 TEMP_FW_IP=$(az network firewall ip-config list -g ${TEMP_RG_NAME} -f ${TEMP_FW_NAME} --query "[0].privateIpAddress" --output tsv)
 
 # DevBox のルートテーブルを更新
+az network route-table route create --resource-group "rg-devhub-${TEMP_LOCATION_PREFIX}" --route-table-name "vnet-devhub-${TEMP_LOCATION_PREFIX}-udr" --name default --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address ${TEMP_FW_IP}
 az network route-table route create --resource-group "rg-devbox-${TEMP_LOCATION_PREFIX}" --route-table-name "vnet-devbox-${TEMP_LOCATION_PREFIX}-udr" --name default --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address ${TEMP_FW_IP}
 
 # VNET の DNS を Azure Firewall に向ける（ネットワークルールの利用のため）
