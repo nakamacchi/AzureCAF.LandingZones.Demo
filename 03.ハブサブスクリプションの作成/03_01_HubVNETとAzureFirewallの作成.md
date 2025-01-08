@@ -46,7 +46,8 @@ TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
 TEMP_FW_SKU="Standard" # DNS proxy 機能を利用するために Standard が必要
 
 # Firewall Policy 作成
-az network firewall policy create --name ${TEMP_FWP_NAME} --resource-group ${TEMP_RG_NAME} --sku Standard
+TEMP_PARENT_FWP_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/rg-vdc-${TEMP_LOCATION_PREFIX}/providers/Microsoft.Network/firewallPolicies/fwp-vdc-${TEMP_LOCATION_PREFIX}"
+az network firewall policy create --name ${TEMP_FWP_NAME} --resource-group ${TEMP_RG_NAME} --sku ${TEMP_FW_SKU} --base-policy ${TEMP_PARENT_FWP_ID}
 
 TEMP_ZONE_REDUNDANCY=$( [ "$FLAG_USE_PLATFORM_AZ" = true ] && echo "--zone 1 2 3" || echo "" )
 # パブリック IP、管理 IP を作成
