@@ -25,3 +25,79 @@
   - 詳細は [こちら](https://github.com/Azure/jp-techdocs) の "DB サービスの使い分け"(tfukuha) を参照してください。
 
 本セクションでは、この Web App (App Service) と SQL Databsae を利用して、前セクションと同様の Web-DB システムを構築します。
+
+## サブスクリプションの初期設定
+
+**管理者アカウントで az cli にログインし直します。**
+
+```bash
+
+az account clear
+az login
+
+```
+
+引き続き、サブスクリプションの初期設定として、以下を行います。
+
+- プロバイダ登録（App Service を利用できるようにするため、機能の有効化を行います）
+
+```bash
+
+# 対象サブスクリプション
+TEMP_TARGET_SUBSCRIPTION_IDS=$SUBSCRIPTION_ID_SPOKE_B
+
+# 登録する Resource Provider と feature を設定
+TEMP_RP_NAMES="Microsoft.Web"
+TEMP_FEATURE_NAMES="\
+"
+
+for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
+echo "Initialize subscription... ${TEMP_SUBSCRIPTION_ID}"
+az account set -s "${TEMP_SUBSCRIPTION_ID}"
+
+# RP 有効化
+for TEMP_RP_NAME in $TEMP_RP_NAMES; do
+echo "Registering ${TEMP_RP_NAME} RP on ${TEMP_SUBSCRIPTION_ID}..."
+az provider register --namespace "${TEMP_RP_NAME}"
+done #TEMP_RP_NAME
+
+# Feature 有効化
+for TEMP_FEATURE_NAME_TEMP in $TEMP_FEATURE_NAMES; do
+# 分解して利用
+TEMP=(${TEMP_FEATURE_NAME_TEMP//,/ })
+TEMP_FEATURE_NAMESPACE=${TEMP[0]}
+TEMP_FEATURE_NAME=${TEMP[1]}
+az feature register --namespace ${TEMP_FEATURE_NAMESPACE} --name ${TEMP_FEATURE_NAME}
+done #TEMP_FEATURE_NAME_TEMP
+
+done #TEMP_SUBSCRIPTION_ID
+
+for TEMP_SUBSCRIPTION_ID in $TEMP_TARGET_SUBSCRIPTION_IDS; do
+echo "Waiting initializing subscription... ${TEMP_SUBSCRIPTION_ID}"
+az account set -s "${TEMP_SUBSCRIPTION_ID}"
+
+# RP 有効化待ち
+for TEMP_RP_NAME in $TEMP_RP_NAMES; do
+while [ $(az provider show --namespace "${TEMP_RP_NAME}" --query registrationState -o tsv) != "Registered" ]
+do
+echo "$(az provider show --namespace "${TEMP_RP_NAME}" --query registrationState -o tsv) on ${TEMP_SUBSCRIPTION_ID} ${TEMP_RP_NAME}..."
+sleep 10
+done
+done #TEMP_RP_NAME
+
+# Feature 有効化待ち
+for TEMP_FEATURE_NAME_TEMP in $TEMP_FEATURE_NAMES; do
+# 分解して利用
+TEMP=(${TEMP_FEATURE_NAME_TEMP//,/ })
+TEMP_FEATURE_NAMESPACE=${TEMP[0]}
+TEMP_FEATURE_NAME=${TEMP[1]}
+while [ $(az feature show --namespace ${TEMP_FEATURE_NAMESPACE} --name ${TEMP_FEATURE_NAME} --query properties.state -o tsv) != "Registered" ]
+do
+echo "$(az feature show --namespace ${TEMP_FEATURE_NAMESPACE} --name ${TEMP_FEATURE_NAME} --query properties.state -o tsv) ${TEMP_FEATURE_NAMESPACE}/${TEMP_FEATURE_NAME} ..."
+sleep 10
+done
+done #TEMP_FEATURE_NAME_TEMP
+
+done #TEMP_SUBSCRIPTION_ID
+
+```
