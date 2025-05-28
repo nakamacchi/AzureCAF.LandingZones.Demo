@@ -24,7 +24,7 @@ TEMP_IP_PREFIX=${IP_SPOKE_D_PREFIXS[$i]}
 TEMP_SUBNET_DEFAULT="${TEMP_IP_PREFIX}.128.0/24"
 
 az network firewall policy rule-collection-group collection add-filter-collection \
---resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
+--resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "AdditionalApplicationRuleCollectionGroup" \
 --name "Spoke D AOAI" --rule-type ApplicationRule --collection-priority 50400 --action Allow \
 --rule-name "All Web Sites" \
 --target-fqdns "*" \

@@ -207,8 +207,8 @@ TEMP_IP_PREFIX=${IP_SPOKE_F_PREFIXS[$i]}
 TEMP_SUBNET_CA="${TEMP_IP_PREFIX}.2.0/24"
 
 az network firewall policy rule-collection-group collection add-filter-collection \
---resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
---name "Spoke F ACA" --rule-type ApplicationRule --collection-priority 50600 --action Allow \
+--resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "AdditionalApplicationRuleCollectionGroup" \
+--name "Spoke F MIDAuth" --rule-type ApplicationRule --collection-priority 50601 --action Allow \
 --rule-name "EntraID" \
 --target-fqdns "*.identity.azure.net" "*.login.microsoft.com" \
 --source-addresses ${TEMP_SUBNET_CA} --protocols Https=443

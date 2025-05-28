@@ -52,7 +52,7 @@ TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
   
 az network firewall policy rule-collection-group collection add-filter-collection \
   --resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
-  --name "ACAEnv" --rule-type ApplicationRule --collection-priority 40600 --action Allow \
+  --name "Spoke F ACAEnv" --rule-type ApplicationRule --collection-priority 50600 --action Allow \
   --rule-name "ACAEnv" \
   --target-fqdns "mcr.microsoft.com" "*.data.mcr.microsoft.com" \
   --source-addresses "*" --protocols Https=443 \

@@ -51,7 +51,7 @@ TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
 TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
 TEMP_SPOKE_ADDRESS="${IP_SPOKE_E_PREFIXS[$i]}.0.0/16"
 az network firewall policy rule-collection-group collection rule add \
---resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "DefaultApplicationRuleCollectionGroup" \
+--resource-group "${TEMP_RG_NAME}" --policy-name "${TEMP_FWP_NAME}" --rcg-name "AdditionalApplicationRuleCollectionGroup" \
 --collection-name "Spoke E AKS" --rule-type ApplicationRule \
 --name "AzureManagedPrometheus" \
 --target-fqdns ${TEMP_FQDNS[@]} \

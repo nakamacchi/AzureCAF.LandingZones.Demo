@@ -22,8 +22,8 @@ TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
 TEMP_SUBNET_ASB_ADDRESS="${IP_SPOKE_D_PREFIXS[$i]}.2.0/24"
 
 az network firewall policy rule-collection-group collection add-filter-collection \
---resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
---name "Spoke D AOAI" --rule-type ApplicationRule --collection-priority 40400 --action Allow \
+--resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "AdditionalApplicationRuleCollectionGroup" \
+--name "Spoke D AOAI" --rule-type ApplicationRule --collection-priority 50400 --action Allow \
 --rule-name "Azure OpenAI Library" \
 --target-fqdns "openaipublic.blob.core.windows.net" \
 --source-addresses ${TEMP_SUBNET_ASB_ADDRESS} --protocols Https=443

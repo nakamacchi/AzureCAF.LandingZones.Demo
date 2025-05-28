@@ -31,8 +31,8 @@ TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
 TEMP_SUBNET_ASB_ADDRESS="${IP_SPOKE_B_PREFIXS[$i]}.10.0/24"
 
 az network firewall policy rule-collection-group collection add-filter-collection \
---resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
---name "AppService" --rule-type ApplicationRule --collection-priority 40100 --action Allow \
+--resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "AdditionalApplicationRuleCollectionGroup" \
+--name "AppService" --rule-type ApplicationRule --collection-priority 50200 --action Allow \
 --rule-name "NuGet" \
 --target-fqdns "www.nuget.org" \
 --source-addresses ${TEMP_SUBNET_ASB_ADDRESS} --protocols Https=443
