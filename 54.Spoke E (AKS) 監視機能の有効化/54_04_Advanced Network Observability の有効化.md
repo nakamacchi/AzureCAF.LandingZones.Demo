@@ -87,7 +87,7 @@ TEMP_RG_NAME="rg-spokee-${TEMP_LOCATION_PREFIX}"
 TEMP_AKS_CLUSTER_NAME="aks-spokee-${TEMP_LOCATION_PREFIX}"
 
 az account set -s "${SUBSCRIPTION_ID_SPOKE_E}"
-az aks update --resource-group ${TEMP_RG_NAME} --name ${TEMP_AKS_CLUSTER_NAME} --enable-advanced-network-observability
+az aks update --resource-group ${TEMP_RG_NAME} --name ${TEMP_AKS_CLUSTER_NAME} --enable-acns
 
 done #i
 
