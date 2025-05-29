@@ -49,6 +49,9 @@ az webapp config set --ftps-state Disabled --name ${TEMP_WEBAPP_NAME} --resource
 # ログの有効化 (App Service Log)
 az webapp log config --name ${TEMP_WEBAPP_NAME} --resource-group ${TEMP_RG_NAME} --application-logging filesystem --detailed-error-messages true --failed-request-tracing true --web-server-logging filesystem --level warning
 
+# TLS を 1.3 以上に強制する
+az webapp config set --name ${TEMP_WEBAPP_NAME} --resource-group ${TEMP_RG_NAME} --min-tls-version 1.3
+
 done # TEMP_LOCATION
 
 ```
