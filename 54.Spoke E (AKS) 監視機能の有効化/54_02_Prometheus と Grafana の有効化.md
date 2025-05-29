@@ -46,6 +46,9 @@ TEMP_GRF_RES_ID="/subscriptions/${SUBSCRIPTION_ID_MGMT}/resourceGroups/rg-vdc-${
 TEMP_RG_NAME="rg-spokee-${TEMP_LOCATION_PREFIX}"
 TEMP_AKS_CLUSTER_NAME="aks-spokee-${TEMP_LOCATION_PREFIX}"
 
+# 実行が早いと、Azure Monitor Workspace, Grafana が未作成の場合がある
+# その場合は以下を再実行する
+sleep 10
 az aks update --enable-azure-monitor-metrics --name ${TEMP_AKS_CLUSTER_NAME} --resource-group "${TEMP_RG_NAME}" --azure-monitor-workspace-resource-id "${TEMP_AMW_RES_ID}" --grafana-resource-id  "${TEMP_GRF_RES_ID}"
 
 done #i
