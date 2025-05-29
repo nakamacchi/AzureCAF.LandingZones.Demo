@@ -1,6 +1,6 @@
 # Advanced Network Observability の有効化
 
-- 有効化には k8s 1.29 以上が必要、（2024/07 時点の既定では 1.28 クラスタができるためアップグレードが必要）
+- 有効化には k8s 1.29 以上が必要。
 - https://learn.microsoft.com/en-us/azure/aks/advanced-network-observability-cli?tabs=non-cilium
 
 ```bash
