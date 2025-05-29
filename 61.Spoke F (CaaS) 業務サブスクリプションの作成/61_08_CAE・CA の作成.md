@@ -51,7 +51,7 @@ TEMP_RG_NAME="rg-hub-${TEMP_LOCATION_PREFIX}"
 TEMP_FWP_NAME="fw-hub-${TEMP_LOCATION_PREFIX}-fwp"
   
 az network firewall policy rule-collection-group collection add-filter-collection \
-  --resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "DefaultApplicationRuleCollectionGroup" \
+  --resource-group ${TEMP_RG_NAME} --policy-name ${TEMP_FWP_NAME} --rcg-name "AdditionalApplicationRuleCollectionGroup" \
   --name "Spoke F ACAEnv" --rule-type ApplicationRule --collection-priority 50600 --action Allow \
   --rule-name "ACAEnv" \
   --target-fqdns "mcr.microsoft.com" "*.data.mcr.microsoft.com" \
@@ -113,7 +113,7 @@ az containerapp create \
   --ingress external \
   --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest \
   --environment "${TEMP_CAE_NAME}" \
-  --workload-profile-name "Consumption"
+  --workload-profile-name "Consumption" \
   --system-assigned
 
 done # TEMP_LOCATION
