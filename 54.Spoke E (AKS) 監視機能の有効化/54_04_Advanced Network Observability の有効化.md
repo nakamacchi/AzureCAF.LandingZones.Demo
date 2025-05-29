@@ -1,6 +1,5 @@
 # Advanced Network Observability の有効化
 
-- 有効化には k8s 1.29 以上が必要。
 - https://learn.microsoft.com/en-us/azure/aks/advanced-network-observability-cli?tabs=non-cilium
 
 ```bash
