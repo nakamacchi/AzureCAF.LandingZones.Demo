@@ -17,12 +17,14 @@ EOF
 
 - SQL Server Developer Edition のメディアと SSMS のメディアをダウンロード
   - SQL Management Studio (SSMS)
-    - Edge ブラウザを立ち上げて、以下からダウンロード
+    - Edge ブラウザを立ち上げて、ダウンロードリンク（ https://aka.ms/ssmsfullsetup ）からファイルをダウンロード
     - https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms
     - ダウンロード後、SSMS-Setup-ENU.exe を vm-ops 端末上で実行して SSMS をインストールする
 - データベースのサンプルスクリプトをダウンロード
-  - 以下をダウンロード
+  - 以下のファイルをダウンロード
     - https://github.com/nakamacchi/AzRefArc.SqlDb/blob/main/pubs_azure_with_timestamp.sql
+  - ダウンロードするときは以下 URL を利用してください。
+    - https://github.com/nakamacchi/AzRefArc.SqlDb/raw/refs/heads/main/pubs_azure_with_timestamp.sql
 
 ## SQL Database のセットアップ
 
