@@ -26,7 +26,7 @@ az account set -s "${SUBSCRIPTION_ID_MGMT}"
 TEMP_DCE_RES_IDS1=$(az resource list --resource-type "Microsoft.Insights/dataCollectionEndpoints" --query [].id -o tsv)
 
 az account set -s "${SUBSCRIPTION_ID_SPOKE_E}"
-TEMP_DCE_RES_IDS2=$(az resource list --resource-type "Microsoft.Insights/dataCollectionEndpoints" --resource-group "rg-spokee-jpe" --query [].id -o tsv)
+TEMP_DCE_RES_IDS2=$(az resource list --resource-type "Microsoft.Insights/dataCollectionEndpoints" --resource-group "rg-spokee-${TEMP_LOCATION_PREFIX}" --query [].id -o tsv)
 
 TEMP_DCE_RES_IDS1_ARRAY=($TEMP_DCE_RES_IDS1)
 TEMP_DCE_RES_IDS2_ARRAY=($TEMP_DCE_RES_IDS2)
