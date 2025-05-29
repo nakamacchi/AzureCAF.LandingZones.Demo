@@ -7,11 +7,6 @@ Azure Policy の違反項目のうち、実質的に違反を起こしていな�
     - VA2130 Track all users with access to the database : MID 2 つにアクセス権限を与えていますが、いずれも正しい付与であり、問題はありません。
     - VA2109 Minimal set of principals should be members of fixed low impact database roles : 前述の MID に対して pubs DB の db_datareader/writer ロールを割り当てていますが、いずれも適切なアクセス権限付与であり、問題はありません。
 
-- Vulnerabilities in container security configurations should be remediated (e8cbc669-f12d-49eb-93e7-9273119e9933) (containerBenchmarkMonitoring)
-- Vulnerabilities in security configuration on your virtual machine scale sets should be remediated (3c735d8a-a4ba-4a3a-b7cf-db7754cf57f4) (vmssOsVulnerabilitiesMonitoring)
-  - これらのポリシーは AKS の VMSS に対しても評価されますが、MDE から情報が通知されないため、Azure Policy としては Non-Compliant 扱いになってしまいます。
-  - これらの項目は AKS 基盤側で制御されているため、Mitigated 扱いにします。
-
 ```bash
 
 # 業務システム統制チーム／③ 構成変更の作業アカウントに切り替え
@@ -52,6 +47,19 @@ done
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
+
+```
+
+### (参考) 以前あったが今は不要になったもの
+
+以下は 2024/9/7 に deprecated 扱いになり、不要になりました。
+
+- Vulnerabilities in container security configurations should be remediated (e8cbc669-f12d-49eb-93e7-9273119e9933) (containerBenchmarkMonitoring)
+- Vulnerabilities in security configuration on your virtual machine scale sets should be remediated (3c735d8a-a4ba-4a3a-b7cf-db7754cf57f4) (vmssOsVulnerabilitiesMonitoring)
+  - これらのポリシーは AKS の VMSS に対しても評価されますが、MDE から情報が通知されないため、Azure Policy としては Non-Compliant 扱いになってしまいます。
+  - これらの項目は AKS 基盤側で制御されているため、Mitigated 扱いにします。
+
+```bash
 
 # AKS ノードプールに対する以下のセキュリティ評価を無効化
 # Vulnerabilities in container security configurations should be remediated (e8cbc669-f12d-49eb-93e7-9273119e9933) (containerBenchmarkMonitoring)
