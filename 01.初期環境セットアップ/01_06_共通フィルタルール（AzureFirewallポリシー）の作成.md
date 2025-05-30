@@ -1,4 +1,4 @@
-# 共通フィルタルールの作成
+# 共通フィルタルール（Azure Firewall ポリシー）の作成
 
 クラウド環境上では複数の箇所に Azure Firewall を立てることがよくありますが、その際、Windows Update のように、頻繁に利用され、かつ安全性が一定以上確保されているとみなすことができる対象サーバ群については、親ポリシーとしてまとめて管理しておくと便利です。これを定義します。
 
@@ -21,6 +21,7 @@
         - 205xx : ApplicationInsights
         - 206xx : GuestAttestation
         - 207xx : Azure Monitor
+        - 208xx : Azure Arc
         - 209xx : MDfS (discon)
       - 30000 : Common OS Resources (Source IP = *)
         - 300xx : Windows OS
@@ -230,6 +231,14 @@ az rest --method PUT --url "${TEMP_FWP_ID}/ruleCollectionGroups/DefaultApplicati
         ]
       },
       {
+        "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+        "action": { "type": "Allow" },
+        "name": "Azure Arc",
+        "priority": 20800,
+        "rules": [
+          { "ruleType": "ApplicationRule", "protocols": [ { "protocolType": "Https", "port": 443 } ], "sourceAddresses": [ "*" ], "name": "Azure Arc-enabled Data Services",  "targetFqdns": [ "*.arcdataservices.com" ] }
+        ]
+      },      {
         "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
         "action": { "type": "Allow" },
         "name": "WindowsOS",
