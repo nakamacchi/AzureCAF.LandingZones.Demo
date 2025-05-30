@@ -106,6 +106,34 @@ for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
 
+# ■ サンプルアプリのため、SQL Server 関連のセキュリティ対策を免除
+# Vulnerability assessment should be enabled on your SQL servers
+# /providers/Microsoft.Authorization/policyDefinitions/ef2a8f2a-b3d9-49cd-a8a8-9a3aaaf647d9
+# vulnerabilityAssessmentOnServerMonitoring
+
+TEMP_EXEMPTION_NAME="Test-Exemption-SQLServerVulnerabilityAssessment"
+cat > temp.json << EOF
+{
+  "properties": {
+    "policyAssignmentId": "${TEMP_ASSIGNMENT_ID}",
+    "policyDefinitionReferenceIds": [
+      "vulnerabilityAssessmentOnServerMonitoring"
+    ],
+    "exemptionCategory": "Waiver",
+    "displayName": "テスト目的での免除 - SQL Server の構成脆弱性排除の適用免除",
+    "description": "テスト目的での免除 - SQL Server の構成脆弱性排除"
+  }
+}
+EOF
+ 
+TEMP_RESOURCE_IDS=()
+j=0
+for i in ${VDC_NUMBERS}; do
+  TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/rg-spokef-${TEMP_LOCATION_PREFIX}/providers/microsoft.sql/servers/sql-spokef-${UNIQUE_SUFFIX}-${TEMP_LOCATION_PREFIX}"
+j=`expr $j + 1`
+done
+ 
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
 done
