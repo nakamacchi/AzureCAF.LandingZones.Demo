@@ -39,6 +39,11 @@ TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
 TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/rg-spokefdmz-${TEMP_LOCATION_PREFIX}/providers/microsoft.network/virtualnetworks/vnet-spokefdmz-${TEMP_LOCATION_PREFIX}"
 j=`expr $j + 1`
 done
+for i in ${VDC_NUMBERS}; do
+TEMP_LOCATION_PREFIX=${LOCATION_PREFIXS[$i]}
+TEMP_RESOURCE_IDS[j]="/subscriptions/${SUBSCRIPTION_ID_SPOKE_F}/resourcegroups/rg-spokef-${TEMP_LOCATION_PREFIX}/providers/microsoft.network/virtualnetworks/vnet-spokef-${TEMP_LOCATION_PREFIX}"
+j=`expr $j + 1`
+done
 
 for TEMP_RESOURCE_ID in ${TEMP_RESOURCE_IDS[@]}; do
 az rest --method PUT --uri "${TEMP_RESOURCE_ID}/providers/Microsoft.Authorization/policyExemptions/${TEMP_EXEMPTION_NAME}?api-version=2022-07-01-preview" --body @temp.json
