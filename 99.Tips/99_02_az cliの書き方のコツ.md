@@ -1,5 +1,15 @@
 # az cli の書き方のコツ
 
+## 特定列の取り出し (select 処理)
+
+[].{...} などの形式で、{} 内に射影処理を書く。
+
+```bash
+
+az ad app list --query "[].{displayName: displayName, appId: appId, objectId:id}" -o tsv
+
+```
+
 ## ID 値がスペースを含んでいる場合
 
 いったん JSON で取り出し、スペースをダミー文字列に変換してから再処理する。
