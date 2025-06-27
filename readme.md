@@ -18,7 +18,7 @@
 | :-- | :-- | :-- |
 | 戦略立案ガイド | 超訳 Azure CAF | [解説資料](https://aka.ms/jpcaf-ppt) <br> [解説ビデオ前半](https://aka.ms/jpcaf-mp4-01) <br> [解説ビデオ後半](https://aka.ms/jpcaf-mp4-02) |
 | 共通基盤設計ガイド | Azure 共通基盤設計ガイド | [解説資料](https://aka.ms/jpalz-ppt)  <br> [付録（ガバナンス設計用Excelシート）](https://aka.ms/jpalz-xls) <br> [ターゲットアーキテクチャと基本セオリー概説ビデオ](https://aka.ms/jpalz-mp4) |
-| 共通基盤構築デモ | Azure 共通基盤構築デモ | [構築スクリプト](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo/) <br> [デモビデオ](#作業デモビデオ) |
+| 共通基盤構築デモ | Azure 共通基盤構築デモ | [構築スクリプト](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo/) <br> デモビデオ ※ 本ページ後半をご確認ください。 |
 
 全体概要や活用方法を知りたい場合には、下記 Webinar（約1時間）をご覧ください。
 
