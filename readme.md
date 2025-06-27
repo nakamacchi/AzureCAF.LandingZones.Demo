@@ -16,8 +16,8 @@
 
 | カテゴリ | コンテンツ | リンク |
 | :-- | :-- | :-- |
-| 戦略立案ガイド | 超訳 Azure CAF | [解説資料](https://download.microsoft.com/download/2/a/b/2ab69a5d-7c69-4a24-a692-50823e3255d6/Translations_AzureCAF_v0.11.pptx) <br> [解説ビデオ前半](https://www.youtube.com/watch?v=eHLpPk6P8hw&t=10s) <br> [解説ビデオ後半](https://www.youtube.com/watch?v=RwAtcn75_7A&t=0s) |
-| 共通基盤設計ガイド | Azure 共通基盤設計ガイド | [解説資料](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxQXPLUSSIGN___dalE8F4n68O7GPED3rdHTQCYgfTEm0Jhg5CvzxWQNV7ZitfO6iFT5UK709WdIaPLUSSIGNnXBisuPLUSSIGNpbm7QBKhsrX)  <br> [付録（ガバナンス設計用Excelシート）](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyuIJHJGxHlXyruUKSZFgoiBkV54kvJNzMITeliEebencNCxvxKBYMdaMRsN1Et7WVXmRHRZfA1esTcpmKqam6E) <br> [ターゲットアーキテクチャと基本セオリー概説ビデオ](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrE2Q5svFv9PLUSSIGNSGhGXNrZBOKTRcvURUpIn___O___eTpV6iENefZc6sCSUxez1H0___F15ojc7) |
+| 戦略立案ガイド | 超訳 Azure CAF | [解説資料](https://aka.ms/jpcaf-ppt) <br> [解説ビデオ前半](https://aka.ms/jpcaf-mp4-01) <br> [解説ビデオ後半](https://aka.ms/jpcaf-mp4-02) |
+| 共通基盤設計ガイド | Azure 共通基盤設計ガイド | [解説資料](https://aka.ms/jpalz-ppt)  <br> [付録（ガバナンス設計用Excelシート）](https://aka.ms/jpalz-xls) <br> [ターゲットアーキテクチャと基本セオリー概説ビデオ](https://aka.ms/jpalz-mp4) |
 | 共通基盤構築デモ | Azure 共通基盤構築デモ | [構築スクリプト](https://github.com/nakamacchi/AzureCAF.LandingZones.Demo/) <br> [デモビデオ](#作業デモビデオ) |
 
 全体概要や活用方法を知りたい場合には、下記 Webinar（約1時間）をご覧ください。
@@ -100,23 +100,23 @@
 
 | ビデオ | ビデオ時間 | 作業時間目安 | リンク |
 | :-- | :-- | :-- | :-- |
-|ESLZDemo_00_作業の事前準備|27:57|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyR3BFiBxV1NLfAMSorZfZ3QBoQKusPLUSSIGNLHYH64hgwz5qGCtNY3n49emUtxddlPLUSSIGNLPtPzuuNLT5ELSB85b2w7Gwa6t)|
-|ESLZDemo_01_Step00_環境準備|37:10|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xfiujFeBQAFjHqPLUSSIGNPaFpomkeomEtjOKVvvLKAWMnhCR___eNMwxnfAxLI6UYOAhTrPLUSSIGNrp)|
-|ESLZDemo_02_Step01_初期環境セットアップ|37:08|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxzAeXDiVVZPCGzgHUv3RusPLUSSIGNk0K___UR5PyW3oyZz___hhNdUexwhDLMLfWCUOPuDWAXLof1CusVddxTwaIzaSAflh4)|
-|ESLZDemo_03_Step02_管理サブスクリプションの作成（前半）|41:05|2 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzNFsLwDgF7pYpQiEpJcyCw12KNMqSdf___oO6nKAlKyYHsNs2dcTDHG43LFOHQSkFhJ4W7vbdqVIdmbreVNjgQI0)|
-|ESLZDemo_04_Step02_管理サブスクリプションの作成（後半）|10:03|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxc0hP9Z1kKTECqbtEgiraQPLUSSIGNyjP3bOpQgOaTNnArH92eI8vkPLUSSIGNrvPc4qMqjBLXnkkwG___UfFO___rYd9NukzmE3Pm0w)|
-|ESLZDemo_05_Step03_ハブサブスクリプションの作成|03:18|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmty3lIBTiHyk___aKePLUSSIGNrkA2HFWow72oeMSKNB5MlTYPUwIPLUSSIGNXQVxZIz___2ADU7OKtvpJmMUsWUFLnqZxSP16EMYgxIqx)|
-|ESLZDemo_06_Step04_管理基盤の構成設定|28:40|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyR3BFiBxV1NLfAMSorZfZ32ESwndvbr5VnXaOozyO8tHnts9yi5KJingKv23p4DXxeJ94zZPnCQjzUB9jmX___FK)|
-|ESLZDemo_07_Step05_仮想マシンのコンプライアンス対応|44:26|2 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzxN49yn37eJrnD5f1FLIqDWR4IdENojHQyfnj5QjNoVGXVcbIAOORnc3swxjYoc4cgoxTUG1uC2JylmeI2X2X0)|
-|ESLZDemo_08_Step06_SpokeA_IaaS型WebDBインフラの作成|25:22|2 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmty3lIBTiHyk___aKePLUSSIGNrkA2HFWCoLOTwOQJkOB04XAC70RI9hvBHjcSkmg7ut982BwmV5ACwxpjnJifDEAri___88nut)|
-|ESLZDemo_09_Step07_SpokeA_イントラWebアプリのセットアップ|47:08|3 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9xABmnbhoJlHOYV5tnoQT6E0lqTBzbTrkpBXzoPRSD8iYg1jIDHSsL___eXUhiLBFDcG)|
-|ESLZDemo_10_Step08_SpokeB_PaaS型WebDBインフラの作成|30:11|1.5 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw5X62v2ZSAX1zGPLUSSIGNy___jBNrY3um7PLUSSIGNo8LXqSgvWi6Q759P7gdLyZ3EK3zYNNYOmJrZ4PLUSSIGNpUhLsPbt2nVBrAVLyAwtT)|
-|ESLZDemo_11_Step09・10_SpokeB_WebアプリのセットアップとDMZWAFの作成|24:47|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtxc0hP9Z1kKTECqbtEgiraQCx16oQLspIQHp1lsNDcWcLcdH9ZD1T74HC___b0kCslBZLaeNAciyzrMM3iDzYi7Fn)|
-|ESLZDemo_12_Step11_AzurePolicyガバナンスとMDfCセキュリティ(前半)|25:31|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtyy___E9hoB___Jl5X2cG___eFg9x2k1jAtpmXZxwtf4RUq3EwOF7g237UIi0ujxZ8hcvQ3VcmXXsYH0eqPLUSSIGN9NMrZupVUi)|
-|ESLZDemo_13_Step12_AzurePolicyガバナンスとMDfCセキュリティ(後半)|45:51|2 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrElD___Hjp5uHpmMasvavX3___GNQsm6gTiKFV3NFNvLDQMpU6W8use___Cy9E30Ggif7BA9)|
-|ESLZDemo_14_Step13_運用監視（モニタリング）|34:41|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtw5X62v2ZSAX1zGPLUSSIGNy___jBNrYH___LECBNZeNgqpJYcWgnRRRT5N3NK2Se___bAmjPMvBUMUac1JdrcAaxIPLUSSIGNJ750lan2W)|
-|ESLZDemo_15_後片付け方法とまとめ|11:24|1 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmtzPLUSSIGNCTjNOOGXNMVZD4DcEWrEMPSbaqFxJ210jvJqExzlJvzGhm7hRbx5ZsFnDxbWbTSDo5zmX8bu11AJp49wuZ20)|
-|ESLZDemo_41_SpokeD_AOAIによる社内文書検索システム|62:54|3 時間|[リンク](https://livesend.microsoft.com/i/KiIa1FQzy1DUXI8U0n7t8Mk08Fb9jKY3D9OXIRgzmty3lIBTiHyk___aKePLUSSIGNrkA2HFWz2PeMZC5___VhIan9mO29tIJiN5L4Rc7ly48sXMQntMOaimzPInGfRLKoAG8Ze3ojT)|
+|ESLZDemo_00_作業の事前準備|27:57|1 時間|[リンク](https://aka.ms/jpalz-mp4-00)|
+|ESLZDemo_01_Step00_環境準備|37:10|1 時間|[リンク](https://aka.ms/jpalz-mp4-01)|
+|ESLZDemo_02_Step01_初期環境セットアップ|37:08|1 時間|[リンク](https://aka.ms/jpalz-mp4-02)|
+|ESLZDemo_03_Step02_管理サブスクリプションの作成（前半）|41:05|2 時間|[リンク](https://aka.ms/jpalz-mp4-03)|
+|ESLZDemo_04_Step02_管理サブスクリプションの作成（後半）|10:03|1 時間|[リンク](https://aka.ms/jpalz-mp4-04)|
+|ESLZDemo_05_Step03_ハブサブスクリプションの作成|03:18|1 時間|[リンク](https://aka.ms/jpalz-mp4-05)|
+|ESLZDemo_06_Step04_管理基盤の構成設定|28:40|1 時間|[リンク](https://aka.ms/jpalz-mp4-06)|
+|ESLZDemo_07_Step05_仮想マシンのコンプライアンス対応|44:26|2 時間|[リンク](https://aka.ms/jpalz-mp4-07)|
+|ESLZDemo_08_Step06_SpokeA_IaaS型WebDBインフラの作成|25:22|2 時間|[リンク](https://aka.ms/jpalz-mp4-08)|
+|ESLZDemo_09_Step07_SpokeA_イントラWebアプリのセットアップ|47:08|3 時間|[リンク](https://aka.ms/jpalz-mp4-09)|
+|ESLZDemo_10_Step08_SpokeB_PaaS型WebDBインフラの作成|30:11|1.5 時間|[リンク](https://aka.ms/jpalz-mp4-10)|
+|ESLZDemo_11_Step09・10_SpokeB_WebアプリのセットアップとDMZWAFの作成|24:47|1 時間|[リンク](https://aka.ms/jpalz-mp4-11)|
+|ESLZDemo_12_Step11_AzurePolicyガバナンスとMDfCセキュリティ(前半)|25:31|1 時間|[リンク](https://aka.ms/jpalz-mp4-12)|
+|ESLZDemo_13_Step12_AzurePolicyガバナンスとMDfCセキュリティ(後半)|45:51|2 時間|[リンク](https://aka.ms/jpalz-mp4-13)|
+|ESLZDemo_14_Step13_運用監視（モニタリング）|34:41|1 時間|[リンク](https://aka.ms/jpalz-mp4-14)|
+|ESLZDemo_15_後片付け方法とまとめ|11:24|1 時間|[リンク](https://aka.ms/jpalz-mp4-15)|
+|ESLZDemo_41_SpokeD_AOAIによる社内文書検索システム|62:54|3 時間|[リンク](https://aka.ms/jpalz-mp4-41)|
 
 ## どうしても自力でやってみたい場合
 
